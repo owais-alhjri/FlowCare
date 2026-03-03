@@ -60,7 +60,7 @@ public class User
         // if customer entered a branch ID it will throw error
         if ((userRole != UserRole.BRANCH_MANAGER && userRole != UserRole.STAFF) && branchId is not null)
         {
-            throw new ArgumentException("Customer can not have branch ID");
+            throw new ArgumentException("Only branch manager and staff can have branch ID");
         }
         var isValidPhone = Regex.IsMatch(phone ?? "", @"^(\+968)?\d{8}$");
 

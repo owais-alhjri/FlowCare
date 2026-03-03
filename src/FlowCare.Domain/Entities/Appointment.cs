@@ -27,17 +27,63 @@ public class Appointment
     {
     }
 
-    public Appointment(string id, string customerId, string branchId,
-        string serviceTypeId, string slotId, string staffId, Status status, DateTimeOffset createdAt)
+    public User Customer { get; private set; }
+    public User Staff { get; private set; }
+
+    public Appointment(string id, User customer, User staff, string branchId,
+        string serviceTypeId, string slotId, Status status )
     {
+        ValidateRole(customer, staff, branchId);
+        ValidateCommon(id, branchId, serviceTypeId, slotId);
+
         Id = id;
-        CustomerId = customerId;
+        CustomerId = customer.Id;
         BranchId = branchId;
         ServiceTypeId = serviceTypeId;
         SlotId = slotId;
-        StaffId = staffId;
+        StaffId = staff.Id;
         Status = status;
         CreatedAt = DateTimeOffset.Now;
+    }
+
+    private static void ValidateRole(User customer, User staff, string branchId)
+    {
+        if (customer.UserRole != UserRole.CUSTOMER)
+        {
+            throw new ArgumentException("User is not a customer");
+        }
+
+        if (staff.UserRole != UserRole.STAFF)
+        {
+            throw new ArgumentException("User is not a staff");
+        }
+
+        if (staff.BranchId != branchId )
+        {
+            throw new ArgumentException("Staff dose not belong to this branch");
+        }
+    }
+    private static void ValidateCommon(string id, string branchId,
+        string serviceTypeId, string slotId)
+    {
+        if (string.IsNullOrWhiteSpace(id) || id.Length < 3 || id.Length > 100)
+        {
+            throw new ArgumentException("Invalid ID");
+        }
+
+        if (string.IsNullOrWhiteSpace(branchId) || branchId.Length < 3 || branchId.Length > 100)
+        {
+            throw new ArgumentException("Invalid branch ID");
+        }
+        if (string.IsNullOrWhiteSpace(serviceTypeId) || serviceTypeId.Length < 3 || serviceTypeId.Length > 100)
+        {
+            throw new ArgumentException("Invalid service type ID");
+        }
+        if (string.IsNullOrWhiteSpace(slotId) || slotId.Length < 3 || slotId.Length > 100)
+        {
+            throw new ArgumentException("Invalid slot ID");
+        }
+
     }
 
 }

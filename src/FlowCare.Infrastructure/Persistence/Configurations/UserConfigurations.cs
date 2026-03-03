@@ -35,8 +35,5 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
             .IsRequired();
         builder.HasIndex(u => u.Email)
             .IsUnique();
-
-
-
     }
 }
