@@ -19,18 +19,51 @@ public class AuditLog
 
     protected AuditLog(){}
 
-    public AuditLog(string id, string actorId, string actorRole, string actionType,
+    public User User { get; private set; }
+
+    public AuditLog(string id,User user, string actionType,
         string entityType, string entityId, DateTimeOffset timestamp, JsonDocument metadata)
     {
-        // TODO: Add validation 
-
+        ValidateCommon(id, actionType, entityType, entityId);
+        ValidateIdentity(user);
         Id = id;
-        ActorId = actorId;
-        ActorRole = actorRole;
+        ActorId = user.Id;
+        ActorRole = user.UserRole.ToString();
         ActionType = actionType;
         EntityType = entityType;
         EntityId = entityId;
         Timestamp = DateTimeOffset.Now;
         Metadata = metadata;
+        User = user;
+    }
+
+    private static void ValidateIdentity(User user)
+    {
+        if (user.Id != user.UserRole.ToString())
+        {
+            throw new ArgumentException("User Id is not matching User role");
+        }
+
+    }
+
+    private static void ValidateCommon(string id, string actionType, string entityType, string entityId)
+    {
+        if (string.IsNullOrWhiteSpace(id) || id.Length <3 || id.Length > 100)
+        {
+            throw new ArgumentException("Invalid ID");
+        }
+
+        if (string.IsNullOrWhiteSpace(actionType) || actionType.Length < 3 || actionType.Length > 100)
+        {
+            throw new ArgumentException("Invalid action type");
+        }
+        if (string.IsNullOrWhiteSpace(entityType) || entityType.Length < 3 || entityType.Length > 100)
+        {
+            throw new ArgumentException("Invalid entity type");
+        }
+        if (string.IsNullOrWhiteSpace(entityId) || entityId.Length < 3 || entityId.Length > 100)
+        {
+            throw new ArgumentException("Invalid entity ID");
+        }
     }
 }
