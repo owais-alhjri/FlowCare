@@ -1,3 +1,31 @@
 .vs/
 bin/
 obj/
+# User-specific Visual Studio files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Published output
+publish/
+out/
+
+# NuGet
+*.nupkg
+packages/
+project.lock.json
+
+# Secrets / environment-specific
+appsettings.Development.json
+appsettings.Local.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Rider IDE
+.idea/
+
+# VS Code
+.vscode/
