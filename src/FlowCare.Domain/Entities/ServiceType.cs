@@ -18,11 +18,33 @@ public class ServiceType
 
     public ServiceType(string id, string branchId, string name, string description, int durationMinutes, bool isActive)
     {
+        ValidateCommon(id, branchId, name, description, durationMinutes);
         Id = id;
         BranchId = branchId;
         Name = name;
         Description = description;
         DurationMinutes = durationMinutes;
         IsActive = isActive;
+    }
+
+    private static void ValidateCommon(string id, string branchId, string name, string description, int durationMinutes)
+    {
+        if (string.IsNullOrWhiteSpace(id) || id.Length < 3 || id.Length > 100)
+        {
+            throw new ArgumentException("Invalid ID");
+        }        if (string.IsNullOrWhiteSpace(branchId) || branchId.Length < 3 || branchId.Length > 100)
+        {
+            throw new ArgumentException("Invalid branch ID");
+        }        if (string.IsNullOrWhiteSpace(name) || name.Length < 3 || name.Length > 100)
+        {
+            throw new ArgumentException("Invalid name");
+        }        if (string.IsNullOrWhiteSpace(description) || description.Length < 3 || description.Length > 500)
+        {
+            throw new ArgumentException("Invalid description");
+            // max is 480 minutes = 8 hours 
+        }        if (durationMinutes < 1 || durationMinutes > 480)
+        {
+            throw new ArgumentException("Invalid duration minutes");
+        }
     }
 }

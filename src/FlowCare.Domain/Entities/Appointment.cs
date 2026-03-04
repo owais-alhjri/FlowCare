@@ -27,6 +27,7 @@ public class Appointment
     {
     }
 
+    // these are for relationships
     public User Customer { get; private set; }
     public User Staff { get; private set; }
 
@@ -44,6 +45,8 @@ public class Appointment
         StaffId = staff.Id;
         Status = status;
         CreatedAt = DateTimeOffset.Now;
+        Customer = customer;
+        Staff = staff;
     }
 
     private static void ValidateRole(User customer, User staff, string branchId)

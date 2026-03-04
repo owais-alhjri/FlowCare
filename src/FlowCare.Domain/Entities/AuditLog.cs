@@ -22,6 +22,8 @@ public class AuditLog
     public AuditLog(string id, string actorId, string actorRole, string actionType,
         string entityType, string entityId, DateTimeOffset timestamp, JsonDocument metadata)
     {
+        // TODO: Add validation 
+
         Id = id;
         ActorId = actorId;
         ActorRole = actorRole;
