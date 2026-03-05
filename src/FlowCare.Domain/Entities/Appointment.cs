@@ -32,7 +32,7 @@ public class Appointment
     public User Staff { get; private set; }
 
     public Appointment(string id, User customer, User staff, string branchId,
-        string serviceTypeId, string slotId, Status status )
+        string serviceTypeId, string slotId, Status status, DateTimeOffset createdAt)
     {
         ValidateRole(customer, staff, branchId);
         ValidateCommon(id, branchId, serviceTypeId, slotId);
@@ -44,7 +44,7 @@ public class Appointment
         SlotId = slotId;
         StaffId = staff.Id;
         Status = status;
-        CreatedAt = DateTimeOffset.Now;
+        CreatedAt = createdAt;
         Customer = customer;
         Staff = staff;
     }

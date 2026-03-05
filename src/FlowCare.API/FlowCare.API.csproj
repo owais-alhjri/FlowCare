@@ -28,4 +28,11 @@
     <Folder Include="Authentication\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\FlowCare.Infrastructure\Persistence\example.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>example.json</Link>
+    </Content>
+  </ItemGroup>
+
 </Project>

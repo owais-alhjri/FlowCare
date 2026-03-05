@@ -65,51 +65,32 @@ public class User
             throw new ArgumentException("Only branch manager and staff can have branch ID");
         }
         var isValidPhone = Regex.IsMatch(phone ?? "", @"^(\+968)?\d{8}$");
-
         if (userRole == UserRole.CUSTOMER)
         {
             if (!isValidPhone)
                 throw new ArgumentException("Invalid Oman phone number");
-
             Phone = phone!.StartsWith("+968") ? phone : $"+968{phone}";
+
         }
 
     }
 
     private static void ValidateCommon(string id, string userName, string password, string fullName, string email)
     {
-        var isValidPassword = Regex.IsMatch(
-            password,
-            @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$"
-        );
+        if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("Invalid ID");
+        if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentException("Invalid username");
+        if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Invalid password");
+        if (string.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("Invalid full name");
+        if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Invalid email");
+
+        var isValidPassword = Regex.IsMatch(password, @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$");
         var isValidEmail = MailAddress.TryCreate(email, out _);
 
-        if (string.IsNullOrWhiteSpace(id) || id.Length < 6 || id.Length > 100)
-        {
-            throw new ArgumentException("Invalid ID");
-        }
-
-        if (string.IsNullOrWhiteSpace(password))
-            throw new ArgumentException("Invalid Password");
-        if (!isValidPassword)
-        {
-            throw new ArgumentException("Invalid password");
-        }
-
-        if (string.IsNullOrWhiteSpace(userName) || userName.Length < 6 || userName.Length >100)
-        {
-            throw new ArgumentException("Invalid username");
-        }
-
-        if (string.IsNullOrWhiteSpace(fullName) || fullName.Length < 6 || fullName.Length > 100)
-        {
-            throw new ArgumentException("Invalid full name");
-        }
-
-        if (string.IsNullOrWhiteSpace(email) || !isValidEmail)
-        {
-            throw new ArgumentException("Invalid email");
-        }
+        if (id.Length < 6 || id.Length > 100) throw new ArgumentException("Invalid ID");
+        if (!isValidPassword) throw new ArgumentException("Invalid password");
+        if (userName.Length < 3 || userName.Length > 100) throw new ArgumentException("Invalid username");
+        if (fullName.Length < 6 || fullName.Length > 100) throw new ArgumentException("Invalid full name");
+        if (!isValidEmail) throw new ArgumentException("Invalid email");
 
     }
 

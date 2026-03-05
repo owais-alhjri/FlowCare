@@ -4,6 +4,7 @@ using FlowCare.Application.Interfaces.Persistence;
 using FlowCare.Domain.Entities;
 using FlowCare.Domain.Enums;
 
+
 namespace FlowCare.Application.Interfaces.Services;
 
 public class UserService(IPasswordHasher passwordHasher, IUserRepository userRepository) : IUserService

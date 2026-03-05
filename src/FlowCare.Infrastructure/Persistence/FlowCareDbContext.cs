@@ -13,9 +13,11 @@ public class FlowCareDbContext(DbContextOptions<FlowCareDbContext> options) : Db
     public DbSet<StaffServiceType> StaffServiceTypes  { get; set;}
     public DbSet<Slot> Slots  { get; set;}
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(FlowCareDbContext).Assembly);
-    }
+
+}
 }

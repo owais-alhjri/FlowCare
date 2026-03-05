@@ -35,7 +35,7 @@ public class Branch
         {
             throw new ArgumentException("Invalid name");
         }
-        if (string.IsNullOrWhiteSpace(city) || city.Length < 6 || city.Length > 100)
+        if (string.IsNullOrWhiteSpace(city) || city.Length < 3 || city.Length > 100)
         {
             throw new ArgumentException("Invalid city");
         }
