@@ -33,4 +33,9 @@ public class UserRepository(FlowCareDbContext flowCareDb) : IUserRepository
         return await flowCareDb.Users.FirstOrDefaultAsync(x => x.UserName == username);
     }
 
+    public async Task<User?> FetchLastId()
+    {
+          return await flowCareDb.Users.OrderByDescending(x=>x.Id).FirstOrDefaultAsync();
+    }
+
 }

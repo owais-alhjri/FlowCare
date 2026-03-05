@@ -10,4 +10,6 @@ public interface IUserRepository
     Task<User?> ExistsUsernameAsync(string username);
     Task<User?> ExistIdAsync(string id);
 
+    Task<User?> FetchLastId();
+
 }

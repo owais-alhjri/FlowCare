@@ -29,10 +29,26 @@ public class UserService(IPasswordHasher passwordHasher, IUserRepository userRep
             throw new ArgumentException("Username already exist");
         }
 
-        var id = "";
-        // TODO: I need to make the id add 1 automatic like usr_cust_001 the next one will be usr_cust_002
+        var customerIdPiss = "user_cust_";
+        var lastUser = await userRepository.FetchLastId();
+
+        string fullId;
+        if (lastUser is null)
+        {
+            fullId = customerIdPiss + "001";
+        }
+        else
+        {
+            var lasIdString = lastUser.Id.Substring(customerIdPiss.Length);
+
+            var lastNumber = int.Parse(lasIdString);
+            var nextNumber = lastNumber + 1;
+
+            fullId = customerIdPiss + nextNumber.ToString("D3");
+        }
+
         var hash = passwordHasher.Hash(userDto.Password);
-        var user = new User(id, userDto.UserName, hash, UserRole.CUSTOMER,
+        var user = new User(fullId, userDto.UserName, hash, UserRole.CUSTOMER,
             userDto.FullName, userDto.Email, userDto.Phone,null, isActive:true);
 
         await userRepository.Register(user);

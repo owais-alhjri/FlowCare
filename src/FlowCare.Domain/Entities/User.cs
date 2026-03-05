@@ -41,6 +41,8 @@ public class User
 
     }
 
+
+
     private void ValidateRole(string? phone, UserRole userRole, string? branchId)
     {
 
