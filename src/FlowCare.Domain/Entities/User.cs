@@ -50,7 +50,7 @@ public class User
 
         if (userRole == UserRole.BRANCH_MANAGER || userRole == UserRole.STAFF)
         {
-            if (string.IsNullOrWhiteSpace(branchId) || branchId.Length < 3 || branchId.Length > 100)
+            if (string.IsNullOrWhiteSpace(branchId) || branchId.Length < 6 || branchId.Length > 100)
             {
                 throw new ArgumentException("Invalid branch ID");
             }
@@ -82,7 +82,7 @@ public class User
         );
         var isValidEmail = MailAddress.TryCreate(email, out _);
 
-        if (string.IsNullOrWhiteSpace(id) || id.Length < 3 || id.Length > 100)
+        if (string.IsNullOrWhiteSpace(id) || id.Length < 6 || id.Length > 100)
         {
             throw new ArgumentException("Invalid ID");
         }
@@ -94,12 +94,12 @@ public class User
             throw new ArgumentException("Invalid password");
         }
 
-        if (string.IsNullOrWhiteSpace(userName) || userName.Length < 3 || userName.Length >100)
+        if (string.IsNullOrWhiteSpace(userName) || userName.Length < 6 || userName.Length >100)
         {
             throw new ArgumentException("Invalid username");
         }
 
-        if (string.IsNullOrWhiteSpace(fullName) || fullName.Length < 3 || fullName.Length > 100)
+        if (string.IsNullOrWhiteSpace(fullName) || fullName.Length < 6 || fullName.Length > 100)
         {
             throw new ArgumentException("Invalid full name");
         }

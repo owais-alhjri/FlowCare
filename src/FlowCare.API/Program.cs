@@ -1,4 +1,9 @@
+using FlowCare.API.Authentication;
+using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Application.Interfaces.Services;
 using FlowCare.Infrastructure.Persistence;
+using FlowCare.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +19,12 @@ builder.Services.AddDbContext<FlowCareDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
+builder.Services.AddAuthentication("BasicAuth")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuth", null);
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 var app = builder.Build();
 
 

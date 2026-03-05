@@ -30,12 +30,12 @@ public class StaffServiceType
         {
             throw new ArgumentException("User is not a staff");
         }
-        if (string.IsNullOrWhiteSpace(staff.Id) || staff.Id.Length < 3 || staff.Id.Length >100)
+        if (string.IsNullOrWhiteSpace(staff.Id) || staff.Id.Length < 6 || staff.Id.Length >100)
         {
             throw new ArgumentException("Invalid staff ID");
         }
 
-        if (string.IsNullOrWhiteSpace(serviceTypeId) || serviceTypeId.Length <3 || serviceTypeId.Length > 100)
+        if (string.IsNullOrWhiteSpace(serviceTypeId) || serviceTypeId.Length < 6 || serviceTypeId.Length > 100)
         {
             throw new ArgumentException("Invalid Service type ID");
         }

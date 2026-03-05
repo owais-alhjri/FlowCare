@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FlowCare.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initalCreate : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,7 @@ namespace FlowCare.Infrastructure.Migrations
                 {
                     Id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     UserName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Password = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Password = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     UserRole = table.Column<int>(type: "integer", nullable: false),
                     FullName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -272,6 +272,12 @@ namespace FlowCare.Infrastructure.Migrations
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_UserName",
+                table: "Users",
+                column: "UserName",
                 unique: true);
         }
 

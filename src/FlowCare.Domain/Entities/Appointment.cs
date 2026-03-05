@@ -69,20 +69,20 @@ public class Appointment
     private static void ValidateCommon(string id, string branchId,
         string serviceTypeId, string slotId)
     {
-        if (string.IsNullOrWhiteSpace(id) || id.Length < 3 || id.Length > 100)
+        if (string.IsNullOrWhiteSpace(id) || id.Length < 6 || id.Length > 100)
         {
             throw new ArgumentException("Invalid ID");
         }
 
-        if (string.IsNullOrWhiteSpace(branchId) || branchId.Length < 3 || branchId.Length > 100)
+        if (string.IsNullOrWhiteSpace(branchId) || branchId.Length < 6 || branchId.Length > 100)
         {
             throw new ArgumentException("Invalid branch ID");
         }
-        if (string.IsNullOrWhiteSpace(serviceTypeId) || serviceTypeId.Length < 3 || serviceTypeId.Length > 100)
+        if (string.IsNullOrWhiteSpace(serviceTypeId) || serviceTypeId.Length < 6 || serviceTypeId.Length > 100)
         {
             throw new ArgumentException("Invalid service type ID");
         }
-        if (string.IsNullOrWhiteSpace(slotId) || slotId.Length < 3 || slotId.Length > 100)
+        if (string.IsNullOrWhiteSpace(slotId) || slotId.Length < 6 || slotId.Length > 100)
         {
             throw new ArgumentException("Invalid slot ID");
         }

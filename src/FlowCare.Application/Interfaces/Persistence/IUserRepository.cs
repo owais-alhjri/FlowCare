@@ -1,0 +1,13 @@
+﻿using FlowCare.Domain.Entities;
+
+namespace FlowCare.Application.Interfaces.Persistence;
+
+public interface IUserRepository
+{
+    Task Register(User user);
+    Task SaveChangesAsync();
+    Task<User?> ExistsEmailAsync(string email);
+    Task<User?> ExistsUsernameAsync(string username);
+    Task<User?> ExistIdAsync(string id);
+
+}

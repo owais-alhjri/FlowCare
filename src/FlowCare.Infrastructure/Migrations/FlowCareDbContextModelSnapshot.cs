@@ -282,8 +282,8 @@ namespace FlowCare.Infrastructure.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(12)
@@ -300,6 +300,9 @@ namespace FlowCare.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("UserName")
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);

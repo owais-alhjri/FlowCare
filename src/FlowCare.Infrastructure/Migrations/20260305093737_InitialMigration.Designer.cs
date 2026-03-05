@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlowCare.Infrastructure.Migrations
 {
     [DbContext(typeof(FlowCareDbContext))]
-    [Migration("20260304132805_initalCreate")]
-    partial class initalCreate
+    [Migration("20260305093737_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -285,8 +285,8 @@ namespace FlowCare.Infrastructure.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(12)
@@ -303,6 +303,9 @@ namespace FlowCare.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("UserName")
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);

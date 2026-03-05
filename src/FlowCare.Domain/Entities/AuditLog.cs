@@ -48,20 +48,20 @@ public class AuditLog
 
     private static void ValidateCommon(string id, string actionType, string entityType, string entityId)
     {
-        if (string.IsNullOrWhiteSpace(id) || id.Length <3 || id.Length > 100)
+        if (string.IsNullOrWhiteSpace(id) || id.Length <6 || id.Length > 100)
         {
             throw new ArgumentException("Invalid ID");
         }
 
-        if (string.IsNullOrWhiteSpace(actionType) || actionType.Length < 3 || actionType.Length > 100)
+        if (string.IsNullOrWhiteSpace(actionType) || actionType.Length < 6 || actionType.Length > 100)
         {
             throw new ArgumentException("Invalid action type");
         }
-        if (string.IsNullOrWhiteSpace(entityType) || entityType.Length < 3 || entityType.Length > 100)
+        if (string.IsNullOrWhiteSpace(entityType) || entityType.Length < 6 || entityType.Length > 100)
         {
             throw new ArgumentException("Invalid entity type");
         }
-        if (string.IsNullOrWhiteSpace(entityId) || entityId.Length < 3 || entityId.Length > 100)
+        if (string.IsNullOrWhiteSpace(entityId) || entityId.Length < 6 || entityId.Length > 100)
         {
             throw new ArgumentException("Invalid entity ID");
         }
