@@ -25,8 +25,20 @@ builder.Services.AddAuthentication("BasicAuth")
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
-var app = builder.Build();
 
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("ADMIN"));
+    options.AddPolicy("ManagerOrAbove",policy=> policy.RequireRole("ADMIN","BRANCH_MANAGER"));
+    options.AddPolicy("StaffOrAbove", policy=> policy.RequireRole("ADMIN", "BRANCH_MANAGER", "STAFF"));
+    options.AddPolicy("CustomerOnly", policy => policy.RequireRole("CUSTOMER"));
+    options.AddPolicy("AnyAuthenticatedUser", policy=> policy.RequireRole("CUSTOMER", "ADMIN", "BRANCH_MANAGER", "STAFF"));
+
+});
+
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -35,8 +47,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapControllers();
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
+app.UseAuthorization();
 
 
 app.Run();
