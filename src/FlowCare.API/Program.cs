@@ -28,6 +28,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 builder.Services.AddScoped<BranchesService>();
 builder.Services.AddScoped<IBranchesRepository, BranchesRepository>();
+builder.Services.AddScoped<IServicesTypeRepository, ServicesTypeRepository>();
+builder.Services.AddScoped<ServiceTypeService>();
 
 builder.Services.AddControllers();
 builder.Services.AddAuthorization(options =>
