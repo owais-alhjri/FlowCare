@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using FlowCare.Domain.Entities;
-using FlowCare.Domain.Enums;
 using FlowCare.Infrastructure.Persistence.SeedDtos;
 using Microsoft.EntityFrameworkCore;
 
@@ -62,12 +61,14 @@ public class DataSeeder(FlowCareDbContext db)
             .ToList();
         if (newAuditLogs?.Count > 0)
             await db.AuditLogs.AddRangeAsync(newAuditLogs.Select(a =>
-                CreateAuditLogDirectly(a, seededUsers[a.ActorId])));
+                CreateAuditLogDirectly(a)));
+
+        await db.SaveChangesAsync();
 
         Console.WriteLine("✅ Seed complete.");
     }
 
-    private static AuditLog CreateAuditLogDirectly(AuditLogSeedDto dto, User user)
+    private static AuditLog CreateAuditLogDirectly(AuditLogSeedDto dto )
     {
         var auditLog = (AuditLog)Activator.CreateInstance(typeof(AuditLog), nonPublic: true)!;
 

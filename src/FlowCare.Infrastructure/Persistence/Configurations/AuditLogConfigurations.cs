@@ -32,5 +32,8 @@ public class AuditLogConfigurations : IEntityTypeConfiguration<AuditLog>
         builder.Property(a => a.Metadata)
             .IsRequired();
         builder.HasIndex(a => a.ActorId);
+        builder.HasOne(a => a.User)
+            .WithMany()
+            .HasForeignKey(a => a.ActorId);
     }
 }
