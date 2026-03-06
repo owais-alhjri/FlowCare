@@ -7,7 +7,7 @@ namespace FlowCare.API.Controllers
     [Route("api/branches")]
     [ApiController]
     [AllowAnonymous]
-    public class BranchesController(BranchesService branchesService, ServiceTypeService serviceTypeService) : ControllerBase
+    public class BranchesController(BranchesService branchesService) : ControllerBase
     {
         [HttpGet]
         public async Task<ActionResult> FetchBranches()
@@ -15,15 +15,5 @@ namespace FlowCare.API.Controllers
             var branches = await branchesService.FetchBranches();
             return Ok(branches);
         }
-
-        [HttpGet("{branchId}/services")]
-        public async Task<ActionResult> FetchServiceByBranch( string branchId)
-        {
-            var servicesByBranch = await serviceTypeService.FetchServiceByBranch(branchId);
-
-            return Ok(servicesByBranch);
-        }
-
-        
     }
 }

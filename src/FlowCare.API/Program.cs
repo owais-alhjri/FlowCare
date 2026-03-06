@@ -30,6 +30,8 @@ builder.Services.AddScoped<BranchesService>();
 builder.Services.AddScoped<IBranchesRepository, BranchesRepository>();
 builder.Services.AddScoped<IServicesTypeRepository, ServicesTypeRepository>();
 builder.Services.AddScoped<ServiceTypeService>();
+builder.Services.AddScoped<ISlotsRepository, SlotRepository>();
+builder.Services.AddScoped<SlotService>();
 
 builder.Services.AddControllers();
 builder.Services.AddAuthorization(options =>

@@ -9,6 +9,6 @@ public class ServicesTypeRepository(FlowCareDbContext dbContext) : IServicesType
 {
     public async Task<List<ServiceType>> ServicesByBranch(string branchId)
     {
-        return await dbContext.ServiceTypes.Where(b=>b.BranchId == branchId).ToListAsync();
+        return await dbContext.ServiceTypes.Where(b=>b.BranchId == branchId).AsNoTracking().ToListAsync();
     }
 }

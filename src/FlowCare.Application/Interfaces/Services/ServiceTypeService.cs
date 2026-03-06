@@ -1,6 +1,5 @@
 ﻿using FlowCare.Application.Features.ServiceType.DTOs;
 using FlowCare.Application.Interfaces.Persistence;
-using FlowCare.Domain.Entities;
 
 namespace FlowCare.Application.Interfaces.Services;
 
