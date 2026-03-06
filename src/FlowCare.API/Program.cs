@@ -4,6 +4,7 @@ using FlowCare.Application.Interfaces.Services;
 using FlowCare.Infrastructure.Persistence;
 using FlowCare.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,10 +26,17 @@ builder.Services.AddAuthentication("BasicAuth")
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
+builder.Services.AddScoped<BranchesService>();
+builder.Services.AddScoped<IBranchesRepository, BranchesRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddAuthorization(options =>
 {
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+
+
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("ADMIN"));
     options.AddPolicy("ManagerOrAbove",policy=> policy.RequireRole("ADMIN","BRANCH_MANAGER"));
     options.AddPolicy("StaffOrAbove", policy=> policy.RequireRole("ADMIN", "BRANCH_MANAGER", "STAFF"));
@@ -57,10 +65,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapControllers();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 
 
 app.Run();

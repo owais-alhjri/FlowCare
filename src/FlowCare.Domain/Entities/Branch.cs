@@ -31,7 +31,7 @@ public class Branch
         {
             throw new ArgumentException("Invalid ID");
         }
-        if (string.IsNullOrWhiteSpace(name) || name.Length < 6 || name.Length > 100)
+        if (string.IsNullOrWhiteSpace(name) || name.Length < 3 || name.Length > 100)
         {
             throw new ArgumentException("Invalid name");
         }
