@@ -1,4 +1,4 @@
-﻿using FlowCare.Application.Features.Slots.DTOs;
+﻿using FlowCare.Application.Features.Slot.DTOs;
 using FlowCare.Application.Interfaces.Persistence;
 
 namespace FlowCare.Application.Interfaces.Services;

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowCare.Infrastructure.Repositories;
 
-public class UserRepository(FlowCareDbContext flowCareDb) : IUserRepository
+public class CustomerRepository(FlowCareDbContext flowCareDb) : ICustomerRepository
 {
 
     public async Task Register(User user)

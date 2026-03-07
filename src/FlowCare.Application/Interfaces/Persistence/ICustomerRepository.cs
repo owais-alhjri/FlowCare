@@ -2,7 +2,7 @@
 
 namespace FlowCare.Application.Interfaces.Persistence;
 
-public interface IUserRepository
+public interface ICustomerRepository
 {
     Task Register(User user);
     Task SaveChangesAsync();

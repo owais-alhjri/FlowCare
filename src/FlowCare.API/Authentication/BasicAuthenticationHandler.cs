@@ -8,18 +8,13 @@ using Microsoft.Extensions.Options;
 
 namespace FlowCare.API.Authentication;
 
-public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+public class BasicAuthenticationHandler(
+    IOptionsMonitor<AuthenticationSchemeOptions> options,
+    ILoggerFactory logger,
+    UrlEncoder encoder,
+    ICustomerService userService
+    ) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
-    private readonly IUserService _userService;
-    public BasicAuthenticationHandler(
-        IOptionsMonitor<AuthenticationSchemeOptions> options,
-        ILoggerFactory logger,
-        UrlEncoder encoder,
-        IUserService userService)
-        : base(options, logger, encoder)
-    {
-        _userService = userService;
-    }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
@@ -42,7 +37,7 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
             var identifier = credentials[0];
             var password = credentials[1];
 
-            var user = await _userService.Login(identifier, password);
+            var user = await userService.Login(identifier, password);
             if (user is null)
             {
                 return AuthenticateResult.Fail("Invalid email or password");

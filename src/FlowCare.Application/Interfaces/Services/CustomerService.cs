@@ -7,7 +7,7 @@ using FlowCare.Domain.Enums;
 
 namespace FlowCare.Application.Interfaces.Services;
 
-public class UserService(IPasswordHasher passwordHasher, IUserRepository userRepository) : IUserService
+public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository userRepository) : ICustomerService
 {
 
     public async Task<User> Register(CustomerRegisterDto userDto )

@@ -6,13 +6,35 @@ using FlowCare.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("BasicAuth",new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "basic",
+        Description = "Enter your name and password"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "BasicAuth"
+                }
+            },[]
+        }
+    });
+});
 
 
 
@@ -23,8 +45,8 @@ builder.Services.AddDbContext<FlowCareDbContext>(options =>
 builder.Services.AddAuthentication("BasicAuth")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuth", null);
 
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 builder.Services.AddScoped<BranchesService>();
 builder.Services.AddScoped<IBranchesRepository, BranchesRepository>();
@@ -32,6 +54,7 @@ builder.Services.AddScoped<IServicesTypeRepository, ServicesTypeRepository>();
 builder.Services.AddScoped<ServiceTypeService>();
 builder.Services.AddScoped<ISlotsRepository, SlotRepository>();
 builder.Services.AddScoped<SlotService>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddAuthorization(options =>
