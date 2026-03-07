@@ -56,9 +56,9 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
         await appointmentRepository.SaveChangesAsync();
     }
 
-    public async Task<List<AppointmentResponseDto>> AppointmentById(string customerId)
+    public async Task<List<AppointmentResponseDto>> AppointmentById(string userId)
     {
-        var appointmentList = await appointmentRepository.AppointmentList(customerId);
+        var appointmentList = await appointmentRepository.AppointmentList(userId);
         return appointmentList.Select(s=> new AppointmentResponseDto
         {
             Id = s.Id,

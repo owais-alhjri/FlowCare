@@ -29,9 +29,9 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
             .AnyAsync(a => a.SlotId == slotId && a.Status != Status.CANCELLED);
     }
 
-    public async Task<List<Appointment>> AppointmentList(string customerId)
+    public async Task<List<Appointment>> AppointmentList(string userId)
     {
-        return await dbContext.Appointments.Where(c => c.CustomerId == customerId).AsNoTracking().ToListAsync();
+        return await dbContext.Appointments.Where(c => c.CustomerId == userId || c.StaffId == userId).AsNoTracking().ToListAsync();
     }
 
     public async Task<Appointment?> FetchById(string appointmentId)

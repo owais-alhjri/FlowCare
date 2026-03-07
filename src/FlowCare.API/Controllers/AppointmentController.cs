@@ -26,7 +26,7 @@ namespace FlowCare.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "CUSTOMER")]
+        [Authorize(Policy = "AnyAuthenticatedUser")]
         public async Task<ActionResult> AppointmentById()
         {
             var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
