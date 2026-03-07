@@ -1,4 +1,4 @@
-﻿using FlowCare.Application.Features.User.DTOs;
+﻿using FlowCare.Application.Features.User.Customer.DTOs;
 using FlowCare.Domain.Entities;
 
 namespace FlowCare.Application.Interfaces.Persistence;

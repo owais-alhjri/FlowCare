@@ -1,12 +1,13 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using FlowCare.Application.Interfaces.Persistence;
 using FlowCare.Domain.Entities;
 using FlowCare.Infrastructure.Persistence.SeedDtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlowCare.Infrastructure.Persistence;
 
-public class DataSeeder(FlowCareDbContext db)
+public class DataSeeder(FlowCareDbContext db, IPasswordHasher passwordHasher)
 {
     public async Task SeedAsync()
     {
@@ -30,8 +31,9 @@ public class DataSeeder(FlowCareDbContext db)
             .Concat(seedData.Users.Customers ?? [])
             .ToList();
 
+
         await SeedEntitiesAsync(db.Users, allUserDtos,
-            u => new User(u.Id, u.UserName, u.Password, u.UserRole, u.FullName, u.Email, u.Phone, u.BranchId, u.IsActive));
+            u => new User(u.Id, u.UserName, passwordHasher.Hash(u.Password), u.UserRole, u.FullName, u.Email, u.Phone, u.BranchId, u.IsActive));
 
         await SeedEntitiesAsync(db.Branches, seedData.Branches,
             b => new Branch(b.Id, b.Name, b.City, b.Address, b.Timezone, b.IsActive));

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using FlowCare.Domain.Enums;
 
-namespace FlowCare.Application.Features.User.DTOs;
+namespace FlowCare.Application.Features.User.Customer.DTOs;
 
 public class CustomerRegisterDto
 {
