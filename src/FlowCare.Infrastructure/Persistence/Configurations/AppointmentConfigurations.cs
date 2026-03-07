@@ -29,10 +29,10 @@ public class AppointmentConfigurations: IEntityTypeConfiguration<Appointment>
             .IsRequired()
             .HasMaxLength(100);
         builder.Property(a => a.Status)
-            .IsRequired();
+            .IsRequired()
+            .HasConversion<string>();
         builder.Property(a => a.CreatedAt)
             .IsRequired();
-
         builder.HasOne<Branch>()
             .WithMany()
             .HasForeignKey(a => a.BranchId)

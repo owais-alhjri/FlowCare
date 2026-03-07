@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using FlowCare.API.Authentication;
 using FlowCare.Application.Interfaces.Persistence;
 using FlowCare.Application.Interfaces.Services;
@@ -74,6 +75,11 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddScoped<DataSeeder>();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 var app = builder.Build();
 

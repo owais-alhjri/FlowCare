@@ -9,10 +9,10 @@ namespace FlowCare.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "CUSTOMER")]
     public class AppointmentController(AppointmentService appointmentService) : ControllerBase
     {
         [HttpPost]
+        [Authorize(Roles = "CUSTOMER")]
         public async Task<ActionResult> BookAppointment(BookAppointmentDto bookAppointmentDto)
         {
             var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -23,6 +23,21 @@ namespace FlowCare.API.Controllers
             await appointmentService.BookAppointment(bookAppointmentDto, customerId);
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "CUSTOMER")]
+        public async Task<ActionResult> AppointmentById()
+        {
+            var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (customerId is null)
+            {
+                return Unauthorized();
+            }
+
+            var appointmentById = await appointmentService.AppointmentById(customerId);
+
+            return Ok(appointmentById);
         }
     }
 }

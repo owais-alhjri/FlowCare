@@ -28,4 +28,9 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
         return await dbContext.Appointments
             .AnyAsync(a => a.SlotId == slotId && a.Status != Status.CANCELLED);
     }
+
+    public async Task<List<Appointment>> AppointmentList(string customerId)
+    {
+        return await dbContext.Appointments.Where(c => c.CustomerId == customerId).AsNoTracking().ToListAsync();
+    }
 }

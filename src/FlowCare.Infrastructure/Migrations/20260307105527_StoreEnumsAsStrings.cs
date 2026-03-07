@@ -17,6 +17,14 @@ namespace FlowCare.Infrastructure.Migrations
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "integer");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Status",
+                table: "Appointments",
+                type: "text",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "integer");
         }
 
         /// <inheritdoc />
@@ -25,6 +33,14 @@ namespace FlowCare.Infrastructure.Migrations
             migrationBuilder.AlterColumn<int>(
                 name: "UserRole",
                 table: "Users",
+                type: "integer",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "text");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Status",
+                table: "Appointments",
                 type: "integer",
                 nullable: false,
                 oldClrType: typeof(string),

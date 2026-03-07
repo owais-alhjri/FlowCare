@@ -8,4 +8,5 @@ public interface IAppointmentRepository
     Task<Appointment?> FetchLastId();
     Task SaveChangesAsync();
     Task<bool> IsSlotBooked(string slotId);
+    Task<List<Appointment>> AppointmentList(string customerId);
 }
