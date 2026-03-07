@@ -33,4 +33,9 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
     {
         return await dbContext.Appointments.Where(c => c.CustomerId == customerId).AsNoTracking().ToListAsync();
     }
+
+    public async Task<Appointment?> FetchById(string appointmentId)
+    {
+        return await dbContext.Appointments.FindAsync(appointmentId);
+    }
 }

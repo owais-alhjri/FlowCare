@@ -39,5 +39,52 @@ namespace FlowCare.API.Controllers
 
             return Ok(appointmentById);
         }
+
+        [HttpGet("{appointmentId}")]
+        [Authorize(Roles = "CUSTOMER")]
+        public async Task<ActionResult> AppointmentDetails(string appointmentId)
+        {
+            var appointment = await appointmentService.AppointmentDetails(appointmentId);
+
+            return Ok(appointment);
+        }
+
+        [HttpPatch("{appointmentId}")]
+        [Authorize(Roles = "CUSTOMER")]
+        public async Task<ActionResult> CancelAppointment(string appointmentId)
+        {
+            var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (customerId is null)
+            {
+                return Unauthorized();
+            }
+            var appointmentIdChecker = await appointmentService.AppointmentDetails(appointmentId)
+                                       ?? throw new ArgumentException("Appointment no found");
+
+            if (customerId != appointmentIdChecker.CustomerId)
+            {
+                return Unauthorized();
+            }
+            var appointment = await appointmentService.CancelAppointment(appointmentId);
+
+
+            return Ok(appointment);
+        }
+
+        [HttpPatch("{appointmentId}/reschedule")]
+        [Authorize(Roles = "CUSTOMER")]
+        public async Task<ActionResult> RescheduleAppointment(string appointmentId, [FromBody] string slotId)
+        {
+            var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var appointmentIdChecker = await appointmentService.AppointmentDetails(appointmentId)
+                                       ?? throw new ArgumentException("Appointment no found");
+            if (customerId != appointmentIdChecker.CustomerId)
+            {
+                return Unauthorized();
+            }
+            var appointment = await appointmentService.Reschedule(appointmentId, slotId);
+
+            return Ok(appointment);
+        }
     }
 }

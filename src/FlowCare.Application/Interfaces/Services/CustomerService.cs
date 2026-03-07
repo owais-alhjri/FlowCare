@@ -30,7 +30,7 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
             throw new ArgumentException("Username already exist");
         }
 
-        var customerIdPiss = "user_cust_";
+        var customerIdPiss = "usr_cust_";
         var lastUser = await customerRepository.FetchLastId();
 
         string fullId;

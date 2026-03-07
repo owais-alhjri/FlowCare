@@ -56,10 +56,10 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
         await appointmentRepository.SaveChangesAsync();
     }
 
-    public async Task<List<MyAppointmentListDto>> AppointmentById(string customerId)
+    public async Task<List<AppointmentResponseDto>> AppointmentById(string customerId)
     {
         var appointmentList = await appointmentRepository.AppointmentList(customerId);
-        return appointmentList.Select(s=> new MyAppointmentListDto
+        return appointmentList.Select(s=> new AppointmentResponseDto
         {
             Id = s.Id,
             BranchId = s.BranchId,
@@ -71,4 +71,51 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
             CreatedAt = s.CreatedAt
         }).ToList();
     }
+
+    public async Task<AppointmentResponseDto?> AppointmentDetails(string appointmentId)
+    {
+        var appointment = await appointmentRepository.FetchById(appointmentId) ?? throw new ArgumentException("Appointment is not available");
+
+        return new AppointmentResponseDto
+        {
+            Id = appointment.Id,
+            BranchId = appointment.BranchId,
+            CustomerId = appointment.CustomerId,
+            ServiceTypeId = appointment.ServiceTypeId,
+            SlotId = appointment.SlotId,
+            StaffId = appointment.StaffId,
+            Status = appointment.Status,
+            CreatedAt = appointment.CreatedAt
+        };
+    }
+
+    public async Task<CancelAppointmentDto> CancelAppointment(string appointmentId)
+    {
+        var appointment = await appointmentRepository.FetchById(appointmentId)?? throw new ArgumentException("Appointment is not available");
+
+        appointment.CanceledAppointment();
+        await appointmentRepository.SaveChangesAsync();
+        return new CancelAppointmentDto
+        {
+            Id = appointment.Id,
+            Status = appointment.Status,
+            CreatedAt = appointment.CreatedAt,
+        };
+    }
+
+    public async Task<RescheduleAppointmenDto> Reschedule(string appointmentId, string slotId)
+    {
+        var appointment = await appointmentRepository.FetchById(appointmentId) ?? throw new ArgumentException("Appointment is not available");
+
+        appointment.RescheduleAppointmentSlot(appointment.SlotId, slotId);
+        await appointmentRepository.SaveChangesAsync();
+        return new RescheduleAppointmenDto
+        {
+            Id = appointment.Id,
+            SlotId = slotId,
+            Status = appointment.Status,
+            CreatedAt = appointment.CreatedAt,
+        };
+    }
+
 }

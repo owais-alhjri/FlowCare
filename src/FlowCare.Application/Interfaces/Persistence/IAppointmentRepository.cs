@@ -9,4 +9,5 @@ public interface IAppointmentRepository
     Task SaveChangesAsync();
     Task<bool> IsSlotBooked(string slotId);
     Task<List<Appointment>> AppointmentList(string customerId);
+    Task<Appointment?> FetchById(string appointmentId);
 }

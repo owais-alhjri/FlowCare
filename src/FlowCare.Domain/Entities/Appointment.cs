@@ -89,4 +89,26 @@ public class Appointment
 
     }
 
+    public void CanceledAppointment()
+    {
+        if (Status == Status.CANCELLED)
+        {
+            throw new ArgumentException("Status is already canceled");
+        }
+
+        Status = Status.CANCELLED;
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
+    public void RescheduleAppointmentSlot(string currentSlotId, string newSlotId)
+    {
+        if (currentSlotId == newSlotId)
+        {
+            throw new ArgumentException("You can not change the slot to the same one");
+        }
+
+        Status = Status.RESCHEDULE;
+        SlotId = newSlotId;
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
+
 }
