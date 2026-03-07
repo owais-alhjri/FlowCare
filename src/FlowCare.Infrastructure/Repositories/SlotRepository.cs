@@ -18,4 +18,9 @@ public class SlotRepository(FlowCareDbContext dbContext): ISlotsRepository
 
         return await query.AsNoTracking().ToListAsync();
     }
+
+    public async Task<Slot?> FindSlot(string slotId)
+    {
+        return await dbContext.Slots.Include(s=>s.Staff).FirstOrDefaultAsync(s=>s.Id == slotId);
+    }
 }

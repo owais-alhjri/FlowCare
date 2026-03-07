@@ -1,8 +1,31 @@
 ﻿using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Domain.Entities;
+using FlowCare.Domain.Enums;
+using FlowCare.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlowCare.Infrastructure.Repositories;
 
-public class AppointmentRepository : IAppointmentRepository
+public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRepository
 {
-    
+    public async Task CreateAppointment(Appointment appointment)
+    {
+         await dbContext.Appointments.AddAsync(appointment);
+    }
+
+    public async Task<Appointment?> FetchLastId()
+    {
+        return await dbContext.Appointments.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<bool> IsSlotBooked(string slotId)
+    {
+        return await dbContext.Appointments
+            .AnyAsync(a => a.SlotId == slotId && a.Status != Status.CANCELLED);
+    }
 }

@@ -7,7 +7,7 @@ using FlowCare.Domain.Enums;
 
 namespace FlowCare.Application.Interfaces.Services;
 
-public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository userRepository) : ICustomerService
+public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository customerRepository) : ICustomerService
 {
 
     public async Task<User> Register(CustomerRegisterDto userDto )
@@ -20,18 +20,18 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
             throw new ArgumentException("Invalid password");
 
 
-        if (await userRepository.ExistsEmailAsync(userDto.Email) != null)
+        if (await customerRepository.ExistsEmailAsync(userDto.Email) != null)
         {
             throw new ArgumentException("Email already exist");
         } 
         
-        if (await userRepository.ExistsUsernameAsync(userDto.UserName) != null)
+        if (await customerRepository.ExistsUsernameAsync(userDto.UserName) != null)
         {
             throw new ArgumentException("Username already exist");
         }
 
         var customerIdPiss = "user_cust_";
-        var lastUser = await userRepository.FetchLastId();
+        var lastUser = await customerRepository.FetchLastId();
 
         string fullId;
         if (lastUser is null)
@@ -52,8 +52,8 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
         var user = new User(fullId, userDto.UserName, hash, UserRole.CUSTOMER,
             userDto.FullName, userDto.Email, userDto.Phone,null, isActive:true);
 
-        await userRepository.Register(user);
-        await userRepository.SaveChangesAsync();
+        await customerRepository.Register(user);
+        await customerRepository.SaveChangesAsync();
 
         return user;
 
@@ -61,7 +61,7 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
 
     public async Task<User?> Login(string identifier, string password)
     {
-        var user = await userRepository.ExistsUsernameAsync(identifier) ?? await userRepository.ExistsEmailAsync(identifier);
+        var user = await customerRepository.ExistsUsernameAsync(identifier) ?? await customerRepository.ExistsEmailAsync(identifier);
 
         if (user == null )
         {

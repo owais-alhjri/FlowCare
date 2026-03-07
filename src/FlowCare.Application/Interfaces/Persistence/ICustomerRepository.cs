@@ -9,6 +9,7 @@ public interface ICustomerRepository
     Task<User?> ExistsEmailAsync(string email);
     Task<User?> ExistsUsernameAsync(string username);
     Task<User?> ExistIdAsync(string id);
+    Task<User?> ExistsByStaffId(string staffId);
 
     Task<User?> FetchLastId();
 

@@ -1,5 +1,6 @@
 ﻿using FlowCare.Application.Interfaces.Persistence;
 using FlowCare.Domain.Entities;
+using FlowCare.Domain.Enums;
 using FlowCare.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,11 @@ public class CustomerRepository(FlowCareDbContext flowCareDb) : ICustomerReposit
     public async Task<User?> ExistsUsernameAsync(string username)
     { 
         return await flowCareDb.Users.FirstOrDefaultAsync(x => x.UserName == username);
+    }
+
+    public async Task<User?> ExistsByStaffId(string staffId)
+    {
+        return await flowCareDb.Users.FirstOrDefaultAsync(x => x.Id == staffId);
     }
 
     public async Task<User?> FetchLastId()

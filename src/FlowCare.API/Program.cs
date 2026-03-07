@@ -55,6 +55,7 @@ builder.Services.AddScoped<ServiceTypeService>();
 builder.Services.AddScoped<ISlotsRepository, SlotRepository>();
 builder.Services.AddScoped<SlotService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<AppointmentService>();
 
 builder.Services.AddControllers();
 builder.Services.AddAuthorization(options =>
