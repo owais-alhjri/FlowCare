@@ -45,8 +45,25 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
             .ToListAsync();
     }
 
-    public async Task<Appointment?> FetchById(string appointmentId)
+    public async Task<Appointment?> FetchByAppointmentId(string appointmentId)
     {
         return await dbContext.Appointments.FindAsync(appointmentId);
+    }
+
+    public async Task<Appointment?> FetchByAppointmentIdAndRules(string appointmentId, string userId)
+    {
+        var user = await dbContext.Users.FindAsync(userId);
+        var isAdmin = user.UserRole == UserRole.ADMIN;
+        var isManager = user.UserRole == UserRole.BRANCH_MANAGER;
+
+        return await dbContext.Appointments
+            .Where(c => c.Id == appointmentId && (
+                c.StaffId == userId ||
+                isAdmin ||
+                (isManager && c.BranchId == user.BranchId)
+            ))
+            .Include(c => c.Customer)
+            .Include(c => c.Staff)        
+            .FirstOrDefaultAsync();
     }
 }

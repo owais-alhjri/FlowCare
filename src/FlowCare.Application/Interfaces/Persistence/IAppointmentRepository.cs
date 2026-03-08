@@ -9,5 +9,6 @@ public interface IAppointmentRepository
     Task SaveChangesAsync();
     Task<bool> IsSlotBooked(string slotId);
     Task<List<Appointment>> AppointmentList(string userId);
-    Task<Appointment?> FetchById(string appointmentId);
+    Task<Appointment?> FetchByAppointmentId(string appointmentId);
+    Task<Appointment?> FetchByAppointmentIdAndRules(string appointmentId, string userId);
 }

@@ -111,4 +111,27 @@ public class Appointment
         CreatedAt = DateTimeOffset.UtcNow;
     }
 
+    public void UpdateAppointmentStatus(string status, string newStatus)
+    {
+        if (status == newStatus)
+        {
+            throw new ArgumentException("You can not change the slot to the same one");
+        }
+
+        if (newStatus == "COMPLETED")
+        {
+            Status = Status.COMPLETED;
+        }
+        if (newStatus == "NO_SHOW")
+        {
+            Status = Status.NO_SHOW;
+        }
+        if (newStatus == "CHECKED_IN")
+        {
+            Status = Status.CHECKED_IN;
+        }
+
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
+
 }

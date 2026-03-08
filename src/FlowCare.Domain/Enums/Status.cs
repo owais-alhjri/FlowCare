@@ -6,6 +6,6 @@ public enum Status
     COMPLETED,
     CANCELLED,
     NO_SHOW,
-    CHECHED_IN,
+    CHECKED_IN,
     RESCHEDULE
 }

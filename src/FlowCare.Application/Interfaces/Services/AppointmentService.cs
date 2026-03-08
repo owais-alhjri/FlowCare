@@ -7,6 +7,7 @@ namespace FlowCare.Application.Interfaces.Services;
 
 public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRepository appointmentRepository, ICustomerRepository customerRepository)
 {
+    // for the customer to book appointment
     public async Task BookAppointment(BookAppointmentDto bookAppointmentDto, string customerId)
     {
 
@@ -56,6 +57,13 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
         await appointmentRepository.SaveChangesAsync();
     }
 
+
+
+    // this will list the appointment based on the user role
+    // Admin → all branches
+    // Manager → his branch only
+    // Staff → assigned to him only
+    // customer → his own appointment only
     public async Task<List<AppointmentResponseDto>> AppointmentById(string userId)
     {
         var appointmentList = await appointmentRepository.AppointmentList(userId);
@@ -72,9 +80,10 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
         }).ToList();
     }
 
+    // this is for customer to check appointment details 
     public async Task<AppointmentResponseDto?> AppointmentDetails(string appointmentId)
     {
-        var appointment = await appointmentRepository.FetchById(appointmentId) ?? throw new ArgumentException("Appointment is not available");
+        var appointment = await appointmentRepository.FetchByAppointmentId(appointmentId) ?? throw new ArgumentException("Appointment is not available");
 
         return new AppointmentResponseDto
         {
@@ -88,10 +97,10 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
             CreatedAt = appointment.CreatedAt
         };
     }
-
+    // this is for customer to cancel appointment
     public async Task<CancelAppointmentDto> CancelAppointment(string appointmentId)
     {
-        var appointment = await appointmentRepository.FetchById(appointmentId)?? throw new ArgumentException("Appointment is not available");
+        var appointment = await appointmentRepository.FetchByAppointmentId(appointmentId)?? throw new ArgumentException("Appointment is not available");
 
         appointment.CanceledAppointment();
         await appointmentRepository.SaveChangesAsync();
@@ -103,9 +112,10 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
         };
     }
 
+    // this is for customer to reschedule appointment
     public async Task<RescheduleAppointmenDto> Reschedule(string appointmentId, string slotId)
     {
-        var appointment = await appointmentRepository.FetchById(appointmentId) ?? throw new ArgumentException("Appointment is not available");
+        var appointment = await appointmentRepository.FetchByAppointmentId(appointmentId) ?? throw new ArgumentException("Appointment is not available");
 
         appointment.RescheduleAppointmentSlot(appointment.SlotId, slotId);
         await appointmentRepository.SaveChangesAsync();
@@ -113,6 +123,22 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
         {
             Id = appointment.Id,
             SlotId = slotId,
+            Status = appointment.Status,
+            CreatedAt = appointment.CreatedAt,
+        };
+    }
+    // Update appointment status (checked-in, no-show, completed)
+    public async Task<CancelAppointmentDto> UpdateAppointmentStatus(string appointmentId, string userId, string state )
+    {
+        var appointment = await appointmentRepository.FetchByAppointmentIdAndRules(appointmentId,userId)
+                          ?? throw new ArgumentException("Appointment is not available");
+
+        appointment.UpdateAppointmentStatus(appointment.Status.ToString(),state);
+
+        await appointmentRepository.SaveChangesAsync();
+        return new CancelAppointmentDto
+        {
+            Id = appointment.Id,
             Status = appointment.Status,
             CreatedAt = appointment.CreatedAt,
         };
