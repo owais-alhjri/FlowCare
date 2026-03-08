@@ -31,7 +31,18 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
 
     public async Task<List<Appointment>> AppointmentList(string userId)
     {
-        return await dbContext.Appointments.Where(c => c.CustomerId == userId || c.StaffId == userId).AsNoTracking().ToListAsync();
+        var user = await dbContext.Users.FindAsync(userId);
+
+        var isAdmin = user.UserRole == UserRole.ADMIN;
+        var isManager = user.UserRole == UserRole.BRANCH_MANAGER;
+
+
+        return await dbContext.Appointments.Where(c => c.CustomerId == userId ||
+                                                       c.StaffId == userId ||  isAdmin || (isManager && c.BranchId == user.BranchId ) ).
+            Include(c=>c.Customer)
+            .Include(c=>c.Staff)
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<Appointment?> FetchById(string appointmentId)
