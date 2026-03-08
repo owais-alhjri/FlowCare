@@ -99,15 +99,15 @@ namespace FlowCare.API.Controllers
         [Authorize(Policy = "StaffOrAbove")]
         public async Task<ActionResult> UpdateAppointmentStatus(string appointmentId, [FromBody] string status )
         {
-            var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (customerId is null)
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId is null)
             {
                 return Unauthorized();
             }
 
 
 
-            var appointment = await appointmentService.UpdateAppointmentStatus(appointmentId, customerId, status);
+            var appointment = await appointmentService.UpdateAppointmentStatus(appointmentId, userId, status);
 
 
             return Ok(appointment);

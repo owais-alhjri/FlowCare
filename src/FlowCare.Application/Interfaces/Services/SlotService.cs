@@ -1,9 +1,10 @@
 ﻿using FlowCare.Application.Features.Slot.DTOs;
 using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Domain.Entities;
 
 namespace FlowCare.Application.Interfaces.Services;
 
-public class SlotService(ISlotsRepository slotsRepository)
+public class SlotService(ISlotsRepository slotsRepository, IBranchesRepository branchesRepository, ICustomerRepository customerRepository, IServicesTypeRepository servicesTypeRepository)
 {
     public async Task<List<FetchSlotDto>> FetchSlotByBranchAndServiceType(string branchId, string serviceTypeId, DateTime? date)
     {
@@ -20,5 +21,75 @@ public class SlotService(ISlotsRepository slotsRepository)
             StaffId = s.StaffId,
             StartedAt = s.StartedAt,
         }).ToList();
+    }
+
+    public async Task<ResponseSlotDto> CreateSlot(CreateSlotDto createSlotDto)
+    {
+        var serviceType = await servicesTypeRepository.ExistIdAsync(createSlotDto.ServiceTypeId)
+                          ?? throw new ArgumentException("Service Type not available");
+
+        var branchId = serviceType.BranchId;
+        var branch = await branchesRepository.FindById(branchId);
+        var branchLocation = branch.City.Substring(0,3).ToLower();
+        var slotIdPiss = $"slot_{branchLocation}_";
+        var lastUser = await slotsRepository.FetchLastId();
+
+        string fullId;
+        if (lastUser is null)
+        {
+            fullId = slotIdPiss + "001";
+        }
+        else
+        {
+            var lasIdString = lastUser.Id.Substring(slotIdPiss.Length);
+
+            var lastNumber = int.Parse(lasIdString);
+            var nextNumber = lastNumber + 1;
+
+            fullId = slotIdPiss + nextNumber.ToString("D3");
+        }
+        var staff = await customerRepository.ExistsByStaffId(createSlotDto.StaffId)
+                    ?? throw new ArgumentException("Staff is not available");
+
+
+        var slot = new Slot(fullId, serviceType.BranchId, serviceType.Id
+            , staff, createSlotDto.StartedAt.ToUniversalTime(), serviceType.DurationMinutes, createSlotDto.Capacity, createSlotDto.IsActive);
+
+        await slotsRepository.CreateSlot(slot);
+        await slotsRepository.SaveChangesAsync();
+
+        return new ResponseSlotDto
+        {
+            Id = slot.Id,
+            BranchId = slot.BranchId,
+            ServiceTypeId = slot.ServiceTypeId,
+            StaffId = slot.StaffId,
+            StartedAt = slot.StartedAt,
+            EndAt = slot.EndAt,
+            Capacity = slot.Capacity,
+            IsActive = slot.IsActive
+        };
+    }
+
+    public async Task<ResponseSlotDto> UpdateSlot(string slotId,string userId, UpdateSlotDto updateSlotDto)
+    {
+        var slot = await slotsRepository.FetchBySlotId(slotId, userId) ?? throw new ArgumentException("Slot not found or you don't have permission to update it");
+        var startedAt = updateSlotDto.StartedAt.HasValue ? updateSlotDto.StartedAt.Value.ToUniversalTime()
+            : slot.StartedAt;
+        slot.UpdateSlot(updateSlotDto.StaffId, updateSlotDto.ServiceTypeId,
+            updateSlotDto.BranchId, updateSlotDto.Capacity, startedAt, updateSlotDto.IsActive);
+        await slotsRepository.SaveChangesAsync();
+
+        return new ResponseSlotDto
+        {
+            Id = slot.Id,
+            BranchId = slot.BranchId,
+            ServiceTypeId = slot.ServiceTypeId,
+            StaffId = slot.StaffId,
+            StartedAt = slot.StartedAt,
+            EndAt = slot.EndAt,
+            Capacity = slot.Capacity,
+            IsActive = slot.IsActive
+        };
     }
 }

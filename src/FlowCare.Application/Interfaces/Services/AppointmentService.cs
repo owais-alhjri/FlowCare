@@ -49,10 +49,10 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
 
         var customer = await customerRepository.ExistIdAsync(customerId)
                        ?? throw new ArgumentException("Customer not found");
-
         var appointment = new Appointment(fullId, customer, staff, slot.BranchId, slot.ServiceTypeId,slotId, Status.BOOKED,
             DateTimeOffset.UtcNow);
 
+        slot.ChangeActive(slot.IsActive);
         await appointmentRepository.CreateAppointment(appointment);
         await appointmentRepository.SaveChangesAsync();
     }
@@ -97,14 +97,15 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
             CreatedAt = appointment.CreatedAt
         };
     }
+
     // this is for customer to cancel appointment
-    public async Task<CancelAppointmentDto> CancelAppointment(string appointmentId)
+    public async Task<UpdateStatusOfAppointmentDto> CancelAppointment(string appointmentId)
     {
         var appointment = await appointmentRepository.FetchByAppointmentId(appointmentId)?? throw new ArgumentException("Appointment is not available");
 
         appointment.CanceledAppointment();
         await appointmentRepository.SaveChangesAsync();
-        return new CancelAppointmentDto
+        return new UpdateStatusOfAppointmentDto
         {
             Id = appointment.Id,
             Status = appointment.Status,
@@ -128,15 +129,20 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
         };
     }
     // Update appointment status (checked-in, no-show, completed)
-    public async Task<CancelAppointmentDto> UpdateAppointmentStatus(string appointmentId, string userId, string state )
+    public async Task<UpdateStatusOfAppointmentDto> UpdateAppointmentStatus(string appointmentId, string userId, string state )
     {
         var appointment = await appointmentRepository.FetchByAppointmentIdAndRules(appointmentId,userId)
                           ?? throw new ArgumentException("Appointment is not available");
+        var staff = await customerRepository.ExistsByStaffId(userId);
 
+        if (state == "BOOKED" || state == "RESCHEDULE" && userId == staff.Id)
+        {
+            throw new ArgumentException("Staff can not change status to BOOKED OR RESCHEDULE");
+        }
         appointment.UpdateAppointmentStatus(appointment.Status.ToString(),state);
 
         await appointmentRepository.SaveChangesAsync();
-        return new CancelAppointmentDto
+        return new UpdateStatusOfAppointmentDto
         {
             Id = appointment.Id,
             Status = appointment.Status,

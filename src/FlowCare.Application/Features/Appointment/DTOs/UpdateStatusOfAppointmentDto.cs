@@ -2,7 +2,7 @@
 
 namespace FlowCare.Application.Features.Appointment.DTOs;
 
-public class CancelAppointmentDto
+public class UpdateStatusOfAppointmentDto
 {
     public string Id { get; set; } = null!;
 

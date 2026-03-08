@@ -76,9 +76,32 @@ public class Slot
             throw new ArgumentException("Invalid capacity");
         }
 
-        if (startedAt <= DateTimeOffset.Now)
+        if (startedAt < DateTimeOffset.UtcNow)
         {
             throw new ArgumentException("Time must be in the future");
         }
+    }
+
+    public  void ChangeActive(bool isActive)
+    {
+        if (isActive == true)
+        {
+            IsActive = false;
+        }
+        else
+        {
+            IsActive = true;
+        }
+    }
+
+    public void UpdateSlot(string? staffId, string? serviceTypeId, string? branchId,
+        int? capacity, DateTimeOffset? startedAt, bool? isActive)
+    {
+        if (staffId is not null) StaffId = staffId;
+        if (serviceTypeId is not null) ServiceTypeId = serviceTypeId;
+        if (branchId is not null) BranchId = branchId;
+        if (capacity is not null) Capacity = capacity.Value;
+        if (startedAt is not null) StartedAt = startedAt.Value;
+        if (isActive is not null) IsActive = isActive.Value;
     }
 }

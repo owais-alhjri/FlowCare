@@ -13,4 +13,9 @@ public class BranchesRepository(FlowCareDbContext dbContext) : IBranchesReposito
         // Adding AsNoTracking will make the EF give the data without tracking it | it will make it faster
         return await dbContext.Branches.AsNoTracking().ToListAsync();
     }
+
+    public async Task<Branch?> FindById(string branchId)
+    {
+        return await dbContext.Branches.FindAsync(branchId);
+    }
 }
