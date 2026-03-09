@@ -75,4 +75,35 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
 
         return user;
     }
+
+    public async Task<List<CustomerResponseDto>> CustomerList()
+    {
+        var customers = await customerRepository.ListTheCustomers()?? throw new ArgumentException("Customer list is not available");
+
+        return customers.Select(c => new CustomerResponseDto
+        {
+            Id = c.Id,
+            Email = c.Email,
+            FullName = c.FullName,
+            Phone = c.Phone,
+            UserName = c.UserName,
+            UserRole = c.UserRole,
+            IsActive = c.IsActive
+        }).ToList();
+    }
+
+    public async Task<CustomerResponseDto> GetCustomerById(string customerId)
+    {
+        var customer = await customerRepository.ExistIdAsync(customerId) ?? throw new ArgumentException("Customer is not found");
+        return new CustomerResponseDto
+        {
+            Id = customer.Id,
+            Email = customer.Email,
+            FullName = customer.FullName,
+            Phone = customer.Phone,
+            UserName = customer.UserName,
+            UserRole = customer.UserRole,
+            IsActive = customer.IsActive
+        };
+    }
 }

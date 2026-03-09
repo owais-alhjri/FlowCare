@@ -18,5 +18,21 @@ namespace FlowCare.API.Controllers
             return Ok(newCustomer);
         }
 
+        [HttpGet]
+        [Authorize(Policy = "ManagerOrAbove")]
+        public async Task<ActionResult> CustomerList()
+        {
+            var customers = await customerService.CustomerList();
+            return Ok(customers);
+        }
+
+        [HttpGet("{customerId}")]
+        [Authorize(Policy = "ManagerOrAbove")]
+        public async Task<ActionResult> GetCustomerById(string customerId)
+        {
+            var customers = await customerService.GetCustomerById(customerId);
+            return Ok(customers);
+        }
+
     }
 }
