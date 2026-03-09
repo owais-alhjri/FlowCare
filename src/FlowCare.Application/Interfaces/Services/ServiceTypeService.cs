@@ -1,9 +1,10 @@
 ﻿using FlowCare.Application.Features.ServiceType.DTOs;
 using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Domain.Entities;
 
 namespace FlowCare.Application.Interfaces.Services;
 
-public class ServiceTypeService(IServicesTypeRepository servicesTypeRepository)
+public class ServiceTypeService(IServicesTypeRepository servicesTypeRepository )
 {
     public async Task<List<FetchServiceTypeDto>> FetchServiceByBranch(string branchId)
     {
@@ -20,4 +21,5 @@ public class ServiceTypeService(IServicesTypeRepository servicesTypeRepository)
 
         }).ToList();
     }
+
 }

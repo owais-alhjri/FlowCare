@@ -59,6 +59,9 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<AppointmentService>();
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<StaffService>();
+builder.Services.AddScoped<IStaffServiceTypeRepository, StaffServiceTypeRepository>();
+builder.Services.AddScoped<StaffServiceService>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddAuthorization(options =>
