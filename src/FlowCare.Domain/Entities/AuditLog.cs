@@ -22,7 +22,7 @@ public class AuditLog
     public User User { get; private set; }
 
     public AuditLog(string id,User user, string actionType,
-        string entityType, string entityId, DateTimeOffset timestamp, JsonDocument metadata)
+        string entityType, string entityId, JsonDocument metadata)
     {
         ValidateCommon(id, actionType, entityType, entityId);
         ValidateIdentity(user);
@@ -32,17 +32,18 @@ public class AuditLog
         ActionType = actionType;
         EntityType = entityType;
         EntityId = entityId;
-        Timestamp = DateTimeOffset.Now;
+        Timestamp = DateTimeOffset.UtcNow;
         Metadata = metadata;
         User = user;
     }
 
     private static void ValidateIdentity(User user)
     {
-        if (user.Id != user.UserRole.ToString())
-        {
-            throw new ArgumentException("User Id is not matching User role");
-        }
+        if (user == null)
+            throw new ArgumentException("User cannot be null");
+
+        if (string.IsNullOrWhiteSpace(user.Id))
+            throw new ArgumentException("User Id is invalid");
 
     }
 
