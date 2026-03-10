@@ -1,11 +1,13 @@
-﻿using FlowCare.Application.Features.Appointment.DTOs;
+﻿using System.Text.Json;
+using FlowCare.Application.Features.Appointment.DTOs;
+using FlowCare.Application.Features.AuditLog.DTOs;
 using FlowCare.Application.Interfaces.Persistence;
 using FlowCare.Domain.Entities;
 using FlowCare.Domain.Enums;
 
 namespace FlowCare.Application.Interfaces.Services;
 
-public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRepository appointmentRepository, ICustomerRepository customerRepository)
+public class AppointmentService(AuditLogService auditLogService, ISlotsRepository slotsRepository, IAppointmentRepository appointmentRepository, ICustomerRepository customerRepository)
 {
     // for the customer to book appointment
     public async Task BookAppointment(BookAppointmentDto bookAppointmentDto, string customerId)
@@ -55,6 +57,23 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
         slot.ChangeActive(slot.IsActive);
         await appointmentRepository.CreateAppointment(appointment);
         await appointmentRepository.SaveChangesAsync();
+        var log = new CreateAuditLogDto
+        {
+            ActorId = customer.Id,
+            ActorRole = customer.UserRole.ToString(),
+            ActionType = "APPOINTMENT_BOOKED",
+            EntityType = "APPOINTMENT",
+            EntityId = appointment.Id,
+            Metadata = JsonDocument.Parse(JsonSerializer.Serialize(new
+            {
+                slot_id = appointment.SlotId,
+                branch_id = appointment.BranchId,
+                service_type_id = appointment.ServiceTypeId
+                
+            }))
+
+        };
+        await auditLogService.AddLog(log);
     }
 
 
@@ -99,27 +118,64 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
     }
 
     // this is for customer to cancel appointment
-    public async Task<UpdateStatusOfAppointmentDto> CancelAppointment(string appointmentId)
+    public async Task<UpdateStatusOfAppointmentDto> CancelAppointment(string appointmentId, string customerId)
     {
         var appointment = await appointmentRepository.FetchByAppointmentId(appointmentId)?? throw new ArgumentException("Appointment is not available");
-
+        var customer = await customerRepository.ExistIdAsync(customerId) ?? throw new ArgumentException("Customer not found");
         appointment.CanceledAppointment();
         await appointmentRepository.SaveChangesAsync();
+
+        var log = new CreateAuditLogDto
+        {
+            ActorId = customer.Id,
+            ActorRole = customer.UserRole.ToString(),
+            ActionType = "APPOINTMENT_CANCELED",
+            EntityType = "APPOINTMENT",
+            EntityId = appointment.Id,
+            Metadata = JsonDocument.Parse(JsonSerializer.Serialize(new
+            {
+                slot_id = appointment.SlotId,
+                branch_id = appointment.BranchId,
+                service_type_id = appointment.ServiceTypeId
+
+            }))
+
+        };
+        await auditLogService.AddLog(log);
         return new UpdateStatusOfAppointmentDto
         {
             Id = appointment.Id,
             Status = appointment.Status,
             CreatedAt = appointment.CreatedAt,
         };
+
+
     }
 
     // this is for customer to reschedule appointment
-    public async Task<RescheduleAppointmenDto> Reschedule(string appointmentId, string slotId)
+    public async Task<RescheduleAppointmenDto> Reschedule(string appointmentId, string slotId, string customerId)
     {
         var appointment = await appointmentRepository.FetchByAppointmentId(appointmentId) ?? throw new ArgumentException("Appointment is not available");
-
+        var customer = await customerRepository.ExistIdAsync(customerId) ?? throw new ArgumentException("Customer not found");
         appointment.RescheduleAppointmentSlot(appointment.SlotId, slotId);
         await appointmentRepository.SaveChangesAsync();
+        var log = new CreateAuditLogDto
+        {
+            ActorId = customer.Id,
+            ActorRole = customer.UserRole.ToString(),
+            ActionType = "APPOINTMENT_RESCHEDULE",
+            EntityType = "APPOINTMENT",
+            EntityId = appointment.Id,
+            Metadata = JsonDocument.Parse(JsonSerializer.Serialize(new
+            {
+                slot_id = appointment.SlotId,
+                branch_id = appointment.BranchId,
+                service_type_id = appointment.ServiceTypeId
+
+            }))
+
+        };
+        await auditLogService.AddLog(log);
         return new RescheduleAppointmenDto
         {
             Id = appointment.Id,
@@ -133,7 +189,7 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
     {
         var appointment = await appointmentRepository.FetchByAppointmentIdAndRules(appointmentId,userId)
                           ?? throw new ArgumentException("Appointment is not available");
-        var staff = await customerRepository.ExistsByStaffId(userId);
+        var staff = await customerRepository.ExistsByStaffId(userId) ?? throw new ArgumentException("Staff not found");
 
         if (state == "BOOKED" || state == "RESCHEDULE" && userId == staff.Id)
         {
@@ -142,6 +198,25 @@ public class AppointmentService(ISlotsRepository slotsRepository, IAppointmentRe
         appointment.UpdateAppointmentStatus(appointment.Status.ToString(),state);
 
         await appointmentRepository.SaveChangesAsync();
+        var type = state.ToUpper();
+        var log = new CreateAuditLogDto
+        {
+            ActorId = staff.Id,
+            ActorRole = staff.UserRole.ToString(),
+            ActionType = "APPOINTMENT_" + type ,
+            EntityType = "APPOINTMENT",
+            EntityId = appointment.Id,
+            Metadata = JsonDocument.Parse(JsonSerializer.Serialize(new
+            {
+                slot_id = appointment.SlotId,
+                branch_id = appointment.BranchId,
+                service_type_id = appointment.ServiceTypeId
+
+            }))
+
+        };
+        await auditLogService.AddLog(log);
+
         return new UpdateStatusOfAppointmentDto
         {
             Id = appointment.Id,

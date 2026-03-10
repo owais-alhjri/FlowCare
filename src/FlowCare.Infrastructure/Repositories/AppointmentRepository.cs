@@ -31,7 +31,7 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
 
     public async Task<List<Appointment>> AppointmentList(string userId)
     {
-        var user = await dbContext.Users.FindAsync(userId);
+        var user = await dbContext.Users.FindAsync(userId) ?? throw new ArgumentException("User not found");
 
         var isAdmin = user.UserRole == UserRole.ADMIN;
         var isManager = user.UserRole == UserRole.BRANCH_MANAGER;
@@ -52,7 +52,7 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
 
     public async Task<Appointment?> FetchByAppointmentIdAndRules(string appointmentId, string userId)
     {
-        var user = await dbContext.Users.FindAsync(userId);
+        var user = await dbContext.Users.FindAsync(userId) ?? throw new ArgumentException("User not found");
         var isAdmin = user.UserRole == UserRole.ADMIN;
         var isManager = user.UserRole == UserRole.BRANCH_MANAGER;
 

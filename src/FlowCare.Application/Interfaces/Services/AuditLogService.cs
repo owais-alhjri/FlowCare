@@ -9,12 +9,32 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
 
     public async Task<AuditLogResponseDto> AddLog(CreateAuditLogDto dto)
     {
-        var user = await customerRepository.ExistIdAsync(dto.ActorId)?? throw new ArgumentException("User not found");
-        var logs = new AuditLog(dto.Id, user, dto.ActionType, dto.EntityType, dto.EntityId, dto.Metadata);
+
+        var logPiss = "aud_";
+        var lastLog = await auditLogRepository.FetchLastLog();
+
+        string fullId;
+        if (lastLog is null)
+        {
+            fullId = logPiss + "001";
+        }
+        else
+        {
+            var lasIdString = lastLog.Id.Substring(logPiss.Length);
+
+            var lastNumber = int.Parse(lasIdString);
+            var nextNumber = lastNumber + 1;
+
+            fullId = logPiss + nextNumber.ToString("D3");
+        }
+        var user = await customerRepository.ExistIdAsync(dto.ActorId) ?? throw new ArgumentException("User not found");
+        var logs = new AuditLog(fullId, user, dto.ActionType, dto.EntityType, dto.EntityId, dto.Metadata);
         var auditLog = await auditLogRepository.AddLog(logs);
+
+
         return new AuditLogResponseDto
         {
-            Id = auditLog.Id,
+            Id = fullId,
             ActionType = auditLog.ActionType,
             ActorId = auditLog.ActorId,
             ActorRole = auditLog.ActorRole,

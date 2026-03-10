@@ -61,6 +61,8 @@ builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<StaffService>();
 builder.Services.AddScoped<IStaffServiceTypeRepository, StaffServiceTypeRepository>();
 builder.Services.AddScoped<StaffServiceService>();
+builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+builder.Services.AddScoped<AuditLogService>();
 
 
 builder.Services.AddControllers();

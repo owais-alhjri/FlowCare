@@ -69,7 +69,7 @@ namespace FlowCare.API.Controllers
             {
                 return Unauthorized();
             }
-            var appointment = await appointmentService.CancelAppointment(appointmentId);
+            var appointment = await appointmentService.CancelAppointment(appointmentId, customerId);
 
 
             return Ok(appointment);
@@ -87,7 +87,7 @@ namespace FlowCare.API.Controllers
             {
                 return Unauthorized();
             }
-            var appointment = await appointmentService.Reschedule(appointmentId, slotId);
+            var appointment = await appointmentService.Reschedule(appointmentId, slotId, customerId);
 
             return Ok(appointment);
         }

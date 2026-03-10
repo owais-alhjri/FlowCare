@@ -5,7 +5,6 @@ namespace FlowCare.Application.Features.AuditLog.DTOs;
 
 public class CreateAuditLogDto
 {
-    public string Id { get; set; } = null!;
     public string ActorId { get;  set; } = null!;
     public string ActorRole { get;  set; } = null!;
     public string ActionType { get;  set; } = null!;
