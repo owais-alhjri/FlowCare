@@ -34,7 +34,7 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
 
         return new AuditLogResponseDto
         {
-            Id = fullId,
+            Id = auditLog.Id,
             ActionType = auditLog.ActionType,
             ActorId = auditLog.ActorId,
             ActorRole = auditLog.ActorRole,
@@ -43,5 +43,24 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
             Timestamp = auditLog.Timestamp,
             Metadata = auditLog.Metadata
         } ;
+    }
+
+    public async Task<List<AuditLogResponseDto>> ViewLogs(string userId)
+    {
+
+        var logs = await auditLogRepository.FetchLogs(userId);
+        
+
+        return logs.Select(c => new AuditLogResponseDto
+        {
+            Id = c.Id,
+            ActionType = c.ActionType,
+            ActorId = c.ActorId,
+            ActorRole = c.ActorRole,
+            EntityId = c.EntityId,
+            EntityType = c.EntityType,
+            Timestamp = c.Timestamp,
+            Metadata = c.Metadata
+        }).ToList();
     }
 }

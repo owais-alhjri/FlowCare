@@ -25,12 +25,22 @@ public class BasicAuthenticationHandler(
 
         try
         {
-            var header = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+            var authHeader = Request.Headers["Authorization"].ToString();
+            if (string.IsNullOrEmpty(authHeader))
+            {
+                return AuthenticateResult.Fail("Missing Authorization header");
+            }
+
+            var header = AuthenticationHeaderValue.Parse(authHeader);
             if (header.Scheme != "Basic")
             {
                 return AuthenticateResult.Fail("Invalid Scheme");
             }
 
+            if (header.Parameter is null)
+            {
+                return AuthenticateResult.Fail("Missing credentials");
+            }
             var credentialBytes = Convert.FromBase64String(header.Parameter);
             var credentials = Encoding.UTF8.GetString(credentialBytes).Split(':', 2);
 

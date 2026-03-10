@@ -8,6 +8,10 @@ public class StaffService(IStaffRepository staffRepository)
     public async Task<List<StaffResponseDto>> FetchStaffList(string userId)
     {
         var listOfStaff = await staffRepository.FetchStaff(userId);
+        if (listOfStaff is null)
+        {
+            throw new ArgumentException("Staff list not available");
+        }
 
         return listOfStaff.Select(s=> new StaffResponseDto
             {

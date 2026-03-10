@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using FlowCare.Application.Features.Appointment.DTOs;
-using FlowCare.Application.Interfaces.Persistence;
 using FlowCare.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

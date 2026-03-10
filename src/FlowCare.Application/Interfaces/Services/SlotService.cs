@@ -1,14 +1,17 @@
-﻿using FlowCare.Application.Features.Slot.DTOs;
+﻿using System.Text.Json;
+using FlowCare.Application.Features.AuditLog.DTOs;
+using FlowCare.Application.Features.Slot.DTOs;
 using FlowCare.Application.Interfaces.Persistence;
 using FlowCare.Domain.Entities;
 
 namespace FlowCare.Application.Interfaces.Services;
 
-public class SlotService(ISlotsRepository slotsRepository, IBranchesRepository branchesRepository, ICustomerRepository customerRepository, IServicesTypeRepository servicesTypeRepository)
+public class SlotService(AuditLogService auditLogService ,ISlotsRepository slotsRepository, IBranchesRepository branchesRepository, ICustomerRepository customerRepository, IServicesTypeRepository servicesTypeRepository)
 {
     public async Task<List<FetchSlotDto>> FetchSlotByBranchAndServiceType(string branchId, string serviceTypeId, DateTime? date)
     {
-        var filteredSlots = await slotsRepository.SlotByBranchAndServiceType(branchId, serviceTypeId, date);
+        var filteredSlots = await slotsRepository.SlotByBranchAndServiceType(branchId, serviceTypeId, date)
+                            ?? throw new ArgumentException("Slots not available");
 
         return filteredSlots.Select(s =>  new FetchSlotDto
         {
@@ -23,13 +26,13 @@ public class SlotService(ISlotsRepository slotsRepository, IBranchesRepository b
         }).ToList();
     }
 
-    public async Task<ResponseSlotDto> CreateSlot(CreateSlotDto createSlotDto)
+    public async Task<ResponseSlotDto> CreateSlot(CreateSlotDto createSlotDto, string userId)
     {
         var serviceType = await servicesTypeRepository.ExistIdAsync(createSlotDto.ServiceTypeId)
                           ?? throw new ArgumentException("Service Type not available");
 
         var branchId = serviceType.BranchId;
-        var branch = await branchesRepository.FindById(branchId);
+        var branch = await branchesRepository.FindById(branchId) ?? throw new ArgumentException("Branch not available");
         var branchLocation = branch.City.Substring(0,3).ToLower();
         var slotIdPiss = $"slot_{branchLocation}_";
         var lastUser = await slotsRepository.FetchLastId();
@@ -58,6 +61,25 @@ public class SlotService(ISlotsRepository slotsRepository, IBranchesRepository b
         await slotsRepository.CreateSlot(slot);
         await slotsRepository.SaveChangesAsync();
 
+        var user = await customerRepository.ExistIdAsync(userId) ?? throw new ArgumentException("Customer not found");
+        var log = new CreateAuditLogDto
+        {
+            ActorId = user.Id,
+            ActorRole = user.UserRole.ToString(),
+            ActionType = "CREATE_SLOT",
+            EntityType = "SLOT",
+            EntityId = slot.Id,
+            Metadata = JsonDocument.Parse(JsonSerializer.Serialize(new
+            {
+                branch_id = slot.BranchId,
+                service_type_id = slot.ServiceTypeId,
+                staff_id = slot.StaffId
+
+            }))
+
+        };
+        await auditLogService.AddLog(log);
+
         return new ResponseSlotDto
         {
             Id = slot.Id,
@@ -79,6 +101,25 @@ public class SlotService(ISlotsRepository slotsRepository, IBranchesRepository b
         slot.UpdateSlot(updateSlotDto.StaffId, updateSlotDto.ServiceTypeId,
             updateSlotDto.BranchId, updateSlotDto.Capacity, startedAt, updateSlotDto.IsActive);
         await slotsRepository.SaveChangesAsync();
+
+        var user = await customerRepository.ExistIdAsync(userId) ?? throw new ArgumentException("Customer not found");
+        var log = new CreateAuditLogDto
+        {
+            ActorId = user.Id,
+            ActorRole = user.UserRole.ToString(),
+            ActionType = "UPDATE_SLOT",
+            EntityType = "SLOT",
+            EntityId = slot.Id,
+            Metadata = JsonDocument.Parse(JsonSerializer.Serialize(new
+            {
+                branch_id = slot.BranchId,
+                service_type_id = slot.ServiceTypeId,
+                staff_id = slot.StaffId
+
+            }))
+
+        };
+        await auditLogService.AddLog(log);
 
         return new ResponseSlotDto
         {

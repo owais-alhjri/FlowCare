@@ -23,10 +23,15 @@ namespace FlowCare.API.Controllers
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> CreateSlot([FromBody] List<CreateSlotDto> createSlotDto)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId is null)
+            {
+                return Unauthorized();
+            }
             var listOfSlot = new List<object>();
             foreach (var dto in createSlotDto)
             {
-                 var slot = await slotService.CreateSlot(dto);
+                 var slot = await slotService.CreateSlot(dto, userId);
                  listOfSlot.Add(slot);
             }
              
