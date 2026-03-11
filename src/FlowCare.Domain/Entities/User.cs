@@ -19,6 +19,7 @@ public class User
     // Branch ID is nullable because some roles don't need it, only branch manager and staff must have it
     public string? BranchId { get; private set; }
     public bool IsActive  { get; private set; }
+    public string? IdImagePath { get; private set; }
 
     protected User()
     {

@@ -1,4 +1,11 @@
 {
+  "system_settings": [
+    {
+      "key": "SlotRetentionDays",
+      "value": "30",
+      "description": "Retention period for soft-deleted slots"
+    }
+  ],
   "users": {
     "admin": [
       {
@@ -181,13 +188,31 @@
   ],
 
   "staff_service_types": [
-    { "staff_id": "usr_staff_001", "service_type_id": "svc_mus_001" },
-    { "staff_id": "usr_staff_001", "service_type_id": "svc_mus_002" },
-    { "staff_id": "usr_staff_002", "service_type_id": "svc_mus_003" },
+    {
+      "staff_id": "usr_staff_001",
+      "service_type_id": "svc_mus_001"
+    },
+    {
+      "staff_id": "usr_staff_001",
+      "service_type_id": "svc_mus_002"
+    },
+    {
+      "staff_id": "usr_staff_002",
+      "service_type_id": "svc_mus_003"
+    },
 
-    { "staff_id": "usr_staff_003", "service_type_id": "svc_suh_001" },
-    { "staff_id": "usr_staff_003", "service_type_id": "svc_suh_002" },
-    { "staff_id": "usr_staff_004", "service_type_id": "svc_suh_003" }
+    {
+      "staff_id": "usr_staff_003",
+      "service_type_id": "svc_suh_001"
+    },
+    {
+      "staff_id": "usr_staff_003",
+      "service_type_id": "svc_suh_002"
+    },
+    {
+      "staff_id": "usr_staff_004",
+      "service_type_id": "svc_suh_003"
+    }
   ],
 
   "slots": [

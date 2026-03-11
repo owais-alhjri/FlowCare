@@ -20,6 +20,8 @@ public class SeedData
     [JsonPropertyName("slots")] public List<SlotSeedDto> Slots { get; set; }
     [JsonPropertyName("appointments")] public List<AppointmentSeedDto> Appointments { get; set; }
     [JsonPropertyName("audit_logs")] public List<AuditLogSeedDto> AuditLogs { get; set; }
+    [JsonPropertyName("system_settings")] public List<SystemSettingSeedDto>? SystemSettings { get; set; }
+
 }
 
 

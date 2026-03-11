@@ -28,13 +28,14 @@ namespace FlowCare.API.Controllers
             {
                 return Unauthorized();
             }
+
             var listOfSlot = new List<object>();
             foreach (var dto in createSlotDto)
             {
-                 var slot = await slotService.CreateSlot(dto, userId);
-                 listOfSlot.Add(slot);
+                var slot = await slotService.CreateSlot(dto, userId);
+                listOfSlot.Add(slot);
             }
-             
+
 
             return Ok(listOfSlot);
         }
@@ -57,7 +58,7 @@ namespace FlowCare.API.Controllers
             return Ok(slot);
         }
 
-        [HttpPatch("delete/{slotId}")]
+        [HttpDelete("{slotId}")]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> DeleteSlot(string slotId)
         {
@@ -71,6 +72,7 @@ namespace FlowCare.API.Controllers
 
             return Ok(slot);
         }
+
 
     }
 }

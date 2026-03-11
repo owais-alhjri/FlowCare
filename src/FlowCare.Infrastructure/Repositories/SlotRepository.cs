@@ -53,4 +53,16 @@ public class SlotRepository(FlowCareDbContext dbContext): ISlotsRepository
                                            (isManager && c.BranchId == user.BranchId))).FirstOrDefaultAsync();
     }
 
+    public async Task<List<Slot>> SlotsByDeletedAt()
+    {
+        var slots = await dbContext.Slots.Where(s=>s.Deleted_at != null).IgnoreQueryFilters().ToListAsync();
+
+        return slots;
+    }
+
+    public void RemoveSlot(Slot slot)
+    {
+         dbContext.Slots.Remove(slot);
+    }
+
 }

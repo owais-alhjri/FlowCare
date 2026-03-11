@@ -33,6 +33,8 @@ public class AppointmentConfigurations: IEntityTypeConfiguration<Appointment>
             .HasConversion<string>();
         builder.Property(a => a.CreatedAt)
             .IsRequired();
+        builder.Property(a => a.AttachmentPath)
+            .HasMaxLength(250);
         builder.HasOne<Branch>()
             .WithMany()
             .HasForeignKey(a => a.BranchId)

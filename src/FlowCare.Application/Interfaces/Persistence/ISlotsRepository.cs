@@ -11,4 +11,6 @@ public interface ISlotsRepository
     Task<Slot?> FetchLastId();
     Task SaveChangesAsync();
     Task<Slot?>  FetchBySlotId(string slotId, string userId);
+    Task<List<Slot>> SlotsByDeletedAt();
+    void RemoveSlot(Slot slot);
 }

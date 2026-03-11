@@ -23,6 +23,8 @@ public class Appointment
     public Status Status { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
 
+    public string? AttachmentPath { get; private set; }
+
     protected Appointment()
     {
     }

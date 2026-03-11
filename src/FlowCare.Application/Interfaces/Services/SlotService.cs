@@ -174,4 +174,19 @@ public class SlotService(AuditLogService auditLogService ,ISlotsRepository slots
             Deleted_at = slot.Deleted_at
         };
     }
+
+    public async Task CleanUpSlots()
+    {
+        /*
+        var slots = slotsRepository.SlotsByDeletedAt();
+        var cutOffDate = DateTimeOffset.UtcNow.AddDays(-30);
+        foreach (var slot in await slots)
+        {
+            if (slot.Deleted_at < cutOffDate)
+            {
+                 slotsRepository.RemoveSlot(slot);
+            }
+        }
+        */
+    }
 }

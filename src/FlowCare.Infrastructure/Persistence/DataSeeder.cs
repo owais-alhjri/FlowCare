@@ -64,6 +64,10 @@ public class DataSeeder(FlowCareDbContext db, IPasswordHasher passwordHasher)
         if (newAuditLogs?.Count > 0)
             await db.AuditLogs.AddRangeAsync(newAuditLogs.Select(a =>
                 CreateAuditLogDirectly(a)));
+        await SeedEntitiesAsync(db.AppSettings, seedData.SystemSettings,
+            s => new AppSetting(s.Key, s.Value, s.Description),
+            keySelector: s => s.Key,
+            existingKeySelector: e => e.Key);
 
         await db.SaveChangesAsync();
 
@@ -105,15 +109,17 @@ public class DataSeeder(FlowCareDbContext db, IPasswordHasher passwordHasher)
 
         HashSet<string> existingIds;
 
+        var query = dbSet.IgnoreQueryFilters();
+
         if (existingKeySelector != null)
         {
-            existingIds = (await dbSet.ToListAsync())
+            existingIds = (await query.ToListAsync())
                 .Select(existingKeySelector)
                 .ToHashSet();
         }
         else
         {
-            existingIds = (await dbSet
+            existingIds = (await query
                     .Select(e => EF.Property<string>(e, "Id"))
                     .ToListAsync())
                 .ToHashSet();

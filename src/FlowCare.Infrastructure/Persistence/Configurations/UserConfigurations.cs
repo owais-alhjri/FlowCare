@@ -34,6 +34,8 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
             .HasMaxLength(100);
         builder.Property(u => u.IsActive)
             .IsRequired();
+        builder.Property(u => u.IdImagePath)
+            .HasMaxLength(250);
         builder.HasIndex(u => u.Email)
             .IsUnique();
         builder.HasIndex(u => u.UserName)
