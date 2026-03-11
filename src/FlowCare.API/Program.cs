@@ -1,9 +1,7 @@
 using System.Text.Json.Serialization;
 using FlowCare.API.Authentication;
-using FlowCare.Application.Interfaces.Persistence;
-using FlowCare.Application.Interfaces.Services;
+using FlowCare.Infrastructure.Extensions;
 using FlowCare.Infrastructure.Persistence;
-using FlowCare.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -42,37 +40,16 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<FlowCareDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
 builder.Services.AddAuthentication("BasicAuth")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuth", null);
 
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
-builder.Services.AddScoped<BranchesService>();
-builder.Services.AddScoped<IBranchesRepository, BranchesRepository>();
-builder.Services.AddScoped<IServicesTypeRepository, ServicesTypeRepository>();
-builder.Services.AddScoped<ServiceTypeService>();
-builder.Services.AddScoped<ISlotsRepository, SlotRepository>();
-builder.Services.AddScoped<SlotService>();
-builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-builder.Services.AddScoped<AppointmentService>();
-builder.Services.AddScoped<IStaffRepository, StaffRepository>();
-builder.Services.AddScoped<StaffService>();
-builder.Services.AddScoped<IStaffServiceTypeRepository, StaffServiceTypeRepository>();
-builder.Services.AddScoped<StaffServiceService>();
-builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
-builder.Services.AddScoped<AuditLogService>();
-builder.Services.AddScoped<IAppSettingRepository, AppSettingRepository>();
+builder.Services.AddApplicationServices();
 
-
-builder.Services.AddControllers();
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
-
 
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("ADMIN"));
     options.AddPolicy("ManagerOrAbove",policy=> policy.RequireRole("ADMIN","BRANCH_MANAGER"));
@@ -82,7 +59,6 @@ builder.Services.AddAuthorization(options =>
 
 });
 
-builder.Services.AddScoped<DataSeeder>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
