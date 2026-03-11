@@ -30,6 +30,7 @@ public class SlotConfigurations :IEntityTypeConfiguration<Slot>
             .IsRequired();
         builder.Property(s => s.IsActive)
             .IsRequired();
+        builder.Property(s => s.Deleted_at);
         builder.HasOne(s => s.Staff)
             .WithMany()
             .HasForeignKey(s => s.StaffId)
@@ -43,6 +44,7 @@ public class SlotConfigurations :IEntityTypeConfiguration<Slot>
             .WithMany()
             .HasForeignKey(s => s.ServiceTypeId)
             .OnDelete(DeleteBehavior.Restrict);
+        builder.HasQueryFilter(s => s.Deleted_at == null);
 
 
 

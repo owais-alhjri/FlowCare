@@ -132,5 +132,46 @@ public class SlotService(AuditLogService auditLogService ,ISlotsRepository slots
             Capacity = slot.Capacity,
             IsActive = slot.IsActive
         };
+
+    }
+
+    public async Task<ResponseSlotDto> SoftDeleteSlot(string slotId, string userId)
+    {
+        var slot = await slotsRepository.FetchBySlotId(slotId, userId) ?? throw new ArgumentException("Slot not found");
+        slot.SetDeletedAt();
+
+        var user = await customerRepository.ExistIdAsync(userId) ?? throw new ArgumentException("Customer not found");
+        var log = new CreateAuditLogDto
+        {
+            ActorId = user.Id,
+            ActorRole = user.UserRole.ToString(),
+            ActionType = "DELETE_SLOT",
+            EntityType = "SLOT",
+            EntityId = slot.Id,
+            Metadata = JsonDocument.Parse(JsonSerializer.Serialize(new
+            {
+                branch_id = slot.BranchId,
+                service_type_id = slot.ServiceTypeId,
+                staff_id = slot.StaffId,
+                note = $"Slot is deleted by {user.Id}, at {slot.Deleted_at}"
+
+            }))
+
+        };
+        await auditLogService.AddLog(log);
+
+        await slotsRepository.SaveChangesAsync();
+        return new ResponseSlotDto
+        {
+            Id = slot.Id,
+            BranchId = slot.BranchId,
+            ServiceTypeId = slot.ServiceTypeId,
+            StaffId = slot.StaffId,
+            StartedAt = slot.StartedAt,
+            EndAt = slot.EndAt,
+            Capacity = slot.Capacity,
+            IsActive = slot.IsActive,
+            Deleted_at = slot.Deleted_at
+        };
     }
 }

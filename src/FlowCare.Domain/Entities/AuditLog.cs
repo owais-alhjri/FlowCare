@@ -54,11 +54,11 @@ public class AuditLog
             throw new ArgumentException("Invalid ID");
         }
 
-        if (string.IsNullOrWhiteSpace(actionType) || actionType.Length < 6 || actionType.Length > 100)
+        if (string.IsNullOrWhiteSpace(actionType) || actionType.Length < 3 || actionType.Length > 100)
         {
             throw new ArgumentException("Invalid action type");
         }
-        if (string.IsNullOrWhiteSpace(entityType) || entityType.Length < 6 || entityType.Length > 100)
+        if (string.IsNullOrWhiteSpace(entityType) || entityType.Length < 3 || entityType.Length > 100)
         {
             throw new ArgumentException("Invalid entity type");
         }

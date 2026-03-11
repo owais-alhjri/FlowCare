@@ -57,5 +57,20 @@ namespace FlowCare.API.Controllers
             return Ok(slot);
         }
 
+        [HttpPatch("delete/{slotId}")]
+        [Authorize(Policy = "ManagerOrAbove")]
+        public async Task<ActionResult> DeleteSlot(string slotId)
+        {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var slot = await slotService.SoftDeleteSlot(slotId, user);
+
+            return Ok(slot);
+        }
+
     }
 }

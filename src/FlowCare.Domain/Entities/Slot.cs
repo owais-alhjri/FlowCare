@@ -22,6 +22,7 @@ public class Slot
     // Available slots
     public int Capacity { get; private set; }
     public bool IsActive { get; private set; }
+    public DateTimeOffset? Deleted_at { get; private set; }
 
     protected Slot()
     {
@@ -103,5 +104,10 @@ public class Slot
         if (capacity is not null) Capacity = capacity.Value;
         if (startedAt is not null) StartedAt = startedAt.Value;
         if (isActive is not null) IsActive = isActive.Value;
+    }
+
+    public void SetDeletedAt()
+    {
+        Deleted_at = DateTimeOffset.UtcNow;
     }
 }

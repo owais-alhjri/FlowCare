@@ -41,7 +41,7 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
             EntityId = auditLog.EntityId,
             EntityType = auditLog.EntityType,
             Timestamp = auditLog.Timestamp,
-            Metadata = auditLog.Metadata
+            Metadata = auditLog.Metadata,
         } ;
     }
 
