@@ -6,7 +6,7 @@ using FlowCare.Domain.Entities;
 
 namespace FlowCare.Application.Interfaces.Services;
 
-public class SlotService(AuditLogService auditLogService ,ISlotsRepository slotsRepository, IBranchesRepository branchesRepository, ICustomerRepository customerRepository, IServicesTypeRepository servicesTypeRepository)
+public class SlotService(IAppSettingRepository appSettingRepository,AuditLogService auditLogService ,ISlotsRepository slotsRepository, IBranchesRepository branchesRepository, ICustomerRepository customerRepository, IServicesTypeRepository servicesTypeRepository)
 {
     public async Task<List<FetchSlotDto>> FetchSlotByBranchAndServiceType(string branchId, string serviceTypeId, DateTime? date)
     {
@@ -145,7 +145,7 @@ public class SlotService(AuditLogService auditLogService ,ISlotsRepository slots
         {
             ActorId = user.Id,
             ActorRole = user.UserRole.ToString(),
-            ActionType = "DELETE_SLOT",
+            ActionType = "SOFT_DELETE_SLOT",
             EntityType = "SLOT",
             EntityId = slot.Id,
             Metadata = JsonDocument.Parse(JsonSerializer.Serialize(new
@@ -153,7 +153,7 @@ public class SlotService(AuditLogService auditLogService ,ISlotsRepository slots
                 branch_id = slot.BranchId,
                 service_type_id = slot.ServiceTypeId,
                 staff_id = slot.StaffId,
-                note = $"Slot is deleted by {user.Id}, at {slot.Deleted_at}"
+                note = $"Slot is deleted by {user.Id}, at {slot.DeletedAt}"
 
             }))
 
@@ -171,22 +171,45 @@ public class SlotService(AuditLogService auditLogService ,ISlotsRepository slots
             EndAt = slot.EndAt,
             Capacity = slot.Capacity,
             IsActive = slot.IsActive,
-            Deleted_at = slot.Deleted_at
+            Deleted_at = slot.DeletedAt
         };
     }
 
-    public async Task CleanUpSlots()
+    public async Task<int> CleanUpSlots(string userId)
     {
-        /*
-        var slots = slotsRepository.SlotsByDeletedAt();
-        var cutOffDate = DateTimeOffset.UtcNow.AddDays(-30);
-        foreach (var slot in await slots)
+        var slots = await slotsRepository.SlotsByDeletedAt();
+        var user = await customerRepository.ExistIdAsync(userId) ?? throw new ArgumentException("Customer not found");
+
+        if (!slots.Any()) return 0;
+        
+        
+
+        foreach (var slot in slots)
         {
-            if (slot.Deleted_at < cutOffDate)
+
+            var log = new CreateAuditLogDto
             {
-                 slotsRepository.RemoveSlot(slot);
-            }
+                ActorId = user.Id,
+                ActorRole = user.UserRole.ToString(),
+                ActionType = "HARD_DELETE_SLOT",
+                EntityType = "SLOT",
+                EntityId = slot.Id,
+                Metadata = JsonDocument.Parse(JsonSerializer.Serialize(new
+                {
+                    note = $"Slot is hard deleted by {user.Id}, at {slot.DeletedAt}"
+
+                }))
+
+            };
+            await auditLogService.AddLog(log);
+
+            slotsRepository.RemoveSlot(slot);
+
         }
-        */
+
+        await slotsRepository.SaveChangesAsync();
+
+        return slots.Count;
+
     }
 }

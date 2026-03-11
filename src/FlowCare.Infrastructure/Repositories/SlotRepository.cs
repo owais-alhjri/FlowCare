@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowCare.Infrastructure.Repositories;
 
-public class SlotRepository(FlowCareDbContext dbContext): ISlotsRepository
+public class SlotRepository(FlowCareDbContext dbContext, IAppSettingRepository appSettingRepository): ISlotsRepository
 {
 
     public async Task<List<Slot>> SlotByBranchAndServiceType(string branchId, string serviceTypeId, DateTime? date)
@@ -48,6 +48,13 @@ public class SlotRepository(FlowCareDbContext dbContext): ISlotsRepository
         var isAdmin = user.UserRole == UserRole.ADMIN;
         var isManager = user.UserRole == UserRole.BRANCH_MANAGER;
 
+        var query = dbContext.Slots.AsQueryable();
+
+        if (isAdmin)
+        {
+            query = query.IgnoreQueryFilters();
+        }
+
         return await dbContext.Slots
             .Where(c => c.Id == slotId && ( isAdmin ||
                                            (isManager && c.BranchId == user.BranchId))).FirstOrDefaultAsync();
@@ -55,7 +62,11 @@ public class SlotRepository(FlowCareDbContext dbContext): ISlotsRepository
 
     public async Task<List<Slot>> SlotsByDeletedAt()
     {
-        var slots = await dbContext.Slots.Where(s=>s.Deleted_at != null).IgnoreQueryFilters().ToListAsync();
+        var appSetting = await appSettingRepository.GetRetentionPeriod();
+        var retentionPeriod = appSetting.Value;
+        var cutOffDate = DateTimeOffset.UtcNow.AddDays(-(int.Parse(retentionPeriod)));
+
+        var slots = await dbContext.Slots.Where(s=>s.DeletedAt != null && s.DeletedAt < cutOffDate).IgnoreQueryFilters().ToListAsync();
 
         return slots;
     }

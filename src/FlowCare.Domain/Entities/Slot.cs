@@ -22,7 +22,7 @@ public class Slot
     // Available slots
     public int Capacity { get; private set; }
     public bool IsActive { get; private set; }
-    public DateTimeOffset? Deleted_at { get; private set; }
+    public DateTimeOffset? DeletedAt { get; private set; }
 
     protected Slot()
     {
@@ -108,6 +108,6 @@ public class Slot
 
     public void SetDeletedAt()
     {
-        Deleted_at = DateTimeOffset.UtcNow;
+        DeletedAt = DateTimeOffset.UtcNow;
     }
 }

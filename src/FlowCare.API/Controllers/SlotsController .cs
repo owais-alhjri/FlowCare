@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCare.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/slot")]
     [ApiController]
     public class SlotsController(SlotService slotService) : ControllerBase
     {

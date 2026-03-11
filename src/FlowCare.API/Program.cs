@@ -63,6 +63,7 @@ builder.Services.AddScoped<IStaffServiceTypeRepository, StaffServiceTypeReposito
 builder.Services.AddScoped<StaffServiceService>();
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<AuditLogService>();
+builder.Services.AddScoped<IAppSettingRepository, AppSettingRepository>();
 
 
 builder.Services.AddControllers();

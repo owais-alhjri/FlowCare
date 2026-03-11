@@ -23,7 +23,7 @@ public class AppointmentConfigurations: IEntityTypeConfiguration<Appointment>
             .IsRequired()
             .HasMaxLength(100);
         builder.Property(a => a.SlotId)
-            .IsRequired()
+            .IsRequired(false)
             .HasMaxLength(100);
         builder.Property(a => a.StaffId)
             .IsRequired()
@@ -43,10 +43,11 @@ public class AppointmentConfigurations: IEntityTypeConfiguration<Appointment>
             .WithMany()
             .HasForeignKey(a => a.ServiceTypeId)
             .OnDelete(DeleteBehavior.Restrict);
-        builder.HasOne<Slot>()
+
+        builder.HasOne(a => a.Slot)
             .WithMany()
             .HasForeignKey(a => a.SlotId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasOne(a=>a.Customer)
             .WithMany()
@@ -58,6 +59,8 @@ public class AppointmentConfigurations: IEntityTypeConfiguration<Appointment>
             .OnDelete(DeleteBehavior.Restrict);
         builder.HasIndex(a => new { a.SlotId, a.StaffId })
             .IsUnique();
+
+
         builder.HasIndex(a => a.CustomerId);
         builder.HasIndex(a => a.BranchId);
         builder.HasIndex(a => a.ServiceTypeId);

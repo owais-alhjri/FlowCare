@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCare.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/service")]
     [ApiController]
     public class ServicesController(ServiceTypeService serviceTypeService, StaffServiceService staffServiceService) : ControllerBase
     {

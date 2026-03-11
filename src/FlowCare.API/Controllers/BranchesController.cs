@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCare.API.Controllers
 {
-    [Route("api/branches")]
+    [Route("api/branch")]
     [ApiController]
     [AllowAnonymous]
     public class BranchesController(BranchesService branchesService) : ControllerBase

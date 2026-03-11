@@ -16,7 +16,7 @@ public class Appointment
     public string ServiceTypeId { get; private set; }
 
     //Slot ID from the entity slot.
-    public string SlotId { get; private set; }
+    public string? SlotId { get; private set; }
     
     //Staff ID from entity User with the role STAFF
     public string StaffId { get; private set; }
@@ -32,6 +32,7 @@ public class Appointment
     // these are for relationships
     public User Customer { get; private set; }
     public User Staff { get; private set; }
+    public Slot? Slot { get; private set; }
 
     public Appointment(string id, User customer, User staff, string branchId,
         string serviceTypeId, string slotId, Status status, DateTimeOffset createdAt)
