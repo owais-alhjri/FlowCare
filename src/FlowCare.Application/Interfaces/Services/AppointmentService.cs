@@ -7,7 +7,9 @@ using FlowCare.Domain.Enums;
 
 namespace FlowCare.Application.Interfaces.Services;
 
-public class AppointmentService(AuditLogService auditLogService, ISlotsRepository slotsRepository, IAppointmentRepository appointmentRepository, ICustomerRepository customerRepository)
+public class AppointmentService(AuditLogService auditLogService, ISlotsRepository slotsRepository,
+    IAppointmentRepository appointmentRepository,
+    ICustomerRepository customerRepository, IStorageService storageService)
 {
     // for the customer to book appointment
     public async Task BookAppointment(BookAppointmentDto bookAppointmentDto, string customerId)
@@ -51,8 +53,27 @@ public class AppointmentService(AuditLogService auditLogService, ISlotsRepositor
 
         var customer = await customerRepository.ExistIdAsync(customerId)
                        ?? throw new ArgumentException("Customer not found");
+
+
+        string? dbReference = null;
+        if (bookAppointmentDto.AttachmentPath != null)
+        {
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(bookAppointmentDto.AttachmentPath.FileName)}";
+            using var stream = bookAppointmentDto.AttachmentPath.OpenReadStream();
+            dbReference = await storageService.UploadFileAsync(
+                "appointment-attachments",
+                fileName,
+                stream,
+                bookAppointmentDto.AttachmentPath.ContentType
+            );
+        }
+
+
         var appointment = new Appointment(fullId, customer, staff, slot.BranchId, slot.ServiceTypeId,slotId, Status.BOOKED,
             DateTimeOffset.UtcNow);
+
+        if (dbReference != null)
+            appointment.SetAttachmentsPath(dbReference);
 
         slot.ChangeActive(slot.IsActive);
         await appointmentRepository.CreateAppointment(appointment);

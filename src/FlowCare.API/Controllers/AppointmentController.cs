@@ -12,16 +12,33 @@ namespace FlowCare.API.Controllers
     {
         [HttpPost]
         [Authorize(Roles = "CUSTOMER")]
-        public async Task<ActionResult> BookAppointment(BookAppointmentDto bookAppointmentDto)
+        public async Task<ActionResult> BookAppointment([FromForm] BookAppointmentDto dto, [FromServices] FileValidationService validator)
         {
+
             var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (customerId is null)
             {
                 return Unauthorized();
             }
-            await appointmentService.BookAppointment(bookAppointmentDto, customerId);
 
-            return Ok();
+            if (dto.AttachmentPath != null)
+            {
+                var (isValid, error) = validator.ValidateAttachment(dto.AttachmentPath);
+                if (!isValid)
+                    return BadRequest(error);
+            }
+
+            try
+            {
+                await appointmentService.BookAppointment(dto, customerId);
+                return Ok();
+
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
         // Staff → view appointments assigned to them
         // Branch Manager → view appointments within their branch

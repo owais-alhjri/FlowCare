@@ -51,7 +51,16 @@ public class Appointment
         Customer = customer;
         Staff = staff;
     }
+    public void SetAttachmentsPath(string path)
+    {
+        if (Customer.UserRole != UserRole.CUSTOMER)
+            throw new InvalidOperationException("Only customers can have an Attachment.");
 
+        if (string.IsNullOrWhiteSpace(path))
+            throw new ArgumentException("ID image path cannot be empty.");
+
+        AttachmentPath = path;
+    }
     private static void ValidateRole(User customer, User staff, string branchId)
     {
         if (customer.UserRole != UserRole.CUSTOMER)
