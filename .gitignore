@@ -1,6 +1,8 @@
 .vs/
 bin/
 obj/
+docker-compose.prod.yml
+.env
 # User-specific Visual Studio files
 *.user
 *.suo
