@@ -41,7 +41,11 @@ public class CustomerRepository(FlowCareDbContext dbContext) : ICustomerReposito
 
     public async Task<User?> FetchLastId()
     {
-          return await dbContext.Users.OrderByDescending(x=>x.Id).FirstOrDefaultAsync();
+        return await dbContext.Users
+            .Where(x => x.Id.StartsWith("usr_cust_"))
+            .OrderByDescending(x => x.Id.Length)
+            .ThenByDescending(x => x.Id)
+            .FirstOrDefaultAsync();
     }
 
 

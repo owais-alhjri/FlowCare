@@ -7,11 +7,13 @@ using FlowCare.Domain.Enums;
 
 namespace FlowCare.Application.Interfaces.Services;
 
-public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository customerRepository) : ICustomerService
+public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository customerRepository, IStorageService storageService) : ICustomerService
 {
 
-    public async Task<User> Register(CustomerRegisterDto userDto )
+    public async Task<CustomerResponseDto> Register(CustomerRegisterDto userDto )
     {
+
+
         var isValidPassword = Regex.IsMatch(
             userDto.Password,
             @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$"
@@ -30,32 +32,49 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
             throw new ArgumentException("Username already exist");
         }
 
-        var customerIdPiss = "usr_cust_";
+        var prefix = "usr_cust_";
         var lastUser = await customerRepository.FetchLastId();
-
         string fullId;
         if (lastUser is null)
         {
-            fullId = customerIdPiss + "001";
+            fullId = prefix + "001";
         }
         else
         {
-            var lasIdString = lastUser.Id.Substring(customerIdPiss.Length);
-
-            var lastNumber = int.Parse(lasIdString);
-            var nextNumber = lastNumber + 1;
-
-            fullId = customerIdPiss + nextNumber.ToString("D3");
+            var lastIdString = lastUser.Id.Substring(prefix.Length).TrimStart('_'); // ← TrimStart
+            var lastNumber = int.Parse(lastIdString);
+            fullId = prefix + (lastNumber + 1).ToString("D3");
         }
+
+        var fileName = $"{Guid.NewGuid()}{Path.GetExtension(userDto.IdImage.FileName)}";
+        using var stream = userDto.IdImage.OpenReadStream();
+        string dbReference = await storageService.UploadFileAsync(
+            "customer-ids",
+            fileName,
+            stream,
+            userDto.IdImage.ContentType
+        );
+
 
         var hash = passwordHasher.Hash(userDto.Password);
         var user = new User(fullId, userDto.UserName, hash, UserRole.CUSTOMER,
             userDto.FullName, userDto.Email, userDto.Phone,null, isActive:true);
 
+        user.SetIdImagePath(dbReference);
         await customerRepository.Register(user);
         await customerRepository.SaveChangesAsync();
 
-        return user;
+        return new CustomerResponseDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            FullName = user.FullName,
+            IdImagePath = user.IdImagePath,
+            UserName = user.UserName,
+            UserRole = user.UserRole,
+            IsActive = user.IsActive,
+            Phone = user.Phone,
+        };
 
     }
 

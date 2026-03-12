@@ -1,21 +1,36 @@
 ﻿using FlowCare.Application.Features.User.Customer.DTOs;
 using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCare.API.Controllers
 {
+
+
+
     [Route("api/customer")]
     [ApiController]
     public class CustomerController(ICustomerService customerService) : ControllerBase
     {
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<ActionResult> CustomerRegister([FromBody] CustomerRegisterDto customerRegisterDto)
-        {
-            var newCustomer = await customerService.Register(customerRegisterDto);
 
-            return Ok(newCustomer);
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<ActionResult> CustomerRegister([FromForm] CustomerRegisterDto dto, [FromServices] FileValidationService validator)
+        {
+            var (isValid, error) = validator.ValidateIdImage(dto.IdImage);
+            if (!isValid)
+                return BadRequest(error);
+
+            try
+            {
+                var newCustomer = await customerService.Register(dto);
+                return Ok(newCustomer);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]

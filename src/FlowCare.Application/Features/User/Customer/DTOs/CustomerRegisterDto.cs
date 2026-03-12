@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using FlowCare.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace FlowCare.Application.Features.User.Customer.DTOs;
 
@@ -25,4 +26,6 @@ public class CustomerRegisterDto
     [Phone(ErrorMessage = "Invalid phone number format.")]
     [StringLength(12)]
     public string? Phone { get; set; }
+
+    [Required] public IFormFile IdImage { get; set; } = null!;
 }

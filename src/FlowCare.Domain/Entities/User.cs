@@ -38,11 +38,18 @@ public class User
         FullName = fullName;
         Email = email;
         IsActive = isActive;
-
-
     }
 
+    public void SetIdImagePath(string path)
+    {
+        if (UserRole != UserRole.CUSTOMER)
+            throw new InvalidOperationException("Only customers can have an ID image.");
 
+        if (string.IsNullOrWhiteSpace(path))
+            throw new ArgumentException("ID image path cannot be empty.");
+
+        IdImagePath = path;
+    }
 
     private void ValidateRole(string? phone, UserRole userRole, string? branchId)
     {

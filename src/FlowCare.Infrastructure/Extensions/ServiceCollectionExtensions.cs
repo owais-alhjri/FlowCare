@@ -2,6 +2,7 @@
 using FlowCare.Application.Interfaces.Services;
 using FlowCare.Infrastructure.Persistence;
 using FlowCare.Infrastructure.Repositories;
+using FlowCare.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FlowCare.Infrastructure.Extensions;
@@ -30,6 +31,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AuditLogService>();
         services.AddScoped<IAppSettingRepository, AppSettingRepository>();
         services.AddScoped<DataSeeder>();
+        services.AddSingleton<FileValidationService>();
+        services.AddScoped<IStorageService, MinioStorageService>();
 
 
         return services;
