@@ -11,7 +11,7 @@ namespace FlowCare.API.Controllers
 
     [Route("api/customer")]
     [ApiController]
-    public class CustomerController(ICustomerService customerService) : ControllerBase
+    public class CustomerController(ICustomerService customerService, IStorageService storageService) : ControllerBase
     {
 
         [HttpPost("register")]
@@ -47,6 +47,19 @@ namespace FlowCare.API.Controllers
         {
             var customers = await customerService.GetCustomerById(customerId);
             return Ok(customers);
+        }
+
+        [HttpGet("{customerId}/id-image")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> GetIdImage(string customerId)
+        {
+            var customer = await customerService.GetCustomerById(customerId);
+
+            if (string.IsNullOrEmpty(customer.IdImagePath))
+                return NotFound("No ID image found");
+
+            var (stream, contentType) = await storageService.GetFileAsync(customer.IdImagePath);
+            return base.File(stream, contentType);
         }
 
     }

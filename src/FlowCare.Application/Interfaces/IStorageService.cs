@@ -9,8 +9,5 @@ public interface IStorageService
         Stream content,
         string contentType);
 
-
-    Task<string> GetPresignedUrlAsync(string fullPath, int expiryMinutes = 60);
-
-    Task DeleteFileAsync(string fullPath);
+    Task<(Stream Content, string ContentType)> GetFileAsync(string fullPath);
 }
