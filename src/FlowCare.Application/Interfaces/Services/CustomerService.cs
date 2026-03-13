@@ -122,7 +122,8 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
             Phone = customer.Phone,
             UserName = customer.UserName,
             UserRole = customer.UserRole,
-            IsActive = customer.IsActive
+            IsActive = customer.IsActive,
+            IdImagePath = customer.IdImagePath
         };
     }
 }

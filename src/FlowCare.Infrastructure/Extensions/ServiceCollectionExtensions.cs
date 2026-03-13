@@ -33,6 +33,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DataSeeder>();
         services.AddSingleton<FileValidationService>();
         services.AddScoped<IStorageService, MinioStorageService>();
+        services.AddScoped<ICsvExportService, CsvExportService>();
 
 
         return services;

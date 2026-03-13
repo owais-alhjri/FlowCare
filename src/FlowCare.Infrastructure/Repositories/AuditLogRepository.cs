@@ -33,5 +33,10 @@ public class AuditLogRepository(FlowCareDbContext dbContext, ICustomerRepository
             (isManager && c.Metadata.RootElement.TryGetProperty("branch_id", out var branchIdElement)
                        && branchIdElement.GetString() == user.BranchId)
         ).ToList();
-    } 
+    }
+
+    public async Task<List<AuditLog>> AllLogs()
+    {
+        return await dbContext.AuditLogs.ToListAsync();
+    }
 }

@@ -134,7 +134,8 @@ public class AppointmentService(AuditLogService auditLogService, ISlotsRepositor
             SlotId = appointment.SlotId,
             StaffId = appointment.StaffId,
             Status = appointment.Status,
-            CreatedAt = appointment.CreatedAt
+            CreatedAt = appointment.CreatedAt,
+            AttachmentPath = appointment.AttachmentPath
         };
     }
 

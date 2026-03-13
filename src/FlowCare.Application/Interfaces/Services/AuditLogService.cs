@@ -63,4 +63,21 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
             Metadata = c.Metadata
         }).ToList();
     }
+
+    public async Task<List<AuditLogCsvDto>> AllLogs()
+    {
+        var logs = await auditLogRepository.AllLogs();
+        return logs.Select(log => new AuditLogCsvDto
+        {
+            Id = log.Id,
+            ActionType = log.ActionType,
+            ActorId = log.ActorId,
+            ActorRole = log.ActorRole,
+            EntityId = log.EntityId,
+            EntityType = log.EntityType,
+            Timestamp = log.Timestamp,
+            Metadata = log.Metadata.RootElement.ToString()
+        }).ToList();
+    } 
+
 }
