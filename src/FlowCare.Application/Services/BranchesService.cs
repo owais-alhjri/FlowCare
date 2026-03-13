@@ -1,15 +1,16 @@
-﻿using FlowCare.Application.Features.Branch.DTOs;
+﻿using FlowCare.Application.Common;
+using FlowCare.Application.Features.Branch.DTOs;
 using FlowCare.Application.Interfaces;
 
 namespace FlowCare.Application.Services;
 
 public class BranchesService(IBranchesRepository branchesRepository)
 {
-    public async Task<List<FetchBranchesDto>> FetchBranches()
+    public async Task<Result<List<FetchBranchesDto>>> FetchBranches()
     {
-        var  branches= await branchesRepository.BranchesList();
+        var branches = await branchesRepository.BranchesList();
 
-        return branches.Select( b => new FetchBranchesDto
+        return Result<List<FetchBranchesDto>>.Success(branches.Select(b => new FetchBranchesDto
         {
             Id = b.Id,
             Name = b.Name,
@@ -17,6 +18,6 @@ public class BranchesService(IBranchesRepository branchesRepository)
             Address = b.Address,
             Timezone = b.Timezone,
             IsActive = b.IsActive
-        }).ToList();
+        }).ToList());
     }
 }

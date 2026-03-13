@@ -5,23 +5,27 @@ namespace FlowCare.Domain.Entities;
 public class AuditLog
 {
     public string Id { get; private set; }
+
     // User ID.
     public string ActorId { get; private set; }
+
     // User Role
     public string ActorRole { get; private set; }
     public string ActionType { get; private set; }
-    public string EntityType{ get; private set; }
-    public string EntityId{ get; private set; }
+    public string EntityType { get; private set; }
+    public string EntityId { get; private set; }
 
     // DateTimeOffset used for the time zone offset
-    public DateTimeOffset Timestamp  { get; private set; }
+    public DateTimeOffset Timestamp { get; private set; }
     public JsonDocument Metadata { get; private set; }
 
-    protected AuditLog(){}
+    protected AuditLog()
+    {
+    }
 
     public User User { get; private set; }
 
-    public AuditLog(string id,User user, string actionType,
+    public AuditLog(string id, User user, string actionType,
         string entityType, string entityId, JsonDocument metadata)
     {
         ValidateCommon(id, actionType, entityType, entityId);
@@ -44,12 +48,11 @@ public class AuditLog
 
         if (string.IsNullOrWhiteSpace(user.Id))
             throw new ArgumentException("User Id is invalid");
-
     }
 
     private static void ValidateCommon(string id, string actionType, string entityType, string entityId)
     {
-        if (string.IsNullOrWhiteSpace(id) || id.Length <6 || id.Length > 100)
+        if (string.IsNullOrWhiteSpace(id) || id.Length < 6 || id.Length > 100)
         {
             throw new ArgumentException("Invalid ID");
         }
@@ -58,10 +61,12 @@ public class AuditLog
         {
             throw new ArgumentException("Invalid action type");
         }
+
         if (string.IsNullOrWhiteSpace(entityType) || entityType.Length < 3 || entityType.Length > 100)
         {
             throw new ArgumentException("Invalid entity type");
         }
+
         if (string.IsNullOrWhiteSpace(entityId) || entityId.Length < 6 || entityId.Length > 100)
         {
             throw new ArgumentException("Invalid entity ID");

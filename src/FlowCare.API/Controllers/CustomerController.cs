@@ -6,61 +6,59 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCare.API.Controllers
 {
-
-
-
     [Route("api/customer")]
     [ApiController]
     public class CustomerController(ICustomerService customerService, IStorageService storageService) : ControllerBase
     {
-
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<ActionResult> CustomerRegister([FromForm] CustomerRegisterDto dto, [FromServices] FileValidationService validator)
+        public async Task<IActionResult> CustomerRegister([FromForm] CustomerRegisterDto dto,
+            [FromServices] FileValidationService validator)
         {
             var (isValid, error) = validator.ValidateIdImage(dto.IdImage);
             if (!isValid)
                 return BadRequest(error);
 
-            try
-            {
-                var newCustomer = await customerService.Register(dto);
-                return Ok(newCustomer);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await customerService.Register(dto);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            return Ok(result.Value);
         }
 
         [HttpGet]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> CustomerList()
         {
-            var customers = await customerService.CustomerList();
-            return Ok(customers);
+            var result = await customerService.CustomerList();
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+            return Ok(result.Value);
         }
 
         [HttpGet("{customerId}")]
         [Authorize(Policy = "ManagerOrAbove")]
-        public async Task<ActionResult> GetCustomerById(string customerId)
+        public async Task<IActionResult> GetCustomerById(string customerId)
         {
-            var customers = await customerService.GetCustomerById(customerId);
-            return Ok(customers);
+            var result = await customerService.GetCustomerById(customerId);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+            return Ok(result.Value);
         }
 
         [HttpGet("{customerId}/id-image")]
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetIdImage(string customerId)
         {
-            var customer = await customerService.GetCustomerById(customerId);
+            var result = await customerService.GetCustomerById(customerId);
+            if (result.IsFailure)
+                return NotFound(result.Error);
 
-            if (string.IsNullOrEmpty(customer.IdImagePath))
+            if (string.IsNullOrEmpty(result.Value!.IdImagePath))
                 return NotFound("No ID image found");
 
-            var (stream, contentType) = await storageService.GetFileAsync(customer.IdImagePath);
-            return base.File(stream, contentType);
+            var (stream, contentType) = await storageService.GetFileAsync(result.Value.IdImagePath);
+            return File(stream, contentType);
         }
-
     }
 }

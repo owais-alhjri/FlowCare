@@ -13,11 +13,11 @@ namespace FlowCare.API.Controllers
         [HttpPost]
         public async Task<ActionResult> UserLogin([FromBody] UserLoginDto userLoginDto)
         {
-            var username = userLoginDto.Username;
-            var password = userLoginDto.Password;
-            var user = await userService.Login(username, password);
+            var result = await userService.Login(userLoginDto.Username, userLoginDto.Password);
+            if (result.IsFailure)
+                return Unauthorized(result.Error);
 
-            return Ok(user);
+            return Ok(result.Value);
         }
     }
 }

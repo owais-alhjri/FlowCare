@@ -29,6 +29,5 @@ public class BranchConfigurations : IEntityTypeConfiguration<Branch>
             .IsRequired();
         builder.HasIndex(b => b.City)
             .IsUnique();
-
     }
 }

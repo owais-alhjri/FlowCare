@@ -8,29 +8,35 @@ namespace FlowCare.API.Controllers
 {
     [Route("api/admin")]
     [ApiController]
-    public class AdminController(SlotService slotService, ICsvExportService csvExportService, AuditLogService auditLogService) : ControllerBase
+    public class AdminController(
+        SlotService slotService,
+        ICsvExportService csvExportService,
+        AuditLogService auditLogService) : ControllerBase
     {
-
         [HttpDelete("slots/cleanup")]
         [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult> CleanUpSlots()
         {
             var adminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
             if (adminId is null)
-            {
                 return Unauthorized();
-            }
-            var slotsDeleted = await slotService.CleanUpSlots(adminId);
-            return Ok(new { Message = $"Successfully deleted {slotsDeleted} slot" });
+
+            var result = await slotService.CleanUpSlots(adminId);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            return Ok(new { Message = $"Successfully deleted {result.Value} slot(s)" });
         }
 
         [HttpGet("export/auditLog")]
         [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult> ExportAuditLogToCsv()
         {
-            var data = await auditLogService.AllLogs();
-            var csvBytes = csvExportService.Export(data);
+            var result = await auditLogService.AllLogs();
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            var csvBytes = csvExportService.Export(result.Value!);
             return File(csvBytes, "text/csv", "audit-logs.csv");
         }
     }

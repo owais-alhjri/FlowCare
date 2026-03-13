@@ -11,7 +11,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
@@ -38,6 +37,4 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
-
 }

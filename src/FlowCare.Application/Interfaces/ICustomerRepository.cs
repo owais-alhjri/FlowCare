@@ -13,6 +13,4 @@ public interface ICustomerRepository
     Task<User?> ExistsByStaffId(string staffId);
     Task<User?> FetchLastId();
     Task<List<User>> ListTheCustomers();
-
-
 }

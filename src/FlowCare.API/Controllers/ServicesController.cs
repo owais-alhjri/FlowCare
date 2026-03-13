@@ -8,14 +8,18 @@ namespace FlowCare.API.Controllers
 {
     [Route("api/service")]
     [ApiController]
-    public class ServicesController(ServiceTypeService serviceTypeService, StaffServiceService staffServiceService) : ControllerBase
+    public class ServicesController(ServiceTypeService serviceTypeService, StaffServiceService staffServiceService)
+        : ControllerBase
     {
         [HttpGet("branches/{branchId}")]
         [AllowAnonymous]
         public async Task<ActionResult> FetchServiceByBranch(string branchId)
         {
-            var services = await serviceTypeService.FetchServiceByBranch(branchId);
-            return Ok(services);
+            var result = await serviceTypeService.FetchServiceByBranch(branchId);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            return Ok(result.Value);
         }
 
         [HttpPost("assign/staff")]
@@ -25,11 +29,12 @@ namespace FlowCare.API.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
                 return Unauthorized();
-            var assignedStaff = await staffServiceService.AssignStaffToServiceAndBranch(dto, userId);
 
-            return Ok(assignedStaff);
+            var result = await staffServiceService.AssignStaffToServiceAndBranch(dto, userId);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
+            return Ok(result.Value);
         }
-
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowCare.Infrastructure.Repositories;
 
-public class AuditLogRepository(FlowCareDbContext dbContext ) : IAuditLogRepository
+public class AuditLogRepository(FlowCareDbContext dbContext) : IAuditLogRepository
 {
     public async Task<AuditLog> AddLog(AuditLog auditLog)
     {
@@ -17,7 +17,7 @@ public class AuditLogRepository(FlowCareDbContext dbContext ) : IAuditLogReposit
 
     public async Task<AuditLog?> FetchLastLog()
     {
-       return await dbContext.AuditLogs.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+        return await dbContext.AuditLogs.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
     }
 
     public async Task<List<AuditLog>> FetchLogs(string userId)

@@ -23,7 +23,7 @@ public class DataSeeder(FlowCareDbContext db, IPasswordHasher passwordHasher)
             Converters = { new JsonStringEnumConverter() }
         };
         var seedData = JsonSerializer.Deserialize<SeedData>(json, options)
-            ?? throw new Exception("Failed to deserialize seed data.");
+                       ?? throw new Exception("Failed to deserialize seed data.");
 
         var allUserDtos = (seedData.Users.Admin ?? [])
             .Concat(seedData.Users.BranchManagers ?? [])
@@ -33,7 +33,8 @@ public class DataSeeder(FlowCareDbContext db, IPasswordHasher passwordHasher)
 
 
         await SeedEntitiesAsync(db.Users, allUserDtos,
-            u => new User(u.Id, u.UserName, passwordHasher.Hash(u.Password), u.UserRole, u.FullName, u.Email, u.Phone, u.BranchId, u.IsActive));
+            u => new User(u.Id, u.UserName, passwordHasher.Hash(u.Password), u.UserRole, u.FullName, u.Email, u.Phone,
+                u.BranchId, u.IsActive));
 
         await SeedEntitiesAsync(db.Branches, seedData.Branches,
             b => new Branch(b.Id, b.Name, b.City, b.Address, b.Timezone, b.IsActive));
@@ -74,7 +75,7 @@ public class DataSeeder(FlowCareDbContext db, IPasswordHasher passwordHasher)
         Console.WriteLine("✅ Seed complete.");
     }
 
-    private static AuditLog CreateAuditLogDirectly(AuditLogSeedDto dto )
+    private static AuditLog CreateAuditLogDirectly(AuditLogSeedDto dto)
     {
         var auditLog = (AuditLog)Activator.CreateInstance(typeof(AuditLog), nonPublic: true)!;
 
@@ -97,6 +98,7 @@ public class DataSeeder(FlowCareDbContext db, IPasswordHasher passwordHasher)
 
         return auditLog;
     }
+
     private static async Task SeedEntitiesAsync<TDto, TEntity>(
         DbSet<TEntity> dbSet,
         List<TDto>? data,
@@ -139,6 +141,6 @@ public class DataSeeder(FlowCareDbContext db, IPasswordHasher passwordHasher)
         if (newEntries.Count > 0)
             await dbSet.AddRangeAsync(newEntries);
     }
-    private static DateTimeOffset ToUtc(DateTimeOffset dto) => dto.ToUniversalTime();
 
+    private static DateTimeOffset ToUtc(DateTimeOffset dto) => dto.ToUniversalTime();
 }

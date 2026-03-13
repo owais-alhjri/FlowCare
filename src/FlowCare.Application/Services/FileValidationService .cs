@@ -7,8 +7,8 @@ public class FileValidationService
     private static readonly string[] ImageTypes = { "image/jpeg", "image/png", "image/webp" };
     private static readonly string[] AttachmentTypes = { "image/jpeg", "image/png", "image/webp", "application/pdf" };
 
-    private const long MaxIdImageSize = 3 * 1024 * 1024;       // 3 MB
-    private const long MaxAttachmentSize = 5 * 1024 * 1024;    // 5 MB
+    private const long MaxIdImageSize = 3 * 1024 * 1024; // 3 MB
+    private const long MaxAttachmentSize = 5 * 1024 * 1024; // 5 MB
 
     public (bool IsValid, string? Error) ValidateIdImage(IFormFile? file)
     {

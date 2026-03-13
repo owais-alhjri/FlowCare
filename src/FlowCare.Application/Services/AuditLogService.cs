@@ -1,4 +1,5 @@
-﻿using FlowCare.Application.Features.AuditLog.DTOs;
+﻿using FlowCare.Application.Common;
+using FlowCare.Application.Features.AuditLog.DTOs;
 using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 
@@ -6,33 +7,28 @@ namespace FlowCare.Application.Services;
 
 public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRepository customerRepository)
 {
-
-    public async Task<AuditLogResponseDto> AddLog(CreateAuditLogDto dto)
+    public async Task<Result<AuditLogResponseDto>> AddLog(CreateAuditLogDto dto)
     {
-
-        var logPiss = "aud_";
+        var logPrefix = "aud_";
         var lastLog = await auditLogRepository.FetchLastLog();
-
         string fullId;
         if (lastLog is null)
-        {
-            fullId = logPiss + "001";
-        }
+            fullId = logPrefix + "001";
         else
         {
-            var lasIdString = lastLog.Id.Substring(logPiss.Length);
-
-            var lastNumber = int.Parse(lasIdString);
-            var nextNumber = lastNumber + 1;
-
-            fullId = logPiss + nextNumber.ToString("D3");
+            var lastIdString = lastLog.Id.Substring(logPrefix.Length);
+            var lastNumber = int.Parse(lastIdString);
+            fullId = logPrefix + (lastNumber + 1).ToString("D3");
         }
-        var user = await customerRepository.ExistIdAsync(dto.ActorId) ?? throw new ArgumentException("User not found");
+
+        var user = await customerRepository.ExistIdAsync(dto.ActorId);
+        if (user is null)
+            return Result<AuditLogResponseDto>.Fail("User not found");
+
         var logs = new AuditLog(fullId, user, dto.ActionType, dto.EntityType, dto.EntityId, dto.Metadata);
         var auditLog = await auditLogRepository.AddLog(logs);
 
-
-        return new AuditLogResponseDto
+        return Result<AuditLogResponseDto>.Success(new AuditLogResponseDto
         {
             Id = auditLog.Id,
             ActionType = auditLog.ActionType,
@@ -42,16 +38,14 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
             EntityType = auditLog.EntityType,
             Timestamp = auditLog.Timestamp,
             Metadata = auditLog.Metadata,
-        } ;
+        });
     }
 
-    public async Task<List<AuditLogResponseDto>> ViewLogs(string userId)
+    public async Task<Result<List<AuditLogResponseDto>>> ViewLogs(string userId)
     {
-
         var logs = await auditLogRepository.FetchLogs(userId);
-        
 
-        return logs.Select(c => new AuditLogResponseDto
+        return Result<List<AuditLogResponseDto>>.Success(logs.Select(c => new AuditLogResponseDto
         {
             Id = c.Id,
             ActionType = c.ActionType,
@@ -61,13 +55,14 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
             EntityType = c.EntityType,
             Timestamp = c.Timestamp,
             Metadata = c.Metadata
-        }).ToList();
+        }).ToList());
     }
 
-    public async Task<List<AuditLogCsvDto>> AllLogs()
+    public async Task<Result<List<AuditLogCsvDto>>> AllLogs()
     {
         var logs = await auditLogRepository.AllLogs();
-        return logs.Select(log => new AuditLogCsvDto
+
+        return Result<List<AuditLogCsvDto>>.Success(logs.Select(log => new AuditLogCsvDto
         {
             Id = log.Id,
             ActionType = log.ActionType,
@@ -77,7 +72,6 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
             EntityType = log.EntityType,
             Timestamp = log.Timestamp,
             Metadata = log.Metadata.RootElement.ToString()
-        }).ToList();
-    } 
-
+        }).ToList());
+    }
 }

@@ -26,6 +26,5 @@ public class StaffRepository(FlowCareDbContext dbContext) : IStaffRepository
         }
 
         throw new UnauthorizedAccessException("Only admin or manager can fetch staff");
-
     }
 }

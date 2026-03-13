@@ -11,5 +11,4 @@ public class UserLoginDto
     [Required]
     [StringLength(100, MinimumLength = 8, ErrorMessage = "Invalid username or password")]
     public string Password { get; set; } = null!;
-
 }

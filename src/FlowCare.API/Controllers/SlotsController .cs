@@ -14,65 +14,62 @@ namespace FlowCare.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> FetchSlots(string branchId, string serviceTypeId, [FromQuery] DateTime? date)
         {
-            var slots = await slotService.FetchSlotByBranchAndServiceType(branchId, serviceTypeId, date);
-            return Ok(slots);
+            var result = await slotService.FetchSlotByBranchAndServiceType(branchId, serviceTypeId, date);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            return Ok(result.Value);
         }
 
-        // this API for the manager nad admin to create one or bulk of slots
         [HttpPost]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> CreateSlot([FromBody] List<CreateSlotDto> createSlotDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
-            {
                 return Unauthorized();
-            }
 
-            var listOfSlot = new List<object>();
+            var listOfSlots = new List<ResponseSlotDto>();
             foreach (var dto in createSlotDto)
             {
-                var slot = await slotService.CreateSlot(dto, userId);
-                listOfSlot.Add(slot);
+                var result = await slotService.CreateSlot(dto, userId);
+                if (result.IsFailure)
+                    return BadRequest(result.Error);
+
+                listOfSlots.Add(result.Value!);
             }
 
-
-            return Ok(listOfSlot);
+            return Ok(listOfSlots);
         }
 
-        // this API to update slot by slot id
-        // admin => can update all slots
-        // manager => can update slots for his own branch
         [HttpPatch("{slotId}")]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> UpdateSlot(string slotId, [FromBody] UpdateSlotDto updateSlotDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
-            {
                 return Unauthorized();
-            }
 
-            var slot = await slotService.UpdateSlot(slotId, userId, updateSlotDto);
+            var result = await slotService.UpdateSlot(slotId, userId, updateSlotDto);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
-            return Ok(slot);
+            return Ok(result.Value);
         }
 
         [HttpDelete("{slotId}")]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> DeleteSlot(string slotId)
         {
-            var user = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (user == null)
-            {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId is null)
                 return Unauthorized();
-            }
 
-            var slot = await slotService.SoftDeleteSlot(slotId, user);
+            var result = await slotService.SoftDeleteSlot(slotId, userId);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
-            return Ok(slot);
+            return Ok(result.Value);
         }
-
-
     }
 }

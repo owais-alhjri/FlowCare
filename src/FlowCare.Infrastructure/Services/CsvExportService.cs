@@ -14,6 +14,5 @@ public class CsvExportService : ICsvExportService
         csv.WriteRecords(data);
         writer.Flush();
         return ms.ToArray();
-
     }
 }

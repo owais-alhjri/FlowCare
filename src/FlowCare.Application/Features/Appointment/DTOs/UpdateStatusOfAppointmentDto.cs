@@ -8,5 +8,4 @@ public class UpdateStatusOfAppointmentDto
 
     public Status Status { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
-
 }

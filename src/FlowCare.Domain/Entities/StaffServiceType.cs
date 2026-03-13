@@ -16,7 +16,7 @@ public class StaffServiceType
 
     public User Staff { get; private set; }
 
-    public StaffServiceType(User staff , string serviceTypeId)
+    public StaffServiceType(User staff, string serviceTypeId)
     {
         ValidateCommon(staff, serviceTypeId);
         StaffId = staff.Id;
@@ -30,7 +30,8 @@ public class StaffServiceType
         {
             throw new ArgumentException("User is not a staff");
         }
-        if (string.IsNullOrWhiteSpace(staff.Id) || staff.Id.Length < 6 || staff.Id.Length >100)
+
+        if (string.IsNullOrWhiteSpace(staff.Id) || staff.Id.Length < 6 || staff.Id.Length > 100)
         {
             throw new ArgumentException("Invalid staff ID");
         }

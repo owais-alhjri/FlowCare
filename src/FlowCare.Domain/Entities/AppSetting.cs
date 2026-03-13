@@ -16,5 +16,4 @@ public class AppSetting
         Value = value;
         Description = description;
     }
-
 }

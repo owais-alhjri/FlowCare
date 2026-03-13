@@ -18,6 +18,5 @@ public class AppSettingConfigurations : IEntityTypeConfiguration<AppSetting>
             .HasMaxLength(500);
         builder.Property(a => a.Description)
             .HasMaxLength(200);
-
     }
 }

@@ -30,7 +30,8 @@ public class Slot
 
     public User Staff { get; private set; }
 
-    public Slot(string id, string branchId, string serviceTypeId, User staff, DateTimeOffset startedAt, int durationMinutes,
+    public Slot(string id, string branchId, string serviceTypeId, User staff, DateTimeOffset startedAt,
+        int durationMinutes,
         int capacity, bool isActive)
     {
         ValidateCommon(id, staff, branchId, serviceTypeId, durationMinutes, capacity, startedAt);
@@ -47,21 +48,24 @@ public class Slot
         IsActive = isActive;
     }
 
-    private static void ValidateCommon(string id,User staff, string branchId, string serviceTypeId,
-         int durationMinutes, int capacity, DateTimeOffset startedAt)
+    private static void ValidateCommon(string id, User staff, string branchId, string serviceTypeId,
+        int durationMinutes, int capacity, DateTimeOffset startedAt)
     {
         if (staff.UserRole != UserRole.STAFF)
         {
             throw new ArgumentException("User is not a staff");
         }
+
         if (string.IsNullOrWhiteSpace(id) || id.Length < 6 || id.Length > 100)
         {
             throw new ArgumentException("Invalid ID");
         }
+
         if (string.IsNullOrWhiteSpace(branchId) || branchId.Length < 6 || branchId.Length > 100)
         {
             throw new ArgumentException("Invalid branch ID");
         }
+
         if (string.IsNullOrWhiteSpace(serviceTypeId) || serviceTypeId.Length < 6 || serviceTypeId.Length > 100)
         {
             throw new ArgumentException("Invalid service type ID");
@@ -72,7 +76,7 @@ public class Slot
             throw new ArgumentException("Invalid duration minutes");
         }
 
-        if (capacity < 1 ||capacity >100)
+        if (capacity < 1 || capacity > 100)
         {
             throw new ArgumentException("Invalid capacity");
         }
@@ -83,7 +87,7 @@ public class Slot
         }
     }
 
-    public  void ChangeActive(bool isActive)
+    public void ChangeActive(bool isActive)
     {
         if (isActive == true)
         {

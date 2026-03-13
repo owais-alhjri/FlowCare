@@ -9,19 +9,19 @@ namespace FlowCare.API.Controllers
     [ApiController]
     public class AuditLogController(AuditLogService auditLogService) : ControllerBase
     {
-
         [HttpGet]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> ViewLogs()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null)
-            {
+            if (userId is null)
                 return Unauthorized();
-            }
 
-            var logs = await auditLogService.ViewLogs(userId);
-            return Ok(logs);
+            var result = await auditLogService.ViewLogs(userId);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            return Ok(result.Value);
         }
     }
 }

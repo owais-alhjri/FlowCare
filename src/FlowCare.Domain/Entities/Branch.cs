@@ -31,22 +31,25 @@ public class Branch
         {
             throw new ArgumentException("Invalid ID");
         }
+
         if (string.IsNullOrWhiteSpace(name) || name.Length < 3 || name.Length > 100)
         {
             throw new ArgumentException("Invalid name");
         }
+
         if (string.IsNullOrWhiteSpace(city) || city.Length < 3 || city.Length > 100)
         {
             throw new ArgumentException("Invalid city");
         }
+
         if (string.IsNullOrWhiteSpace(address) || address.Length < 6 || address.Length > 100)
         {
             throw new ArgumentException("Invalid address");
         }
+
         if (string.IsNullOrWhiteSpace(timezone) || timezone.Length < 6 || timezone.Length > 100)
         {
             throw new ArgumentException("Invalid timezone");
         }
     }
-
 }

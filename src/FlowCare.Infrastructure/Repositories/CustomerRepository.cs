@@ -8,10 +8,9 @@ namespace FlowCare.Infrastructure.Repositories;
 
 public class CustomerRepository(FlowCareDbContext dbContext) : ICustomerRepository
 {
-
     public async Task Register(User user)
     {
-         await dbContext.Users.AddAsync(user);
+        await dbContext.Users.AddAsync(user);
     }
 
     public async Task SaveChangesAsync()
@@ -22,15 +21,15 @@ public class CustomerRepository(FlowCareDbContext dbContext) : ICustomerReposito
     public async Task<User?> ExistIdAsync(string id)
     {
         return await dbContext.Users.FindAsync(id);
-
     }
 
     public async Task<User?> ExistsEmailAsync(string email)
     {
-        return await dbContext.Users.FirstOrDefaultAsync(x=>x.Email == email);
+        return await dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
     }
+
     public async Task<User?> ExistsUsernameAsync(string username)
-    { 
+    {
         return await dbContext.Users.FirstOrDefaultAsync(x => x.UserName == username);
     }
 
@@ -51,8 +50,6 @@ public class CustomerRepository(FlowCareDbContext dbContext) : ICustomerReposito
 
     public async Task<List<User>> ListTheCustomers()
     {
-
         return await dbContext.Users.AsNoTracking().Where(u => u.UserRole == UserRole.CUSTOMER).ToListAsync();
-
     }
 }

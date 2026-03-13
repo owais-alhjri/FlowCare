@@ -7,7 +7,6 @@ namespace FlowCare.Infrastructure.Repositories;
 
 public class BranchesRepository(FlowCareDbContext dbContext) : IBranchesRepository
 {
-
     public async Task<List<Branch>> BranchesList()
     {
         // Adding AsNoTracking will make the EF give the data without tracking it | it will make it faster

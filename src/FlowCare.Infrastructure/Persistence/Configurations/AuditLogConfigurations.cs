@@ -12,10 +12,10 @@ public class AuditLogConfigurations : IEntityTypeConfiguration<AuditLog>
         builder.HasKey(a => a.Id);
         builder.Property(a => a.Id)
             .IsRequired()
-            .HasMaxLength(100);        
+            .HasMaxLength(100);
         builder.Property(a => a.ActionType)
             .IsRequired()
-            .HasMaxLength(100);        
+            .HasMaxLength(100);
         builder.Property(a => a.ActorId)
             .IsRequired()
             .HasMaxLength(100);
@@ -23,7 +23,7 @@ public class AuditLogConfigurations : IEntityTypeConfiguration<AuditLog>
             .IsRequired();
         builder.Property(a => a.EntityId)
             .IsRequired()
-            .HasMaxLength(100);        
+            .HasMaxLength(100);
         builder.Property(a => a.EntityType)
             .IsRequired()
             .HasMaxLength(100);

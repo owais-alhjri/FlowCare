@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FlowCare.Infrastructure.Persistence.Configurations;
 
-public class AppointmentConfigurations: IEntityTypeConfiguration<Appointment>
+public class AppointmentConfigurations : IEntityTypeConfiguration<Appointment>
 {
     public void Configure(EntityTypeBuilder<Appointment> builder)
     {
@@ -49,9 +49,9 @@ public class AppointmentConfigurations: IEntityTypeConfiguration<Appointment>
             .HasForeignKey(a => a.SlotId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(a=>a.Customer)
+        builder.HasOne(a => a.Customer)
             .WithMany()
-            .HasForeignKey(a =>a.CustomerId)
+            .HasForeignKey(a => a.CustomerId)
             .OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(a => a.Staff)
             .WithMany()
@@ -64,6 +64,5 @@ public class AppointmentConfigurations: IEntityTypeConfiguration<Appointment>
         builder.HasIndex(a => a.CustomerId);
         builder.HasIndex(a => a.BranchId);
         builder.HasIndex(a => a.ServiceTypeId);
-
     }
 }

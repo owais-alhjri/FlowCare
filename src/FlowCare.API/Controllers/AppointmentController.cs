@@ -1,5 +1,4 @@
-﻿using System.Net.Mail;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using FlowCare.Application.Features.Appointment.DTOs;
 using FlowCare.Application.Interfaces;
 using FlowCare.Application.Services;
@@ -10,19 +9,17 @@ namespace FlowCare.API.Controllers
 {
     [Route("api/appointment")]
     [ApiController]
-    public class AppointmentController(AppointmentService appointmentService, IStorageService storageService ) : ControllerBase
+    public class AppointmentController(AppointmentService appointmentService, IStorageService storageService)
+        : ControllerBase
     {
         [HttpPost]
         [Authorize(Roles = "CUSTOMER")]
         public async Task<ActionResult> BookAppointment([FromForm] BookAppointmentDto dto,
             [FromServices] FileValidationService validator)
         {
-
             var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (customerId is null)
-            {
                 return Unauthorized();
-            }
 
             if (dto.AttachmentPath != null)
             {
@@ -31,127 +28,109 @@ namespace FlowCare.API.Controllers
                     return BadRequest(error);
             }
 
-            try
-            {
-                await appointmentService.BookAppointment(dto, customerId);
-                return Ok();
+            var result = await appointmentService.BookAppointment(dto, customerId);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
+            return Ok();
         }
 
-        // Staff → view appointments assigned to them
-        // Branch Manager → view appointments within their branch
-        // Admin → view appointments across all branches
-        // customer → view his own appointments
         [HttpGet]
         [Authorize(Policy = "AnyAuthenticatedUser")]
         public async Task<ActionResult> AppointmentById()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
-            {
                 return Unauthorized();
-            }
 
-            var appointmentById = await appointmentService.AppointmentById(userId);
+            var result = await appointmentService.AppointmentById(userId);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
-            return Ok(appointmentById);
+            return Ok(result.Value);
         }
 
-        // this for the customer to get appointment details 
         [HttpGet("{appointmentId}")]
         [Authorize(Roles = "CUSTOMER")]
         public async Task<ActionResult> AppointmentDetails(string appointmentId)
         {
-            var appointment = await appointmentService.AppointmentDetails(appointmentId);
+            var result = await appointmentService.AppointmentDetails(appointmentId);
+            if (result.IsFailure)
+                return NotFound(result.Error);
 
-            return Ok(appointment);
+            return Ok(result.Value);
         }
 
-        // this for the customer to cancel his appointment
         [HttpPatch("{appointmentId}/cancel")]
         [Authorize(Roles = "CUSTOMER")]
         public async Task<ActionResult> CancelAppointment(string appointmentId)
         {
             var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (customerId is null)
-            {
                 return Unauthorized();
-            }
 
-            var appointmentIdChecker = await appointmentService.AppointmentDetails(appointmentId)
-                                       ?? throw new ArgumentException("Appointment no found");
+            var result = await appointmentService.CancelAppointment(appointmentId, customerId);
 
-            if (customerId != appointmentIdChecker.CustomerId)
-            {
-                return Unauthorized();
-            }
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
-            var appointment = await appointmentService.CancelAppointment(appointmentId, customerId);
-
-
-            return Ok(appointment);
+            return Ok(result.Value);
         }
 
-        // this for the customer to reschedule his appointment
         [HttpPatch("{appointmentId}/reschedule")]
         [Authorize(Roles = "CUSTOMER")]
         public async Task<ActionResult> RescheduleAppointment(string appointmentId, [FromBody] string slotId)
         {
             var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var appointmentIdChecker = await appointmentService.AppointmentDetails(appointmentId)
-                                       ?? throw new ArgumentException("Appointment no found");
-            if (customerId != appointmentIdChecker.CustomerId)
-            {
+            if (customerId is null)
                 return Unauthorized();
-            }
 
-            var appointment = await appointmentService.Reschedule(appointmentId, slotId, customerId);
+            var detailsResult = await appointmentService.AppointmentDetails(appointmentId);
+            if (detailsResult.IsFailure)
+                return NotFound(detailsResult.Error);
 
-            return Ok(appointment);
+            if (customerId != detailsResult.Value!.CustomerId)
+                return Unauthorized();
+
+            var result = await appointmentService.Reschedule(appointmentId, slotId, customerId);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            return Ok(result.Value);
         }
 
-        // Staff → update the status appointments assigned to them
-        // Branch Manager → update the status appointments within their branch
-        // Admin → update the status appointments across all branches
         [HttpPatch("{appointmentId}/update/status")]
         [Authorize(Policy = "StaffOrAbove")]
         public async Task<ActionResult> UpdateAppointmentStatus(string appointmentId, [FromBody] string status)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
-            {
                 return Unauthorized();
-            }
 
+            var result = await appointmentService.UpdateAppointmentStatus(appointmentId, userId, status);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
-
-            var appointment = await appointmentService.UpdateAppointmentStatus(appointmentId, userId, status);
-
-
-            return Ok(appointment);
+            return Ok(result.Value);
         }
-
 
         [HttpGet("attachment/{appointmentId}")]
         [Authorize(Policy = "AnyAuthenticatedUser")]
         public async Task<IActionResult> GetAttachment(string appointmentId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null)
+            if (userId is null)
                 return Unauthorized();
 
-            var appointment = await appointmentService.GetAppointmentAttachment(appointmentId, userId);
-            if (string.IsNullOrEmpty(appointment.AttachmentPath))
-                return NotFound("No attachment found for this appointment") ;
+            var result = await appointmentService.GetAppointmentAttachment(appointmentId, userId);
+            if (result.IsFailure)
+                return NotFound(result.Error);
 
-            var (stream, contentType) = await storageService.GetFileAsync(appointment.AttachmentPath);
-            return base.File(stream, contentType);
+            if (string.IsNullOrEmpty(result.Value!.AttachmentPath))
+                return NotFound("No attachment found for this appointment");
+
+            var (stream, contentType) = await storageService.GetFileAsync(result.Value.AttachmentPath);
+            return File(stream, contentType);
         }
     }
 }

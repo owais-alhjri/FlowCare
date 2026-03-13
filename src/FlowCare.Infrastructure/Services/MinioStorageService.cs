@@ -6,8 +6,6 @@ namespace FlowCare.Infrastructure.Services;
 
 public class MinioStorageService(IMinioClient minioClient) : IStorageService
 {
-
-
     public async Task<string> UploadFileAsync(string bucketName, string objectName, Stream content, string contentType)
     {
         // to check if the bucket exists
@@ -31,6 +29,7 @@ public class MinioStorageService(IMinioClient minioClient) : IStorageService
         // Return the format: "bucket/filename"
         return $"{bucketName}/{objectName}";
     }
+
     public async Task<(Stream Content, string ContentType)> GetFileAsync(string fullPath)
     {
         var parts = fullPath.Split('/');
@@ -48,5 +47,4 @@ public class MinioStorageService(IMinioClient minioClient) : IStorageService
 
         return (memoryStream, stat.ContentType);
     }
-
 }

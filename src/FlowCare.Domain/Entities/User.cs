@@ -18,7 +18,7 @@ public class User
 
     // Branch ID is nullable because some roles don't need it, only branch manager and staff must have it
     public string? BranchId { get; private set; }
-    public bool IsActive  { get; private set; }
+    public bool IsActive { get; private set; }
     public string? IdImagePath { get; private set; }
 
     protected User()
@@ -26,7 +26,7 @@ public class User
     }
 
     public User(string id, string userName, string password, UserRole userRole, string fullName, string email,
-        string? phone,string? branchId ,bool isActive)
+        string? phone, string? branchId, bool isActive)
     {
         ValidateCommon(id, userName, password, fullName, email);
         ValidateRole(phone, userRole, branchId);
@@ -53,7 +53,6 @@ public class User
 
     private void ValidateRole(string? phone, UserRole userRole, string? branchId)
     {
-
         // if the manager or staff entered a phone, he will get error
         if (userRole != UserRole.CUSTOMER && phone is not null)
             throw new ArgumentException("Only customers can have phone numbers");
@@ -67,20 +66,20 @@ public class User
 
             BranchId = branchId;
         }
+
         // if customer entered a branch ID it will throw error
         if ((userRole != UserRole.BRANCH_MANAGER && userRole != UserRole.STAFF) && branchId is not null)
         {
             throw new ArgumentException("Only branch manager and staff can have branch ID");
         }
+
         var isValidPhone = Regex.IsMatch(phone ?? "", @"^(\+968)?\d{8}$");
         if (userRole == UserRole.CUSTOMER)
         {
             if (!isValidPhone)
                 throw new ArgumentException("Invalid Oman phone number");
             Phone = phone!.StartsWith("+968") ? phone : $"+968{phone}";
-
         }
-
     }
 
     private static void ValidateCommon(string id, string userName, string password, string fullName, string email)
@@ -99,7 +98,5 @@ public class User
         if (userName.Length < 3 || userName.Length > 100) throw new ArgumentException("Invalid username");
         if (fullName.Length < 6 || fullName.Length > 100) throw new ArgumentException("Invalid full name");
         if (!isValidEmail) throw new ArgumentException("Invalid email");
-
     }
-
 }

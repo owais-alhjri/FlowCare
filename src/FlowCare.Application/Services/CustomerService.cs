@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using FlowCare.Application.Common;
 using FlowCare.Application.Features.User.Customer.DTOs;
 using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
@@ -7,29 +8,29 @@ using FlowCare.Domain.Enums;
 
 namespace FlowCare.Application.Services;
 
-public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository customerRepository, IStorageService storageService) : ICustomerService
+public class CustomerService(
+    IPasswordHasher passwordHasher,
+    ICustomerRepository customerRepository,
+    IStorageService storageService) : ICustomerService
 {
-
-    public async Task<CustomerResponseDto> Register(CustomerRegisterDto userDto )
+    public async Task<Result<CustomerResponseDto>> Register(CustomerRegisterDto userDto)
     {
-
-
         var isValidPassword = Regex.IsMatch(
             userDto.Password,
             @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$"
         );
         if (string.IsNullOrWhiteSpace(userDto.Password) || !isValidPassword)
-            throw new ArgumentException("Invalid password");
+            return Result<CustomerResponseDto>.Fail("Invalid password");
 
 
         if (await customerRepository.ExistsEmailAsync(userDto.Email) != null)
         {
-            throw new ArgumentException("Email already exist");
-        } 
-        
+            return Result<CustomerResponseDto>.Fail("Email already exist");
+        }
+
         if (await customerRepository.ExistsUsernameAsync(userDto.UserName) != null)
         {
-            throw new ArgumentException("Username already exist");
+            return Result<CustomerResponseDto>.Fail("Username already exist");
         }
 
         var prefix = "usr_cust_";
@@ -58,13 +59,13 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
 
         var hash = passwordHasher.Hash(userDto.Password);
         var user = new User(fullId, userDto.UserName, hash, UserRole.CUSTOMER,
-            userDto.FullName, userDto.Email, userDto.Phone,null, isActive:true);
+            userDto.FullName, userDto.Email, userDto.Phone, null, isActive: true);
 
         user.SetIdImagePath(dbReference);
         await customerRepository.Register(user);
         await customerRepository.SaveChangesAsync();
 
-        return new CustomerResponseDto
+        return Result<CustomerResponseDto>.Success(new CustomerResponseDto
         {
             Id = user.Id,
             Email = user.Email,
@@ -74,32 +75,30 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
             UserRole = user.UserRole,
             IsActive = user.IsActive,
             Phone = user.Phone,
-        };
-
+        });
     }
 
-    public async Task<User?> Login(string identifier, string password)
+    public async Task<Result<User>> Login(string identifier, string password)
     {
-        var user = await customerRepository.ExistsUsernameAsync(identifier) ?? await customerRepository.ExistsEmailAsync(identifier);
+        var user = await customerRepository.ExistsUsernameAsync(identifier)
+                   ?? await customerRepository.ExistsEmailAsync(identifier);
 
-        if (user == null )
-        {
-            return null;
-        }
+        if (user is null)
+            return Result<User>.Fail("Invalid credentials");
 
         if (!passwordHasher.Verify(password, user.Password))
-        {
-            return null;
-        }
+            return Result<User>.Fail("Invalid credentials");
 
-        return user;
+        return Result<User>.Success(user);
     }
 
-    public async Task<List<CustomerResponseDto>> CustomerList()
+    public async Task<Result<List<CustomerResponseDto>>> CustomerList()
     {
-        var customers = await customerRepository.ListTheCustomers()?? throw new ArgumentException("Customer list is not available");
+        var customers = await customerRepository.ListTheCustomers();
+        if (customers is null)
+            return Result<List<CustomerResponseDto>>.Fail("Customer list is not available");
 
-        return customers.Select(c => new CustomerResponseDto
+        var result = customers.Select(c => new CustomerResponseDto
         {
             Id = c.Id,
             Email = c.Email,
@@ -109,12 +108,17 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
             UserRole = c.UserRole,
             IsActive = c.IsActive
         }).ToList();
+
+        return Result<List<CustomerResponseDto>>.Success(result);
     }
 
-    public async Task<CustomerResponseDto> GetCustomerById(string customerId)
+    public async Task<Result<CustomerResponseDto>> GetCustomerById(string customerId)
     {
-        var customer = await customerRepository.ExistIdAsync(customerId) ?? throw new ArgumentException("Customer is not found");
-        return new CustomerResponseDto
+        var customer = await customerRepository.ExistIdAsync(customerId);
+        if (customer is null)
+            return Result<CustomerResponseDto>.Fail("Customer not found");
+
+        return Result<CustomerResponseDto>.Success(new CustomerResponseDto
         {
             Id = customer.Id,
             Email = customer.Email,
@@ -124,6 +128,6 @@ public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository
             UserRole = customer.UserRole,
             IsActive = customer.IsActive,
             IdImagePath = customer.IdImagePath
-        };
+        });
     }
 }

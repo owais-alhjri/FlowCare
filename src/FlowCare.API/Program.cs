@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.AddSecurityDefinition("BasicAuth",new OpenApiSecurityScheme
+    c.AddSecurityDefinition("BasicAuth", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
         Scheme = "basic",
@@ -31,11 +31,11 @@ builder.Services.AddSwaggerGen(c =>
                     Type = ReferenceType.SecurityScheme,
                     Id = "BasicAuth"
                 }
-            },[]
+            },
+            []
         }
     });
 });
-
 
 
 builder.Services.AddDbContext<FlowCareDbContext>(options =>
@@ -53,18 +53,15 @@ builder.Services.AddAuthorization(options =>
         .Build();
 
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("ADMIN"));
-    options.AddPolicy("ManagerOrAbove",policy=> policy.RequireRole("ADMIN","BRANCH_MANAGER"));
-    options.AddPolicy("StaffOrAbove", policy=> policy.RequireRole("ADMIN", "BRANCH_MANAGER", "STAFF"));
+    options.AddPolicy("ManagerOrAbove", policy => policy.RequireRole("ADMIN", "BRANCH_MANAGER"));
+    options.AddPolicy("StaffOrAbove", policy => policy.RequireRole("ADMIN", "BRANCH_MANAGER", "STAFF"));
     options.AddPolicy("CustomerOnly", policy => policy.RequireRole("CUSTOMER"));
-    options.AddPolicy("AnyAuthenticatedUser", policy=> policy.RequireRole("CUSTOMER", "ADMIN", "BRANCH_MANAGER", "STAFF"));
-
+    options.AddPolicy("AnyAuthenticatedUser",
+        policy => policy.RequireRole("CUSTOMER", "ADMIN", "BRANCH_MANAGER", "STAFF"));
 });
 
 builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+    .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 builder.Services.AddMinio(config => config
     .WithEndpoint(builder.Configuration["MinIO:Endpoint"])
     .WithCredentials(builder.Configuration["MinIO:AccessKey"], builder.Configuration["MinIO:SecretKey"])
@@ -96,5 +93,3 @@ app.MapControllers();
 
 
 app.Run();
-
-

@@ -5,18 +5,22 @@ using FlowCare.Infrastructure.Persistence;
 
 namespace FlowCare.Infrastructure.Repositories;
 
-public class StaffServiceTypeRepository(FlowCareDbContext dbContext, ICustomerRepository customerRepository, IServicesTypeRepository servicesTypeRepository ) : IStaffServiceTypeRepository
+public class StaffServiceTypeRepository(
+    FlowCareDbContext dbContext,
+    ICustomerRepository customerRepository,
+    IServicesTypeRepository servicesTypeRepository) : IStaffServiceTypeRepository
 {
     public async Task<StaffServiceType?> AssignStaffToServiceAndBranch(StaffServiceType staffServiceType, string userId)
     {
         var serviceTypeId = staffServiceType.ServiceTypeId;
-        var serviceType = await servicesTypeRepository.ExistIdAsync(serviceTypeId)?? throw new ArgumentException("Service Type Not Found");
+        var serviceType = await servicesTypeRepository.ExistIdAsync(serviceTypeId) ??
+                          throw new ArgumentException("Service Type Not Found");
         var user = await customerRepository.ExistIdAsync(userId);
         if (user == null)
         {
             throw new UnauthorizedAccessException("User Not Found");
         }
-        
+
 
         if (user.UserRole == UserRole.ADMIN)
         {
@@ -29,6 +33,7 @@ public class StaffServiceTypeRepository(FlowCareDbContext dbContext, ICustomerRe
             {
                 throw new UnauthorizedAccessException("Managers can only add service types to their own branch");
             }
+
             await dbContext.StaffServiceTypes.AddAsync(staffServiceType);
         }
         else
@@ -43,5 +48,4 @@ public class StaffServiceTypeRepository(FlowCareDbContext dbContext, ICustomerRe
     {
         await dbContext.SaveChangesAsync();
     }
-
 }

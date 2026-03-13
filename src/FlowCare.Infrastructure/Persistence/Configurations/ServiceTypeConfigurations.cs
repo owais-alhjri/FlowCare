@@ -32,6 +32,5 @@ public class ServiceTypeConfigurations : IEntityTypeConfiguration<ServiceType>
             .HasForeignKey(s => s.BranchId)
             .OnDelete(DeleteBehavior.Restrict);
         builder.HasIndex(s => s.BranchId);
-
     }
 }

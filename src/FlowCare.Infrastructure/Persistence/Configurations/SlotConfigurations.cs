@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FlowCare.Infrastructure.Persistence.Configurations;
 
-public class SlotConfigurations :IEntityTypeConfiguration<Slot>
+public class SlotConfigurations : IEntityTypeConfiguration<Slot>
 {
     public void Configure(EntityTypeBuilder<Slot> builder)
     {
@@ -45,9 +45,5 @@ public class SlotConfigurations :IEntityTypeConfiguration<Slot>
             .HasForeignKey(s => s.ServiceTypeId)
             .OnDelete(DeleteBehavior.Restrict);
         builder.HasQueryFilter(s => s.DeletedAt == null);
-
-
-
-
     }
 }

@@ -2,7 +2,6 @@
 
 public interface IStorageService
 {
-
     Task<string> UploadFileAsync(
         string bucketName,
         string objectName,

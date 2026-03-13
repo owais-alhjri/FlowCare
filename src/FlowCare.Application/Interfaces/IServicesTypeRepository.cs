@@ -6,5 +6,4 @@ public interface IServicesTypeRepository
 {
     Task<List<ServiceType>> ServicesByBranch(string branchId);
     Task<ServiceType?> ExistIdAsync(string id);
-
 }

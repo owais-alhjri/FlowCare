@@ -9,7 +9,7 @@ public class StaffServiceTypeConfigurations : IEntityTypeConfiguration<StaffServ
     public void Configure(EntityTypeBuilder<StaffServiceType> builder)
     {
         builder.ToTable("StaffServiceTypes");
-        builder.HasKey(s => new {s.StaffId, s.ServiceTypeId});
+        builder.HasKey(s => new { s.StaffId, s.ServiceTypeId });
         builder.Property(s => s.StaffId)
             .IsRequired()
             .HasMaxLength(100);
@@ -24,6 +24,5 @@ public class StaffServiceTypeConfigurations : IEntityTypeConfiguration<StaffServ
             .WithMany()
             .HasForeignKey(a => a.ServiceTypeId)
             .OnDelete(DeleteBehavior.Restrict);
-
     }
 }

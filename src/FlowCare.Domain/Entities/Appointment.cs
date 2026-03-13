@@ -17,7 +17,7 @@ public class Appointment
 
     //Slot ID from the entity slot.
     public string? SlotId { get; private set; }
-    
+
     //Staff ID from entity User with the role STAFF
     public string StaffId { get; private set; }
     public Status Status { get; private set; }
@@ -51,6 +51,7 @@ public class Appointment
         Customer = customer;
         Staff = staff;
     }
+
     public void SetAttachmentsPath(string path)
     {
         if (Customer.UserRole != UserRole.CUSTOMER)
@@ -61,6 +62,7 @@ public class Appointment
 
         AttachmentPath = path;
     }
+
     private static void ValidateRole(User customer, User staff, string branchId)
     {
         if (customer.UserRole != UserRole.CUSTOMER)
@@ -73,11 +75,12 @@ public class Appointment
             throw new ArgumentException("User is not a staff");
         }
 
-        if (staff.BranchId != branchId )
+        if (staff.BranchId != branchId)
         {
             throw new ArgumentException("Staff dose not belong to this branch");
         }
     }
+
     private static void ValidateCommon(string id, string branchId,
         string serviceTypeId, string slotId)
     {
@@ -90,15 +93,16 @@ public class Appointment
         {
             throw new ArgumentException("Invalid branch ID");
         }
+
         if (string.IsNullOrWhiteSpace(serviceTypeId) || serviceTypeId.Length < 6 || serviceTypeId.Length > 100)
         {
             throw new ArgumentException("Invalid service type ID");
         }
+
         if (string.IsNullOrWhiteSpace(slotId) || slotId.Length < 6 || slotId.Length > 100)
         {
             throw new ArgumentException("Invalid slot ID");
         }
-
     }
 
     public void CanceledAppointment()
@@ -111,6 +115,7 @@ public class Appointment
         Status = Status.CANCELLED;
         CreatedAt = DateTimeOffset.UtcNow;
     }
+
     public void RescheduleAppointmentSlot(string currentSlotId, string newSlotId)
     {
         if (currentSlotId == newSlotId)
@@ -134,10 +139,12 @@ public class Appointment
         {
             Status = Status.COMPLETED;
         }
+
         if (newStatus == "NO_SHOW")
         {
             Status = Status.NO_SHOW;
         }
+
         if (newStatus == "CHECKED_IN")
         {
             Status = Status.CHECKED_IN;
@@ -145,5 +152,4 @@ public class Appointment
 
         CreatedAt = DateTimeOffset.UtcNow;
     }
-
 }

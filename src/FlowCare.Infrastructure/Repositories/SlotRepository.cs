@@ -6,12 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowCare.Infrastructure.Repositories;
 
-public class SlotRepository(FlowCareDbContext dbContext, IAppSettingRepository appSettingRepository): ISlotsRepository
+public class SlotRepository(FlowCareDbContext dbContext, IAppSettingRepository appSettingRepository) : ISlotsRepository
 {
-
     public async Task<List<Slot>> SlotByBranchAndServiceType(string branchId, string serviceTypeId, DateTime? date)
     {
-        var query =  dbContext.Slots.Where(s => s.BranchId == branchId && s.ServiceTypeId == serviceTypeId);
+        var query = dbContext.Slots.Where(s => s.BranchId == branchId && s.ServiceTypeId == serviceTypeId);
         if (date.HasValue)
         {
             query = query.Where(s => s.StartedAt.Date == date.Value.Date);
@@ -22,12 +21,12 @@ public class SlotRepository(FlowCareDbContext dbContext, IAppSettingRepository a
 
     public async Task<Slot?> FindSlot(string slotId)
     {
-        return await dbContext.Slots.Include(s=>s.Staff).FirstOrDefaultAsync(s=>s.Id == slotId);
+        return await dbContext.Slots.Include(s => s.Staff).FirstOrDefaultAsync(s => s.Id == slotId);
     }
 
-    public async Task CreateSlot(Slot slot )
+    public async Task CreateSlot(Slot slot)
     {
-         await dbContext.Slots.AddAsync(slot);
+        await dbContext.Slots.AddAsync(slot);
     }
 
     public async Task<Slot?> FetchLastId()
@@ -55,7 +54,7 @@ public class SlotRepository(FlowCareDbContext dbContext, IAppSettingRepository a
         }
 
         return await dbContext.Slots
-            .Where(c => c.Id == slotId && ( isAdmin ||
+            .Where(c => c.Id == slotId && (isAdmin ||
                                            (isManager && c.BranchId == user.BranchId))).FirstOrDefaultAsync();
     }
 
@@ -65,14 +64,14 @@ public class SlotRepository(FlowCareDbContext dbContext, IAppSettingRepository a
         var retentionPeriod = appSetting.Value;
         var cutOffDate = DateTimeOffset.UtcNow.AddDays(-(int.Parse(retentionPeriod)));
 
-        var slots = await dbContext.Slots.Where(s=>s.DeletedAt != null && s.DeletedAt < cutOffDate).IgnoreQueryFilters().ToListAsync();
+        var slots = await dbContext.Slots.Where(s => s.DeletedAt != null && s.DeletedAt < cutOffDate)
+            .IgnoreQueryFilters().ToListAsync();
 
         return slots;
     }
 
     public void RemoveSlot(Slot slot)
     {
-         dbContext.Slots.Remove(slot);
+        dbContext.Slots.Remove(slot);
     }
-
 }

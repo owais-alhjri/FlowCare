@@ -21,7 +21,7 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
             .HasMaxLength(255);
         builder.Property(u => u.UserRole)
             .IsRequired()
-            .HasConversion<string>(); 
+            .HasConversion<string>();
         builder.Property(u => u.FullName)
             .IsRequired()
             .HasMaxLength(100);

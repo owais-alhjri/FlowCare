@@ -9,7 +9,6 @@ namespace FlowCare.API.Controllers
     [ApiController]
     public class StaffController(StaffService staffService) : ControllerBase
     {
-
         [HttpGet]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> FetchStaff()
@@ -17,10 +16,12 @@ namespace FlowCare.API.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
                 return Unauthorized();
-            var staff = await staffService.FetchStaffList(userId);
 
-            return Ok(staff);
+            var result = await staffService.FetchStaffList(userId);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
+            return Ok(result.Value);
         }
     }
 }

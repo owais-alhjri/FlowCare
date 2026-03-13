@@ -2,6 +2,5 @@
 
 public class CleanUpSlotsDto
 {
-    public DateTimeOffset? Deleted_at { get;  set; }
-
+    public DateTimeOffset? Deleted_at { get; set; }
 }

@@ -12,8 +12,11 @@ namespace FlowCare.API.Controllers
         [HttpGet]
         public async Task<ActionResult> FetchBranches()
         {
-            var branches = await branchesService.FetchBranches();
-            return Ok(branches);
+            var result = await branchesService.FetchBranches();
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            return Ok(result.Value);
         }
     }
 }

@@ -13,46 +13,36 @@ public class BasicAuthenticationHandler(
     ILoggerFactory logger,
     UrlEncoder encoder,
     ICustomerService userService
-    ) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
-
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         if (!Request.Headers.ContainsKey("Authorization"))
-        {
             return AuthenticateResult.NoResult();
-        }
 
         try
         {
             var authHeader = Request.Headers["Authorization"].ToString();
             if (string.IsNullOrEmpty(authHeader))
-            {
                 return AuthenticateResult.Fail("Missing Authorization header");
-            }
 
             var header = AuthenticationHeaderValue.Parse(authHeader);
             if (header.Scheme != "Basic")
-            {
-                return AuthenticateResult.Fail("Invalid Scheme");
-            }
+                return AuthenticateResult.Fail("Invalid scheme");
 
             if (header.Parameter is null)
-            {
                 return AuthenticateResult.Fail("Missing credentials");
-            }
+
             var credentialBytes = Convert.FromBase64String(header.Parameter);
             var credentials = Encoding.UTF8.GetString(credentialBytes).Split(':', 2);
-
             var identifier = credentials[0];
             var password = credentials[1];
 
-            var user = await userService.Login(identifier, password);
-            if (user is null)
-            {
-                return AuthenticateResult.Fail("Invalid email or password");
-            }
+            var result = await userService.Login(identifier, password);
+            if (result.IsFailure)
+                return AuthenticateResult.Fail(result.Error!);
 
+            var user = result.Value!;
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -61,15 +51,13 @@ public class BasicAuthenticationHandler(
             };
 
             var identity = new ClaimsIdentity(claims, Scheme.Name);
-            var principle = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principle, Scheme.Name);
-
+            var principal = new ClaimsPrincipal(identity);
+            var ticket = new AuthenticationTicket(principal, Scheme.Name);
             return AuthenticateResult.Success(ticket);
-
         }
         catch
         {
-            return AuthenticateResult.Fail("Invalid Authorization Header");
+            return AuthenticateResult.Fail("Invalid Authorization header");
         }
     }
 }

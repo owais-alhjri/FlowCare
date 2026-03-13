@@ -10,7 +10,7 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
 {
     public async Task CreateAppointment(Appointment appointment)
     {
-         await dbContext.Appointments.AddAsync(appointment);
+        await dbContext.Appointments.AddAsync(appointment);
     }
 
     public async Task<Appointment?> FetchLastId()
@@ -38,16 +38,17 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
 
 
         return await dbContext.Appointments.Where(c => c.CustomerId == userId ||
-                                                       c.StaffId == userId ||  isAdmin || (isManager && c.BranchId == user.BranchId ) ).
-            Include(c=>c.Customer)
-            .Include(c=>c.Staff)
+                                                       c.StaffId == userId || isAdmin ||
+                                                       (isManager && c.BranchId == user.BranchId))
+            .Include(c => c.Customer)
+            .Include(c => c.Staff)
             .AsNoTracking()
             .ToListAsync();
     }
 
     public async Task<Appointment?> FetchByAppointmentId(string appointmentId)
     {
-        return await dbContext.Appointments.FindAsync(appointmentId);
+        return await dbContext.Appointments.FirstOrDefaultAsync(a => a.Id == appointmentId);
     }
 
     public async Task<Appointment?> FetchByAppointmentIdAndRules(string appointmentId, string userId)
@@ -63,7 +64,7 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
                 (isManager && c.BranchId == user.BranchId)
             ))
             .Include(c => c.Customer)
-            .Include(c => c.Staff)        
+            .Include(c => c.Staff)
             .FirstOrDefaultAsync();
     }
 
@@ -77,10 +78,9 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
 
         return await dbContext.Appointments.Include(a => a.Staff)
             .Where(c => c.Id == appointmentId && (isAdmin ||
-                isManager && c.BranchId == user.BranchId
-                || isStaff && c.StaffId == user.Id
-                || isCustomer && c.CustomerId == user.Id
-            )).AsNoTracking().FirstOrDefaultAsync();
-
+                                                  isManager && c.BranchId == user.BranchId
+                                                  || isStaff && c.StaffId == user.Id
+                                                  || isCustomer && c.CustomerId == user.Id
+                )).AsNoTracking().FirstOrDefaultAsync();
     }
 }
