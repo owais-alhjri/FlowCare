@@ -1,8 +1,8 @@
 ﻿using FlowCare.Application.Features.ServiceType.DTOs;
-using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 
-namespace FlowCare.Application.Interfaces.Services;
+namespace FlowCare.Application.Services;
 
 public class ServiceTypeService(IServicesTypeRepository servicesTypeRepository )
 {

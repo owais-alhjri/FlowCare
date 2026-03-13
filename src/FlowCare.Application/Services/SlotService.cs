@@ -1,12 +1,12 @@
 ﻿using System.Text.Json;
 using FlowCare.Application.Features.AuditLog.DTOs;
 using FlowCare.Application.Features.Slot.DTOs;
-using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 
-namespace FlowCare.Application.Interfaces.Services;
+namespace FlowCare.Application.Services;
 
-public class SlotService(IAppSettingRepository appSettingRepository,AuditLogService auditLogService ,ISlotsRepository slotsRepository, IBranchesRepository branchesRepository, ICustomerRepository customerRepository, IServicesTypeRepository servicesTypeRepository)
+public class SlotService(AuditLogService auditLogService ,ISlotsRepository slotsRepository, IBranchesRepository branchesRepository, ICustomerRepository customerRepository, IServicesTypeRepository servicesTypeRepository)
 {
     public async Task<List<FetchSlotDto>> FetchSlotByBranchAndServiceType(string branchId, string serviceTypeId, DateTime? date)
     {

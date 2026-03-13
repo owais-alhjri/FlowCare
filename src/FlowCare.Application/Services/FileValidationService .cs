@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace FlowCare.Application.Interfaces.Services;
+namespace FlowCare.Application.Services;
 
 public class FileValidationService
 {

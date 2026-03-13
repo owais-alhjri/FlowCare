@@ -1,11 +1,11 @@
 ﻿using System.Text.RegularExpressions;
 using FlowCare.Application.Features.User.Customer.DTOs;
-using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 using FlowCare.Domain.Enums;
 
 
-namespace FlowCare.Application.Interfaces.Services;
+namespace FlowCare.Application.Services;
 
 public class CustomerService(IPasswordHasher passwordHasher, ICustomerRepository customerRepository, IStorageService storageService) : ICustomerService
 {

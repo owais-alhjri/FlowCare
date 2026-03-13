@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
 using FlowCare.Application.Features.Appointment.DTOs;
 using FlowCare.Application.Features.AuditLog.DTOs;
-using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 using FlowCare.Domain.Enums;
 
-namespace FlowCare.Application.Interfaces.Services;
+namespace FlowCare.Application.Services;
 
 public class AppointmentService(AuditLogService auditLogService, ISlotsRepository slotsRepository,
     IAppointmentRepository appointmentRepository,

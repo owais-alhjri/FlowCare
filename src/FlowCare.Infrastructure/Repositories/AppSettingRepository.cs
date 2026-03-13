@@ -1,4 +1,4 @@
-﻿using FlowCare.Application.Interfaces.Persistence;
+﻿using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 using FlowCare.Infrastructure.Persistence;
 

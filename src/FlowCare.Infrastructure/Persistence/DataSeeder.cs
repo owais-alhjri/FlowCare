@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 using FlowCare.Infrastructure.Persistence.SeedDtos;
 using Microsoft.EntityFrameworkCore;

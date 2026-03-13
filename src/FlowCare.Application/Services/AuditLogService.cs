@@ -1,8 +1,8 @@
 ﻿using FlowCare.Application.Features.AuditLog.DTOs;
-using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 
-namespace FlowCare.Application.Interfaces.Services;
+namespace FlowCare.Application.Services;
 
 public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRepository customerRepository)
 {

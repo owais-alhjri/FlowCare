@@ -1,7 +1,7 @@
 ﻿using FlowCare.Application.Features.Slot.DTOs;
 using FlowCare.Domain.Entities;
 
-namespace FlowCare.Application.Interfaces.Persistence;
+namespace FlowCare.Application.Interfaces;
 
 public interface ISlotsRepository
 {

@@ -1,6 +1,6 @@
 ﻿using FlowCare.Application.Features.User.Customer.DTOs;
-using FlowCare.Application.Interfaces.Persistence;
-using FlowCare.Application.Interfaces.Services;
+using FlowCare.Application.Interfaces;
+using FlowCare.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

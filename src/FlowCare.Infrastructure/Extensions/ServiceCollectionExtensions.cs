@@ -1,5 +1,5 @@
-﻿using FlowCare.Application.Interfaces.Persistence;
-using FlowCare.Application.Interfaces.Services;
+﻿using FlowCare.Application.Interfaces;
+using FlowCare.Application.Services;
 using FlowCare.Infrastructure.Persistence;
 using FlowCare.Infrastructure.Repositories;
 using FlowCare.Infrastructure.Services;

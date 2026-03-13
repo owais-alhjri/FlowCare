@@ -1,4 +1,4 @@
-﻿using FlowCare.Application.Interfaces.Persistence;
+﻿using FlowCare.Application.Interfaces;
 using Minio;
 using Minio.DataModel.Args;
 

@@ -1,7 +1,7 @@
 ﻿using FlowCare.Application.Features.User.Customer.DTOs;
 using FlowCare.Domain.Entities;
 
-namespace FlowCare.Application.Interfaces.Persistence;
+namespace FlowCare.Application.Interfaces;
 
 public interface ICustomerService
 {

@@ -6,20 +6,20 @@ namespace FlowCare.Infrastructure.Persistence;
 
 public class UserGroups
 {
-    [JsonPropertyName("admin")] public List<UserSeederDto> Admin { get; set; }
-    [JsonPropertyName("branch_managers")] public List<UserSeederDto> BranchManagers { get; set; }
-    [JsonPropertyName("staff")] public List<UserSeederDto> Staff { get; set; }
-    [JsonPropertyName("customers")] public List<UserSeederDto> Customers { get; set; }
+    [JsonPropertyName("admin")] public List<UserSeederDto> Admin { get; set; } = null!;
+    [JsonPropertyName("branch_managers")] public List<UserSeederDto> BranchManagers { get; set; } = null!;
+    [JsonPropertyName("staff")] public List<UserSeederDto> Staff { get; set; } = null!;
+    [JsonPropertyName("customers")] public List<UserSeederDto> Customers { get; set; } = null!;
 }
 public class SeedData
 {
-    [JsonPropertyName("users")] public UserGroups Users { get; set; }
-    [JsonPropertyName("branches")] public List<BranchSeedDto> Branches { get; set; }
-    [JsonPropertyName("service_types")] public List<ServiceTypeSeedDto> ServiceTypes { get; set; }
-    [JsonPropertyName("staff_service_types")] public List<StaffServiceTypeSeedDto> StaffServiceTypes { get; set; }
-    [JsonPropertyName("slots")] public List<SlotSeedDto> Slots { get; set; }
-    [JsonPropertyName("appointments")] public List<AppointmentSeedDto> Appointments { get; set; }
-    [JsonPropertyName("audit_logs")] public List<AuditLogSeedDto> AuditLogs { get; set; }
+    [JsonPropertyName("users")] public UserGroups Users { get; set; } = null!;
+    [JsonPropertyName("branches")] public List<BranchSeedDto> Branches { get; set; } = null!;
+    [JsonPropertyName("service_types")] public List<ServiceTypeSeedDto> ServiceTypes { get; set; } = null!;
+    [JsonPropertyName("staff_service_types")] public List<StaffServiceTypeSeedDto> StaffServiceTypes { get; set; } = null!;
+    [JsonPropertyName("slots")] public List<SlotSeedDto> Slots { get; set; } = null!;
+    [JsonPropertyName("appointments")] public List<AppointmentSeedDto> Appointments { get; set; } = null!;
+    [JsonPropertyName("audit_logs")] public List<AuditLogSeedDto> AuditLogs { get; set; } = null!;
     [JsonPropertyName("system_settings")] public List<SystemSettingSeedDto>? SystemSettings { get; set; }
 
 }

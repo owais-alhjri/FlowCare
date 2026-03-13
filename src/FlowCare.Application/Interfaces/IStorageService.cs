@@ -1,4 +1,4 @@
-﻿namespace FlowCare.Application.Interfaces.Persistence;
+﻿namespace FlowCare.Application.Interfaces;
 
 public interface IStorageService
 {

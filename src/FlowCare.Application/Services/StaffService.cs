@@ -1,7 +1,7 @@
 ﻿using FlowCare.Application.Features.User.staff.DTOs;
-using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Application.Interfaces;
 
-namespace FlowCare.Application.Interfaces.Services;
+namespace FlowCare.Application.Services;
 
 public class StaffService(IStaffRepository staffRepository)
 {

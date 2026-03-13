@@ -1,10 +1,10 @@
 ﻿using System.Text.Json;
 using FlowCare.Application.Features.AuditLog.DTOs;
 using FlowCare.Application.Features.StaffServiceType.DTOs;
-using FlowCare.Application.Interfaces.Persistence;
+using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 
-namespace FlowCare.Application.Interfaces.Services;
+namespace FlowCare.Application.Services;
 
 public class StaffServiceService(AuditLogService auditLogService,IStaffServiceTypeRepository staffServiceTypeRepository , ICustomerRepository customerRepository)
 {
