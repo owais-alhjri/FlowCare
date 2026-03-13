@@ -66,4 +66,21 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
             .Include(c => c.Staff)        
             .FirstOrDefaultAsync();
     }
+
+    public async Task<Appointment?> FetchAppointmentAttachment(string appointmentId, string userId)
+    {
+        var user = await dbContext.Users.FindAsync(userId) ?? throw new ArgumentException("User not found");
+        var isAdmin = user.UserRole == UserRole.ADMIN;
+        var isManager = user.UserRole == UserRole.BRANCH_MANAGER;
+        var isStaff = user.UserRole == UserRole.STAFF;
+        var isCustomer = user.UserRole == UserRole.CUSTOMER;
+
+        return await dbContext.Appointments.Include(a => a.Staff)
+            .Where(c => c.Id == appointmentId && (isAdmin ||
+                isManager && c.BranchId == user.BranchId
+                || isStaff && c.StaffId == user.Id
+                || isCustomer && c.CustomerId == user.Id
+            )).AsNoTracking().FirstOrDefaultAsync();
+
+    }
 }

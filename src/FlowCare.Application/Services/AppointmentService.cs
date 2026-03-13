@@ -247,4 +247,22 @@ public class AppointmentService(AuditLogService auditLogService, ISlotsRepositor
         };
     }
 
+    public async Task<AppointmentResponseDto> GetAppointmentAttachment(string appointmentId, string userId)
+    {
+        var appointment = await appointmentRepository.FetchAppointmentAttachment(appointmentId, userId)
+            ?? throw new ArgumentException("Appointment not found");
+        return new AppointmentResponseDto
+        {
+            Id = appointment.Id,
+            BranchId = appointment.BranchId,
+            CustomerId = appointment.CustomerId,
+            ServiceTypeId = appointment.ServiceTypeId,
+            SlotId = appointment.SlotId,
+            StaffId = appointment.StaffId,
+            Status = appointment.Status,
+            CreatedAt = appointment.CreatedAt,
+            AttachmentPath = appointment.AttachmentPath
+        };
+    }
+
 }

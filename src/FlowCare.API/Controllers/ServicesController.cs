@@ -10,7 +10,7 @@ namespace FlowCare.API.Controllers
     [ApiController]
     public class ServicesController(ServiceTypeService serviceTypeService, StaffServiceService staffServiceService) : ControllerBase
     {
-        [HttpGet("api/branches/{branchId}/services")]
+        [HttpGet("branches/{branchId}")]
         [AllowAnonymous]
         public async Task<ActionResult> FetchServiceByBranch(string branchId)
         {

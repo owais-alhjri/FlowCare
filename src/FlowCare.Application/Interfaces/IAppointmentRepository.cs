@@ -11,4 +11,5 @@ public interface IAppointmentRepository
     Task<List<Appointment>> AppointmentList(string userId);
     Task<Appointment?> FetchByAppointmentId(string appointmentId);
     Task<Appointment?> FetchByAppointmentIdAndRules(string appointmentId, string userId);
+    Task<Appointment?> FetchAppointmentAttachment(string appointmentId, string userId);
 }

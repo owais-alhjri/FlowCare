@@ -1,5 +1,7 @@
-﻿using System.Security.Claims;
+﻿using System.Net.Mail;
+using System.Security.Claims;
 using FlowCare.Application.Features.Appointment.DTOs;
+using FlowCare.Application.Interfaces;
 using FlowCare.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,11 +10,12 @@ namespace FlowCare.API.Controllers
 {
     [Route("api/appointment")]
     [ApiController]
-    public class AppointmentController(AppointmentService appointmentService) : ControllerBase
+    public class AppointmentController(AppointmentService appointmentService, IStorageService storageService ) : ControllerBase
     {
         [HttpPost]
         [Authorize(Roles = "CUSTOMER")]
-        public async Task<ActionResult> BookAppointment([FromForm] BookAppointmentDto dto, [FromServices] FileValidationService validator)
+        public async Task<ActionResult> BookAppointment([FromForm] BookAppointmentDto dto,
+            [FromServices] FileValidationService validator)
         {
 
             var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -40,6 +43,7 @@ namespace FlowCare.API.Controllers
             }
 
         }
+
         // Staff → view appointments assigned to them
         // Branch Manager → view appointments within their branch
         // Admin → view appointments across all branches
@@ -58,6 +62,7 @@ namespace FlowCare.API.Controllers
 
             return Ok(appointmentById);
         }
+
         // this for the customer to get appointment details 
         [HttpGet("{appointmentId}")]
         [Authorize(Roles = "CUSTOMER")]
@@ -69,7 +74,7 @@ namespace FlowCare.API.Controllers
         }
 
         // this for the customer to cancel his appointment
-        [HttpPatch("{appointmentId}")]
+        [HttpPatch("{appointmentId}/cancel")]
         [Authorize(Roles = "CUSTOMER")]
         public async Task<ActionResult> CancelAppointment(string appointmentId)
         {
@@ -78,6 +83,7 @@ namespace FlowCare.API.Controllers
             {
                 return Unauthorized();
             }
+
             var appointmentIdChecker = await appointmentService.AppointmentDetails(appointmentId)
                                        ?? throw new ArgumentException("Appointment no found");
 
@@ -85,6 +91,7 @@ namespace FlowCare.API.Controllers
             {
                 return Unauthorized();
             }
+
             var appointment = await appointmentService.CancelAppointment(appointmentId, customerId);
 
 
@@ -103,6 +110,7 @@ namespace FlowCare.API.Controllers
             {
                 return Unauthorized();
             }
+
             var appointment = await appointmentService.Reschedule(appointmentId, slotId, customerId);
 
             return Ok(appointment);
@@ -113,7 +121,7 @@ namespace FlowCare.API.Controllers
         // Admin → update the status appointments across all branches
         [HttpPatch("{appointmentId}/update/status")]
         [Authorize(Policy = "StaffOrAbove")]
-        public async Task<ActionResult> UpdateAppointmentStatus(string appointmentId, [FromBody] string status )
+        public async Task<ActionResult> UpdateAppointmentStatus(string appointmentId, [FromBody] string status)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
@@ -127,6 +135,23 @@ namespace FlowCare.API.Controllers
 
 
             return Ok(appointment);
+        }
+
+
+        [HttpGet("attachment/{appointmentId}")]
+        [Authorize(Policy = "AnyAuthenticatedUser")]
+        public async Task<IActionResult> GetAttachment(string appointmentId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+                return Unauthorized();
+
+            var appointment = await appointmentService.GetAppointmentAttachment(appointmentId, userId);
+            if (string.IsNullOrEmpty(appointment.AttachmentPath))
+                return NotFound("No attachment found for this appointment") ;
+
+            var (stream, contentType) = await storageService.GetFileAsync(appointment.AttachmentPath);
+            return base.File(stream, contentType);
         }
     }
 }
