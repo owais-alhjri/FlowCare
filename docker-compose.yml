@@ -1,15 +1,33 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flowcare_api
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:16
+    container_name: flowcare_postgres
+    restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   minio:
     image: minio/minio:latest
+    container_name: flowcare_minio
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
@@ -18,7 +36,8 @@ services:
       - "9000:9000"
       - "9001:9001"
     volumes:
-      - minio-data:/data
+      - minio_data:/data
 
 volumes:
-  minio-data:
+  postgres_data:
+  minio_data:

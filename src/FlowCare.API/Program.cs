@@ -70,6 +70,9 @@ builder.Services.AddMinio(config => config
 
 var app = builder.Build();
 
+
+
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<FlowCareDbContext>();
@@ -78,6 +81,8 @@ using (var scope = app.Services.CreateScope())
     var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
     await seeder.SeedAsync();
 }
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
