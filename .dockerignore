@@ -1,0 +1,34 @@
+# Build output
+**/bin/
+**/obj/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Logs
+*.log
+logs/
+
+# Environment / secrets
+.env
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# Test projects (not needed in the image)
+**/tests/
+**/test/
+
+# README / docs
+README.md
+docs/
