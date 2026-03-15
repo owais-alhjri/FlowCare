@@ -6,10 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCare.API.Controllers
 {
+    /// <summary>
+    /// Provides API endpoints for managing slots, including retrieving, creating, updating, and deleting slots for
+    /// specific branches and service types.
+    /// </summary>
     [Route("api/slot")]
     [ApiController]
     public class SlotsController(SlotService slotService) : ControllerBase
     {
+        /// <summary>
+        /// Retrieves available appointment slots filtered by branch, service type, and an optional date.
+        /// </summary>
         [HttpGet("{branchId}/services/{serviceTypeId}")]
         [AllowAnonymous]
         public async Task<ActionResult> FetchSlots(string branchId, string serviceTypeId, [FromQuery] DateTime? date)
@@ -20,6 +27,9 @@ namespace FlowCare.API.Controllers
 
             return Ok(result.Value);
         }
+        /// <summary>
+        /// Create slots for a branch (single or bulk).
+        /// </summary>
 
         [HttpPost]
         [Authorize(Policy = "ManagerOrAbove")]
@@ -41,7 +51,9 @@ namespace FlowCare.API.Controllers
 
             return Ok(listOfSlots);
         }
-
+        /// <summary>
+        /// Updates the details of an existing slot with the specified information.
+        /// </summary>
         [HttpPatch("{slotId}")]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> UpdateSlot(string slotId, [FromBody] UpdateSlotDto updateSlotDto)
@@ -56,7 +68,9 @@ namespace FlowCare.API.Controllers
 
             return Ok(result.Value);
         }
-
+        /// <summary>
+        /// Performs a soft delete on a specific slot, removing it from public view while preserving historical data for auditing.
+        /// </summary>
         [HttpDelete("{slotId}")]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> DeleteSlot(string slotId)

@@ -15,12 +15,12 @@ public class AuditLogRepository(FlowCareDbContext dbContext) : IAuditLogReposito
         return logs.Entity;
     }
 
-    public async Task<AuditLog?> FetchLastLog()
+    public async Task<AuditLog?> GetLastLog()
     {
         return await dbContext.AuditLogs.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
     }
 
-    public async Task<List<AuditLog>> FetchLogs(string userId)
+    public async Task<List<AuditLog>> GetLogs(string userId)
     {
         var user = await dbContext.Users.FindAsync(userId) ?? throw new ArgumentException("User not found");
         var isAdmin = user.UserRole == UserRole.ADMIN;

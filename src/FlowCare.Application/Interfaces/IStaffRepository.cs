@@ -4,5 +4,5 @@ namespace FlowCare.Application.Interfaces;
 
 public interface IStaffRepository
 {
-    Task<List<User>> FetchStaff(string userId);
+    Task<List<User>> GetStaff(string userId);
 }

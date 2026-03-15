@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
 using FlowCare.API.Authentication;
 using FlowCare.Infrastructure.Extensions;
@@ -10,31 +11,39 @@ using Minio;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+
+builder.Services.AddSwaggerGen(options =>
 {
-    c.AddSecurityDefinition("BasicAuth", new OpenApiSecurityScheme
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "FlowCare API",
+        Version = "v1",
+        Description = "API for managing appointments, staff services, and customer registration."
+    });
+
+    options.AddSecurityDefinition("BasicAuth", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
         Scheme = "basic",
-        Description = "Enter your name and password"
+        Description = "Enter your username and password to access protected endpoints."
     });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "BasicAuth"
-                }
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "BasicAuth" }
             },
-            []
+            Array.Empty<string>()
         }
     });
+
+    // Integration with XML Comments
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
 });
 
 

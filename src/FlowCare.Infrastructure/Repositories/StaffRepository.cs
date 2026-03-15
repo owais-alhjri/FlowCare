@@ -8,7 +8,7 @@ namespace FlowCare.Infrastructure.Repositories;
 
 public class StaffRepository(FlowCareDbContext dbContext) : IStaffRepository
 {
-    public async Task<List<User>> FetchStaff(string userId)
+    public async Task<List<User>> GetStaff(string userId)
     {
         var user = await dbContext.Users.FindAsync(userId);
 

@@ -15,7 +15,7 @@ public class StaffServiceService(
     public async Task<Result<ResponseAssignedStaffDto>> AssignStaffToServiceAndBranch(AssignStaffServiceTypeDto dto,
         string userId)
     {
-        var staff = await customerRepository.ExistsByStaffId(dto.StaffId);
+        var staff = await customerRepository.FindByStaffId(dto.StaffId);
         if (staff is null)
             return Result<ResponseAssignedStaffDto>.Fail("Staff not found");
 
@@ -27,7 +27,7 @@ public class StaffServiceService(
 
         await staffServiceTypeRepository.SaveChangesAsync();
 
-        var user = await customerRepository.ExistIdAsync(userId);
+        var user = await customerRepository.FindByIdAsync(userId);
         if (user is null)
             return Result<ResponseAssignedStaffDto>.Fail("User not found");
 

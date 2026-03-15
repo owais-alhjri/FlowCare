@@ -23,18 +23,18 @@ public class CustomerService(
             return Result<CustomerResponseDto>.Fail("Invalid password");
 
 
-        if (await customerRepository.ExistsEmailAsync(userDto.Email) != null)
+        if (await customerRepository.FindByEmailAsync(userDto.Email) != null)
         {
             return Result<CustomerResponseDto>.Fail("Email already exist");
         }
 
-        if (await customerRepository.ExistsUsernameAsync(userDto.UserName) != null)
+        if (await customerRepository.FindByUsernameAsync(userDto.UserName) != null)
         {
             return Result<CustomerResponseDto>.Fail("Username already exist");
         }
 
         var prefix = "usr_cust_";
-        var lastUser = await customerRepository.FetchLastId();
+        var lastUser = await customerRepository.GetLastId();
         string fullId;
         if (lastUser is null)
         {
@@ -80,8 +80,8 @@ public class CustomerService(
 
     public async Task<Result<User>> Login(string identifier, string password)
     {
-        var user = await customerRepository.ExistsUsernameAsync(identifier)
-                   ?? await customerRepository.ExistsEmailAsync(identifier);
+        var user = await customerRepository.FindByUsernameAsync(identifier)
+                   ?? await customerRepository.FindByEmailAsync(identifier);
 
         if (user is null)
             return Result<User>.Fail("Invalid credentials");
@@ -114,7 +114,7 @@ public class CustomerService(
 
     public async Task<Result<CustomerResponseDto>> GetCustomerById(string customerId)
     {
-        var customer = await customerRepository.ExistIdAsync(customerId);
+        var customer = await customerRepository.FindByIdAsync(customerId);
         if (customer is null)
             return Result<CustomerResponseDto>.Fail("Customer not found");
 

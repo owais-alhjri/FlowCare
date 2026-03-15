@@ -18,7 +18,7 @@ public class AppointmentService(
     public async Task<Result> BookAppointment(BookAppointmentDto bookAppointmentDto, string customerId)
     {
         var appointmentIdPrefix = "appt_";
-        var lastAppointment = await appointmentRepository.FetchLastId();
+        var lastAppointment = await appointmentRepository.GetLastId();
 
         string fullId;
         if (lastAppointment is null)
@@ -40,11 +40,11 @@ public class AppointmentService(
         if (slot.Staff is null)
             return Result.Fail("Slot has no assigned staff");
 
-        var staff = await customerRepository.ExistsByStaffId(slot.Staff.Id);
+        var staff = await customerRepository.FindByStaffId(slot.Staff.Id);
         if (staff is null)
             return Result.Fail("Staff is not available");
 
-        var customer = await customerRepository.ExistIdAsync(customerId);
+        var customer = await customerRepository.FindByIdAsync(customerId);
         if (customer is null)
             return Result.Fail("Customer not found");
 
@@ -105,7 +105,7 @@ public class AppointmentService(
 
     public async Task<Result<AppointmentResponseDto>> AppointmentDetails(string appointmentId)
     {
-        var appointment = await appointmentRepository.FetchByAppointmentId(appointmentId);
+        var appointment = await appointmentRepository.GetByAppointmentId(appointmentId);
         if (appointment is null)
             return Result<AppointmentResponseDto>.Fail("Appointment is not available");
 
@@ -125,14 +125,14 @@ public class AppointmentService(
 
     public async Task<Result<UpdateStatusOfAppointmentDto>> CancelAppointment(string appointmentId, string customerId)
     {
-        var appointment = await appointmentRepository.FetchByAppointmentId(appointmentId);
+        var appointment = await appointmentRepository.GetByAppointmentId(appointmentId);
         if (appointment is null)
             return Result<UpdateStatusOfAppointmentDto>.Fail("Appointment is not available");
 
         if (appointment.CustomerId != customerId)
             return Result<UpdateStatusOfAppointmentDto>.Fail("Unauthorized");
 
-        var customer = await customerRepository.ExistIdAsync(customerId);
+        var customer = await customerRepository.FindByIdAsync(customerId);
         if (customer is null)
             return Result<UpdateStatusOfAppointmentDto>.Fail("Customer not found");
 
@@ -166,11 +166,11 @@ public class AppointmentService(
     public async Task<Result<RescheduleAppointmenDto>> Reschedule(string appointmentId, string slotId,
         string customerId)
     {
-        var appointment = await appointmentRepository.FetchByAppointmentId(appointmentId);
+        var appointment = await appointmentRepository.GetByAppointmentId(appointmentId);
         if (appointment is null)
             return Result<RescheduleAppointmenDto>.Fail("Appointment is not available");
 
-        var customer = await customerRepository.ExistIdAsync(customerId);
+        var customer = await customerRepository.FindByIdAsync(customerId);
         if (customer is null)
             return Result<RescheduleAppointmenDto>.Fail("Customer not found");
 
@@ -204,11 +204,11 @@ public class AppointmentService(
     public async Task<Result<UpdateStatusOfAppointmentDto>> UpdateAppointmentStatus(string appointmentId, string userId,
         string state)
     {
-        var appointment = await appointmentRepository.FetchByAppointmentIdAndRules(appointmentId, userId);
+        var appointment = await appointmentRepository.GetByAppointmentIdAndRules(appointmentId, userId);
         if (appointment is null)
             return Result<UpdateStatusOfAppointmentDto>.Fail("Appointment is not available");
 
-        var staff = await customerRepository.ExistsByStaffId(userId);
+        var staff = await customerRepository.FindByStaffId(userId);
         if (staff is null)
             return Result<UpdateStatusOfAppointmentDto>.Fail("Staff not found");
 
@@ -243,7 +243,7 @@ public class AppointmentService(
 
     public async Task<Result<AppointmentResponseDto>> GetAppointmentAttachment(string appointmentId, string userId)
     {
-        var appointment = await appointmentRepository.FetchAppointmentAttachment(appointmentId, userId);
+        var appointment = await appointmentRepository.GetAppointmentAttachment(appointmentId, userId);
         if (appointment is null)
             return Result<AppointmentResponseDto>.Fail("Appointment not found");
 

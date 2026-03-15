@@ -5,10 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCare.API.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests related to system audit logs, providing endpoints for viewing audit log entries.
+    /// </summary>
     [Route("api/auditLog")]
     [ApiController]
     public class AuditLogController(AuditLogService auditLogService) : ControllerBase
     {
+
+        /// <summary>
+        /// Retrieves a list of system audit logs.
+        /// </summary>
         [HttpGet]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> ViewLogs()

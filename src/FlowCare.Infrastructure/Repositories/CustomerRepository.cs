@@ -18,27 +18,27 @@ public class CustomerRepository(FlowCareDbContext dbContext) : ICustomerReposito
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<User?> ExistIdAsync(string id)
+    public async Task<User?> FindByIdAsync(string id)
     {
         return await dbContext.Users.FindAsync(id);
     }
 
-    public async Task<User?> ExistsEmailAsync(string email)
+    public async Task<User?> FindByEmailAsync(string email)
     {
         return await dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
     }
 
-    public async Task<User?> ExistsUsernameAsync(string username)
+    public async Task<User?> FindByUsernameAsync(string username)
     {
         return await dbContext.Users.FirstOrDefaultAsync(x => x.UserName == username);
     }
 
-    public async Task<User?> ExistsByStaffId(string staffId)
+    public async Task<User?> FindByStaffId(string staffId)
     {
         return await dbContext.Users.FirstOrDefaultAsync(x => x.Id == staffId);
     }
 
-    public async Task<User?> FetchLastId()
+    public async Task<User?> GetLastId()
     {
         return await dbContext.Users
             .Where(x => x.Id.StartsWith("usr_cust_"))

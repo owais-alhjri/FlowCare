@@ -29,7 +29,7 @@ public class SlotRepository(FlowCareDbContext dbContext, IAppSettingRepository a
         await dbContext.Slots.AddAsync(slot);
     }
 
-    public async Task<Slot?> FetchLastId()
+    public async Task<Slot?> GetLastId()
     {
         return await dbContext.Slots.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
     }
@@ -39,7 +39,7 @@ public class SlotRepository(FlowCareDbContext dbContext, IAppSettingRepository a
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<Slot?> FetchBySlotId(string slotId, string userId)
+    public async Task<Slot?> GetBySlotId(string slotId, string userId)
     {
         var user = await dbContext.Users.FindAsync(userId);
         if (user is null) return null;

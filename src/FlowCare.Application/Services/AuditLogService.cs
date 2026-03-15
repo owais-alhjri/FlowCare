@@ -10,7 +10,7 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
     public async Task<Result<AuditLogResponseDto>> AddLog(CreateAuditLogDto dto)
     {
         var logPrefix = "aud_";
-        var lastLog = await auditLogRepository.FetchLastLog();
+        var lastLog = await auditLogRepository.GetLastLog();
         string fullId;
         if (lastLog is null)
             fullId = logPrefix + "001";
@@ -21,7 +21,7 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
             fullId = logPrefix + (lastNumber + 1).ToString("D3");
         }
 
-        var user = await customerRepository.ExistIdAsync(dto.ActorId);
+        var user = await customerRepository.FindByIdAsync(dto.ActorId);
         if (user is null)
             return Result<AuditLogResponseDto>.Fail("User not found");
 
@@ -43,7 +43,7 @@ public class AuditLogService(IAuditLogRepository auditLogRepository, ICustomerRe
 
     public async Task<Result<List<AuditLogResponseDto>>> ViewLogs(string userId)
     {
-        var logs = await auditLogRepository.FetchLogs(userId);
+        var logs = await auditLogRepository.GetLogs(userId);
 
         return Result<List<AuditLogResponseDto>>.Success(logs.Select(c => new AuditLogResponseDto
         {

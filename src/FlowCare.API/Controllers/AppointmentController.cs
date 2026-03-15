@@ -7,13 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCare.API.Controllers
 {
+    /// <summary>
+    /// Handles appointment-related operations for customers and staff, including booking, retrieving, updating, and
+    /// canceling appointments.
+    /// </summary>
     [Route("api/appointment")]
     [ApiController]
     public class AppointmentController(AppointmentService appointmentService, IStorageService storageService)
         : ControllerBase
     {
+
+        /// <summary>
+        /// Books an appointment for the authenticated customer using the specified appointment details.
+        /// </summary>
         [HttpPost]
-        [Authorize(Roles = "CUSTOMER")]
+        [Authorize(Policy = "CustomerOnly")]
         public async Task<ActionResult> BookAppointment([FromForm] BookAppointmentDto dto,
             [FromServices] FileValidationService validator)
         {
@@ -34,6 +42,9 @@ namespace FlowCare.API.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Retrieves all appointments associated with the currently logged-in user.
+        /// </summary>
 
         [HttpGet]
         [Authorize(Policy = "AnyAuthenticatedUser")]
@@ -50,8 +61,12 @@ namespace FlowCare.API.Controllers
             return Ok(result.Value);
         }
 
+        /// <summary>
+        /// Retrieves the details of a specific appointment identified by the provided appointment ID.
+        /// </summary>
+
         [HttpGet("{appointmentId}")]
-        [Authorize(Roles = "CUSTOMER")]
+        [Authorize(Policy = "CustomerOnly")]
         public async Task<ActionResult> AppointmentDetails(string appointmentId)
         {
             var result = await appointmentService.AppointmentDetails(appointmentId);
@@ -60,9 +75,11 @@ namespace FlowCare.API.Controllers
 
             return Ok(result.Value);
         }
-
+        /// <summary>
+        /// Marks an appointment as 'Cancelled'. Only the owning customer can perform this.
+        /// </summary>
         [HttpPatch("{appointmentId}/cancel")]
-        [Authorize(Roles = "CUSTOMER")]
+        [Authorize(Policy = "CustomerOnly")]
         public async Task<ActionResult> CancelAppointment(string appointmentId)
         {
             var customerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -76,6 +93,10 @@ namespace FlowCare.API.Controllers
 
             return Ok(result.Value);
         }
+
+        /// <summary>
+        /// Moves an existing appointment to a new time slot.
+        /// </summary>
 
         [HttpPatch("{appointmentId}/reschedule")]
         [Authorize(Roles = "CUSTOMER")]
@@ -99,6 +120,9 @@ namespace FlowCare.API.Controllers
             return Ok(result.Value);
         }
 
+        /// <summary>
+        /// Updates the status of an existing appointment identified by its unique ID.
+        /// </summary>
         [HttpPatch("{appointmentId}/update/status")]
         [Authorize(Policy = "StaffOrAbove")]
         public async Task<ActionResult> UpdateAppointmentStatus(string appointmentId, [FromBody] string status)
@@ -113,6 +137,10 @@ namespace FlowCare.API.Controllers
 
             return Ok(result.Value);
         }
+
+        /// <summary>
+        /// Retrieves the attachment file associated with the specified appointment.
+        /// </summary>
 
         [HttpGet("attachment/{appointmentId}")]
         [Authorize(Policy = "AnyAuthenticatedUser")]

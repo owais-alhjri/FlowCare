@@ -5,7 +5,7 @@ namespace FlowCare.Application.Interfaces;
 public interface IAuditLogRepository
 {
     Task<AuditLog> AddLog(AuditLog auditLog);
-    Task<AuditLog?> FetchLastLog();
-    Task<List<AuditLog>> FetchLogs(string userId);
+    Task<AuditLog?> GetLastLog();
+    Task<List<AuditLog>> GetLogs(string userId);
     Task<List<AuditLog>> AllLogs();
 }

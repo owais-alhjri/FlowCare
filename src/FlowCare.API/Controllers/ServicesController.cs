@@ -6,11 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCare.API.Controllers
 {
-    [Route("api/service")]
+    /// <summary>
+    /// Provides API endpoints for managing services and staff assignments within branches.
+    /// </summary>
     [ApiController]
     public class ServicesController(ServiceTypeService serviceTypeService, StaffServiceService staffServiceService)
         : ControllerBase
     {
+        /// <summary>
+        /// Retrieves the service details associated with the specified branch identifier.
+        /// </summary>
         [HttpGet("branches/{branchId}")]
         [AllowAnonymous]
         public async Task<ActionResult> FetchServiceByBranch(string branchId)
@@ -21,7 +26,11 @@ namespace FlowCare.API.Controllers
 
             return Ok(result.Value);
         }
-
+        /// <summary>
+        /// Assigns a staff member to a specified service type and branch based on the provided assignment details.
+        /// Admin → system-wide
+        /// Manager → branch-only
+        /// </summary>
         [HttpPost("assign/staff")]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> AssignStaffToServiceAndBranch([FromBody] AssignStaffServiceTypeDto dto)

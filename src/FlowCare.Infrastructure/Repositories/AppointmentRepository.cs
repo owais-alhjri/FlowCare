@@ -13,7 +13,7 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
         await dbContext.Appointments.AddAsync(appointment);
     }
 
-    public async Task<Appointment?> FetchLastId()
+    public async Task<Appointment?> GetLastId()
     {
         return await dbContext.Appointments.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
     }
@@ -46,12 +46,12 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
             .ToListAsync();
     }
 
-    public async Task<Appointment?> FetchByAppointmentId(string appointmentId)
+    public async Task<Appointment?> GetByAppointmentId(string appointmentId)
     {
         return await dbContext.Appointments.FirstOrDefaultAsync(a => a.Id == appointmentId);
     }
 
-    public async Task<Appointment?> FetchByAppointmentIdAndRules(string appointmentId, string userId)
+    public async Task<Appointment?> GetByAppointmentIdAndRules(string appointmentId, string userId)
     {
         var user = await dbContext.Users.FindAsync(userId) ?? throw new ArgumentException("User not found");
         var isAdmin = user.UserRole == UserRole.ADMIN;
@@ -68,7 +68,7 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Appointment?> FetchAppointmentAttachment(string appointmentId, string userId)
+    public async Task<Appointment?> GetAppointmentAttachment(string appointmentId, string userId)
     {
         var user = await dbContext.Users.FindAsync(userId) ?? throw new ArgumentException("User not found");
         var isAdmin = user.UserRole == UserRole.ADMIN;

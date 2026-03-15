@@ -36,7 +36,7 @@ public class SlotService(
 
     public async Task<Result<ResponseSlotDto>> CreateSlot(CreateSlotDto createSlotDto, string userId)
     {
-        var serviceType = await servicesTypeRepository.ExistIdAsync(createSlotDto.ServiceTypeId);
+        var serviceType = await servicesTypeRepository.FindByIdAsync(createSlotDto.ServiceTypeId);
         if (serviceType is null)
             return Result<ResponseSlotDto>.Fail("Service Type not available");
 
@@ -46,7 +46,7 @@ public class SlotService(
 
         var branchLocation = branch.City.Substring(0, 3).ToLower();
         var slotIdPrefix = $"slot_{branchLocation}_";
-        var lastSlot = await slotsRepository.FetchLastId();
+        var lastSlot = await slotsRepository.GetLastId();
 
         string fullId;
         if (lastSlot is null)
@@ -58,7 +58,7 @@ public class SlotService(
             fullId = slotIdPrefix + (lastNumber + 1).ToString("D3");
         }
 
-        var staff = await customerRepository.ExistsByStaffId(createSlotDto.StaffId);
+        var staff = await customerRepository.FindByStaffId(createSlotDto.StaffId);
         if (staff is null)
             return Result<ResponseSlotDto>.Fail("Staff is not available");
 
@@ -69,7 +69,7 @@ public class SlotService(
         await slotsRepository.CreateSlot(slot);
         await slotsRepository.SaveChangesAsync();
 
-        var user = await customerRepository.ExistIdAsync(userId);
+        var user = await customerRepository.FindByIdAsync(userId);
         if (user is null)
             return Result<ResponseSlotDto>.Fail("User not found");
 
@@ -106,7 +106,7 @@ public class SlotService(
 
     public async Task<Result<ResponseSlotDto>> UpdateSlot(string slotId, string userId, UpdateSlotDto updateSlotDto)
     {
-        var slot = await slotsRepository.FetchBySlotId(slotId, userId);
+        var slot = await slotsRepository.GetBySlotId(slotId, userId);
         if (slot is null)
             return Result<ResponseSlotDto>.Fail("Slot not found or you don't have permission to update it");
 
@@ -118,7 +118,7 @@ public class SlotService(
             updateSlotDto.BranchId, updateSlotDto.Capacity, startedAt, updateSlotDto.IsActive);
         await slotsRepository.SaveChangesAsync();
 
-        var user = await customerRepository.ExistIdAsync(userId);
+        var user = await customerRepository.FindByIdAsync(userId);
         if (user is null)
             return Result<ResponseSlotDto>.Fail("User not found");
 
@@ -155,11 +155,11 @@ public class SlotService(
 
     public async Task<Result<ResponseSlotDto>> SoftDeleteSlot(string slotId, string userId)
     {
-        var slot = await slotsRepository.FetchBySlotId(slotId, userId);
+        var slot = await slotsRepository.GetBySlotId(slotId, userId);
         if (slot is null)
             return Result<ResponseSlotDto>.Fail("Slot not found");
 
-        var user = await customerRepository.ExistIdAsync(userId);
+        var user = await customerRepository.FindByIdAsync(userId);
         if (user is null)
             return Result<ResponseSlotDto>.Fail("User not found");
 
@@ -202,7 +202,7 @@ public class SlotService(
 
     public async Task<Result<int>> CleanUpSlots(string userId)
     {
-        var user = await customerRepository.ExistIdAsync(userId);
+        var user = await customerRepository.FindByIdAsync(userId);
         if (user is null)
             return Result<int>.Fail("User not found");
 

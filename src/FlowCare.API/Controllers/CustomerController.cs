@@ -6,10 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCare.API.Controllers
 {
+    /// <summary>
+    /// Handles customer-related operations including public registration, profile management, and administrative identity verification.
+    /// </summary>
     [Route("api/customer")]
     [ApiController]
     public class CustomerController(ICustomerService customerService, IStorageService storageService) : ControllerBase
     {
+        /// <summary>
+        /// Registers a new customer account, performing mandatory validation on the uploaded identity document.
+        /// </summary>
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> CustomerRegister([FromForm] CustomerRegisterDto dto,
@@ -25,7 +31,9 @@ namespace FlowCare.API.Controllers
 
             return Ok(result.Value);
         }
-
+        /// <summary>
+        /// Retrieves a complete list of all registered customers for administrative oversight.
+        /// </summary>
         [HttpGet]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<ActionResult> CustomerList()
@@ -35,7 +43,9 @@ namespace FlowCare.API.Controllers
                 return BadRequest(result.Error);
             return Ok(result.Value);
         }
-
+        /// <summary>
+        /// Fetches detailed profile information for a specific customer using their unique identifier.
+        /// </summary>
         [HttpGet("{customerId}")]
         [Authorize(Policy = "ManagerOrAbove")]
         public async Task<IActionResult> GetCustomerById(string customerId)
@@ -45,7 +55,9 @@ namespace FlowCare.API.Controllers
                 return BadRequest(result.Error);
             return Ok(result.Value);
         }
-
+        /// <summary>
+        /// Retrieves the identification image file associated with the specified customer.
+        /// </summary>
         [HttpGet("{customerId}/id-image")]
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetIdImage(string customerId)

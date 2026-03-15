@@ -13,9 +13,9 @@ public class StaffServiceTypeRepository(
     public async Task<StaffServiceType?> AssignStaffToServiceAndBranch(StaffServiceType staffServiceType, string userId)
     {
         var serviceTypeId = staffServiceType.ServiceTypeId;
-        var serviceType = await servicesTypeRepository.ExistIdAsync(serviceTypeId) ??
+        var serviceType = await servicesTypeRepository.FindByIdAsync(serviceTypeId) ??
                           throw new ArgumentException("Service Type Not Found");
-        var user = await customerRepository.ExistIdAsync(userId);
+        var user = await customerRepository.FindByIdAsync(userId);
         if (user == null)
         {
             throw new UnauthorizedAccessException("User Not Found");

@@ -7,10 +7,10 @@ public interface ICustomerRepository
 {
     Task Register(User user);
     Task SaveChangesAsync();
-    Task<User?> ExistsEmailAsync(string email);
-    Task<User?> ExistsUsernameAsync(string username);
-    Task<User?> ExistIdAsync(string id);
-    Task<User?> ExistsByStaffId(string staffId);
-    Task<User?> FetchLastId();
+    Task<User?> FindByEmailAsync(string email);
+    Task<User?> FindByUsernameAsync(string username);
+    Task<User?> FindByIdAsync(string id);
+    Task<User?> FindByStaffId(string staffId);
+    Task<User?> GetLastId();
     Task<List<User>> ListTheCustomers();
 }
