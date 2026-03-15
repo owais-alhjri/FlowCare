@@ -40,7 +40,7 @@ namespace FlowCare.API.Controllers
             if (result.IsFailure)
                 return BadRequest(result.Error);
 
-            return Ok();
+            return Ok(result.Value);
         }
         /// <summary>
         /// Retrieves all appointments associated with the currently logged-in user.
@@ -159,6 +159,20 @@ namespace FlowCare.API.Controllers
 
             var (stream, contentType) = await storageService.GetFileAsync(result.Value.AttachmentPath);
             return File(stream, contentType);
+        }
+
+        [HttpGet("queue")]
+        [Authorize(Policy = "AnyAuthenticatedUser")]
+        public async Task<IActionResult> GetAppointmentQueue()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId is null)
+                return Unauthorized();
+
+            var result = await appointmentService.GetAppointmentQueue(userId);
+            if (result.IsFailure)
+                return NotFound(result.Error);
+            return Ok(result.Value);
         }
     }
 }

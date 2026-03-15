@@ -13,4 +13,6 @@ public class AppointmentSeedDto
     [JsonPropertyName("staff_id")] public string StaffId { get; set; } = null!;
     [JsonPropertyName("status")] public Status Status { get; set; }
     [JsonPropertyName("created_at")] public DateTimeOffset CreatedAt { get; set; }
+    [JsonPropertyName("queue")] public int Queue { get; set; } 
+
 }

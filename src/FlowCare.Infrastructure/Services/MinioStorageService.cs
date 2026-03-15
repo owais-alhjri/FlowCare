@@ -1,6 +1,8 @@
 ﻿using FlowCare.Application.Interfaces;
 using Minio;
 using Minio.DataModel.Args;
+using Minio.Exceptions;
+
 
 namespace FlowCare.Infrastructure.Services;
 
@@ -8,15 +10,18 @@ public class MinioStorageService(IMinioClient minioClient) : IStorageService
 {
     public async Task<string> UploadFileAsync(string bucketName, string objectName, Stream content, string contentType)
     {
-        // to check if the bucket exists
-        var beArgs = new BucketExistsArgs().WithBucket(bucketName);
-        bool found = await minioClient.BucketExistsAsync(beArgs);
+        // 1. Check if the bucket exists first
+        var bktExistsArgs = new BucketExistsArgs().WithBucket(bucketName);
+        bool found = await minioClient.BucketExistsAsync(bktExistsArgs);
+
+        // 2. If it doesn't exist, create it
         if (!found)
         {
-            await minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName));
+            var makeBktArgs = new MakeBucketArgs().WithBucket(bucketName);
+            await minioClient.MakeBucketAsync(makeBktArgs);
         }
 
-        // Upload the file
+        // 3. Upload the file
         var putObjectArgs = new PutObjectArgs()
             .WithBucket(bucketName)
             .WithObject(objectName)
@@ -26,7 +31,6 @@ public class MinioStorageService(IMinioClient minioClient) : IStorageService
 
         await minioClient.PutObjectAsync(putObjectArgs);
 
-        // Return the format: "bucket/filename"
         return $"{bucketName}/{objectName}";
     }
 

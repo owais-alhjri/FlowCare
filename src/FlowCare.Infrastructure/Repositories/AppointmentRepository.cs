@@ -83,4 +83,12 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
                                                   || isCustomer && c.CustomerId == user.Id
                 )).AsNoTracking().FirstOrDefaultAsync();
     }
+
+    public async Task<Appointment?> GetLastQueueByBranch(string branchId)
+    {
+        return  await dbContext.Appointments
+            .Where(a=>a.BranchId == branchId)
+            .OrderByDescending(q=>q.Queue)
+            .FirstOrDefaultAsync();
+    }
 }

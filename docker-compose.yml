@@ -9,9 +9,13 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      MinIO__Endpoint: minio:9000
+      MinIO__AccessKey: ${MINIO_ROOT_USER}
+      MinIO__SecretKey: ${MINIO_ROOT_PASSWORD}
+      MinIO__UseSSL: "false"
     depends_on:
       - postgres
-
+      - minio
   postgres:
     image: postgres:16
     container_name: flowcare_postgres
@@ -24,10 +28,9 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
   minio:
     image: minio/minio:latest
-    container_name: flowcare_minio
+    container_name: flowcare-minio
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
@@ -37,7 +40,6 @@ services:
       - "9001:9001"
     volumes:
       - minio_data:/data
-
 volumes:
   postgres_data:
   minio_data:

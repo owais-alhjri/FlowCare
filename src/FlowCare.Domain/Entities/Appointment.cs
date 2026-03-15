@@ -24,6 +24,8 @@ public class Appointment
     public DateTimeOffset CreatedAt { get; private set; }
 
     public string? AttachmentPath { get; private set; }
+    public int Queue { get; private set; }
+
 
     protected Appointment()
     {
@@ -35,7 +37,7 @@ public class Appointment
     public Slot? Slot { get; private set; }
 
     public Appointment(string id, User customer, User staff, string branchId,
-        string serviceTypeId, string slotId, Status status, DateTimeOffset createdAt)
+        string serviceTypeId, string slotId, Status status, DateTimeOffset createdAt, int queue)
     {
         ValidateRole(customer, staff, branchId);
         ValidateCommon(id, branchId, serviceTypeId, slotId);
@@ -50,6 +52,7 @@ public class Appointment
         CreatedAt = createdAt;
         Customer = customer;
         Staff = staff;
+        Queue = queue;
     }
 
     public void SetAttachmentsPath(string path)
@@ -152,4 +155,5 @@ public class Appointment
 
         CreatedAt = DateTimeOffset.UtcNow;
     }
+
 }

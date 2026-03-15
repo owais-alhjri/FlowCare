@@ -43,7 +43,8 @@ builder.Services.AddSwaggerGen(options =>
     // Integration with XML Comments
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    options.IncludeXmlComments(xmlPath);
+    if (File.Exists(xmlPath))
+        options.IncludeXmlComments(xmlPath);
 });
 
 
@@ -71,12 +72,20 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddControllers()
     .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+
 builder.Services.AddMinio(config => config
     .WithEndpoint(builder.Configuration["MinIO:Endpoint"])
     .WithCredentials(builder.Configuration["MinIO:AccessKey"], builder.Configuration["MinIO:SecretKey"])
     .WithSSL(false)
     .Build());
+var endpoint = builder.Configuration["MinIO:Endpoint"];
+var accessKey = builder.Configuration["MinIO:AccessKey"];
+var secretKey = builder.Configuration["MinIO:SecretKey"];
 
+Console.WriteLine($"=== MinIO Config ===");
+Console.WriteLine($"Endpoint: '{endpoint}'");
+Console.WriteLine($"AccessKey: '{accessKey}'");
+Console.WriteLine($"SecretKey: '{secretKey}'");
 var app = builder.Build();
 
 
@@ -100,7 +109,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

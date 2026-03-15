@@ -15,7 +15,7 @@ public class AppointmentService(
     ICustomerRepository customerRepository,
     IStorageService storageService)
 {
-    public async Task<Result> BookAppointment(BookAppointmentDto bookAppointmentDto, string customerId)
+    public async Task<Result<AppointmentResponseDto>> BookAppointment(BookAppointmentDto bookAppointmentDto, string customerId)
     {
         var appointmentIdPrefix = "appt_";
         var lastAppointment = await appointmentRepository.GetLastId();
@@ -32,38 +32,43 @@ public class AppointmentService(
 
         var slot = await slotsRepository.FindSlot(bookAppointmentDto.SlotId);
         if (slot is null)
-            return Result.Fail("Slot not found");
+            return Result<AppointmentResponseDto>.Fail("Slot not found");
 
         if (await appointmentRepository.IsSlotBooked(bookAppointmentDto.SlotId))
-            return Result.Fail("This slot is already booked");
+            return Result<AppointmentResponseDto>.Fail("This slot is already booked");
 
         if (slot.Staff is null)
-            return Result.Fail("Slot has no assigned staff");
+            return Result<AppointmentResponseDto>.Fail("Slot has no assigned staff");
 
         var staff = await customerRepository.FindByStaffId(slot.Staff.Id);
         if (staff is null)
-            return Result.Fail("Staff is not available");
+            return Result<AppointmentResponseDto>.Fail("Staff is not available");
 
         var customer = await customerRepository.FindByIdAsync(customerId);
         if (customer is null)
-            return Result.Fail("Customer not found");
+            return Result<AppointmentResponseDto>.Fail("Customer not found");
 
         string? dbReference = null;
         if (bookAppointmentDto.AttachmentPath != null)
         {
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(bookAppointmentDto.AttachmentPath.FileName)}";
-            using var stream = bookAppointmentDto.AttachmentPath.OpenReadStream();
+            await using var stream = bookAppointmentDto.AttachmentPath.OpenReadStream();
             dbReference = await storageService.UploadFileAsync(
                 "appointment-attachments", fileName, stream, bookAppointmentDto.AttachmentPath.ContentType);
         }
 
+        var lastQueue = await appointmentRepository.GetLastQueueByBranch(slot.BranchId);
+        var nextQueue = (lastQueue?.Queue ?? 0) + 1;
+
         var appointment = new Appointment(fullId, customer, staff, slot.BranchId, slot.ServiceTypeId,
-            bookAppointmentDto.SlotId, Status.BOOKED, DateTimeOffset.UtcNow);
+            bookAppointmentDto.SlotId, Status.BOOKED, DateTimeOffset.UtcNow, nextQueue);
 
         if (dbReference != null)
             appointment.SetAttachmentsPath(dbReference);
 
         slot.ChangeActive(slot.IsActive);
+
+
         await appointmentRepository.CreateAppointment(appointment);
         await appointmentRepository.SaveChangesAsync();
 
@@ -82,7 +87,18 @@ public class AppointmentService(
             }))
         });
 
-        return Result.Success();
+        return Result<AppointmentResponseDto>.Success(new AppointmentResponseDto
+        {
+            Id = appointment.Id,
+            BranchId = appointment.BranchId,
+            CustomerId = appointment.CustomerId,
+            ServiceTypeId = appointment.ServiceTypeId,
+            SlotId = appointment.SlotId,
+            StaffId = appointment.StaffId,
+            Status = appointment.Status,
+            CreatedAt = appointment.CreatedAt,
+            AttachmentPath = appointment.AttachmentPath
+        });
     }
 
     public async Task<Result<List<AppointmentResponseDto>>> AppointmentById(string userId)
@@ -259,5 +275,20 @@ public class AppointmentService(
             CreatedAt = appointment.CreatedAt,
             AttachmentPath = appointment.AttachmentPath
         });
+    }
+
+    public async Task<Result<List<AppointmentQueueDto>>> GetAppointmentQueue(string userId)
+    {
+        var appointments = await appointmentRepository.AppointmentList(userId);
+        var result = appointments.Select(a => new AppointmentQueueDto
+        {
+            Id = a.Id,
+            BranchId = a.BranchId,
+            CustomerId = a.CustomerId,
+            CreatedAt = a.CreatedAt,
+            Queue = a.Queue
+        }).ToList();
+
+        return Result<List<AppointmentQueueDto>>.Success(result);
     }
 }

@@ -35,6 +35,8 @@ public class AppointmentConfigurations : IEntityTypeConfiguration<Appointment>
             .IsRequired();
         builder.Property(a => a.AttachmentPath)
             .HasMaxLength(250);
+        builder.Property(a => a.Queue)
+            .IsRequired();
         builder.HasOne<Branch>()
             .WithMany()
             .HasForeignKey(a => a.BranchId)

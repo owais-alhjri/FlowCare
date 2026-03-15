@@ -12,4 +12,5 @@ public interface IAppointmentRepository
     Task<Appointment?> GetByAppointmentId(string appointmentId);
     Task<Appointment?> GetByAppointmentIdAndRules(string appointmentId, string userId);
     Task<Appointment?> GetAppointmentAttachment(string appointmentId, string userId);
+    Task<Appointment?> GetLastQueueByBranch(string branchId);
 }
