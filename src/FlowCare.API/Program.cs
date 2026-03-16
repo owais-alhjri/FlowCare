@@ -82,10 +82,6 @@ var endpoint = builder.Configuration["MinIO:Endpoint"];
 var accessKey = builder.Configuration["MinIO:AccessKey"];
 var secretKey = builder.Configuration["MinIO:SecretKey"];
 
-Console.WriteLine($"=== MinIO Config ===");
-Console.WriteLine($"Endpoint: '{endpoint}'");
-Console.WriteLine($"AccessKey: '{accessKey}'");
-Console.WriteLine($"SecretKey: '{secretKey}'");
 var app = builder.Build();
 
 

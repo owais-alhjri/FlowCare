@@ -204,6 +204,13 @@ public class AppointmentService(
     public async Task<Result<RescheduleAppointmenDto>> Reschedule(string appointmentId, string slotId,
         string customerId)
     {
+        var frequencyLimitPerDay = await appSettingRepository.GetReschedulingLimitPerDay();
+        var numberOfDays = int.Parse(frequencyLimitPerDay.Value);
+        var frequencyRescheduling = await appointmentRepository.RescheduledTodayAsync(appointmentId, numberOfDays);
+
+        if (!frequencyRescheduling)
+            return Result<RescheduleAppointmenDto>.Fail($"No Rescheduling more then {numberOfDays} per day ");
+
         var appointment = await appointmentRepository.GetByAppointmentId(appointmentId);
         if (appointment is null)
             return Result<RescheduleAppointmenDto>.Fail("Appointment is not available");

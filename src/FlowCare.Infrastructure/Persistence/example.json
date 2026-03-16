@@ -9,6 +9,11 @@
       "key": "LimitOfBookingPerDay",
       "value": "3",
       "description": "customers have limit of bookings per day"
+    },
+    {
+      "key": "ReschedulinLimit",
+      "value": "1",
+      "description": "customers have limit of Rescheduling per day"
     }
   ],
   "users": {

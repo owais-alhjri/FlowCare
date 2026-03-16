@@ -123,4 +123,14 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
         return await dbContext.Appointments
             .CountAsync(a => a.CustomerId == customerId && a.CreatedAt.Date >= today && a.CreatedAt < today.AddDays(1));
     }
+
+    public async Task<bool> RescheduledTodayAsync(string appointmentId, int numberOfDays)
+    {
+        var today = DateTimeOffset.UtcNow.Date;
+
+        return await dbContext.Appointments.AnyAsync(a => (a.LastRescheduledAt 
+            >= today && a.LastRescheduledAt < today.AddDays(numberOfDays)) && a.Id == appointmentId);
+
+        
+    }
 }

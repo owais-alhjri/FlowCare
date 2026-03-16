@@ -6,4 +6,5 @@ public interface IAppSettingRepository
 {
     Task<AppSetting> GetRetentionPeriod();
     Task<AppSetting> GetBookingLimitPerDay();
+    Task<AppSetting> GetReschedulingLimitPerDay();
 }

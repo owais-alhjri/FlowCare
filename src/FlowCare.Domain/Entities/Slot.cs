@@ -89,14 +89,11 @@ public class Slot
 
     public void ChangeActive(bool isActive)
     {
-        if (isActive == true)
-        {
+        if (isActive)
             IsActive = false;
-        }
         else
-        {
             IsActive = true;
-        }
+        
     }
 
     public void UpdateSlot(string? staffId, string? serviceTypeId, string? branchId,

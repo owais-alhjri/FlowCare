@@ -18,4 +18,10 @@ public class AppSettingRepository(FlowCareDbContext dbContext) : IAppSettingRepo
         return await dbContext.AppSettings.FindAsync("LimitOfBookingPerDay")
                ?? throw new KeyNotFoundException("LimitOfBookingPerDay not found");
     }
+
+    public async Task<AppSetting> GetReschedulingLimitPerDay()
+    {
+        return await dbContext.AppSettings.FindAsync("ReschedulingLimit")
+               ?? throw new KeyNotFoundException("ReschedulingLimit not found");
+    }
 }

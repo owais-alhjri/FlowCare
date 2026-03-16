@@ -37,6 +37,7 @@ public class AppointmentConfigurations : IEntityTypeConfiguration<Appointment>
             .HasMaxLength(250);
         builder.Property(a => a.Queue)
             .IsRequired();
+        builder.Property(a => a.LastRescheduledAt);
         builder.HasOne<Branch>()
             .WithMany()
             .HasForeignKey(a => a.BranchId)

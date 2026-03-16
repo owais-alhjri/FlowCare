@@ -25,6 +25,7 @@ public class Appointment
 
     public string? AttachmentPath { get; private set; }
     public int Queue { get; private set; }
+    public DateTimeOffset? LastRescheduledAt { get; private set; }
 
 
     protected Appointment()
@@ -129,7 +130,7 @@ public class Appointment
 
         Status = Status.RESCHEDULE;
         SlotId = newSlotId;
-        CreatedAt = DateTimeOffset.UtcNow;
+        LastRescheduledAt = DateTimeOffset.UtcNow;
     }
 
     public void UpdateAppointmentStatus(string status, string newStatus)
@@ -154,7 +155,6 @@ public class Appointment
             Status = Status.CHECKED_IN;
         }
 
-        CreatedAt = DateTimeOffset.UtcNow;
     }
 
     public void ReduceQueue()
