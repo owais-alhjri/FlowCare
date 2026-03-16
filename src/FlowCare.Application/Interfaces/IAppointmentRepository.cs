@@ -9,8 +9,10 @@ public interface IAppointmentRepository
     Task SaveChangesAsync();
     Task<bool> IsSlotBooked(string slotId);
     Task<List<Appointment>> AppointmentList(string userId);
+    Task<List<Appointment>> AppointmentListForQueue(string userId);
     Task<Appointment?> GetByAppointmentId(string appointmentId);
     Task<Appointment?> GetByAppointmentIdAndRules(string appointmentId, string userId);
     Task<Appointment?> GetAppointmentAttachment(string appointmentId, string userId);
-    Task<Appointment?> GetLastQueueByBranch(string branchId);
+    Task<Appointment?> GetLastQueueByBranch(string branchId, string excludeAppointmentId);
+    Task<Appointment?> FindByQueue(int queue, string branchId, string excludeAppointmentId);
 }

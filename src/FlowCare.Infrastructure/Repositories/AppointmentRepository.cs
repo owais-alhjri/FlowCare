@@ -84,11 +84,35 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
                 )).AsNoTracking().FirstOrDefaultAsync();
     }
 
-    public async Task<Appointment?> GetLastQueueByBranch(string branchId)
+    public async Task<Appointment?> GetLastQueueByBranch(string branchId, string excludeAppointmentId)
     {
         return  await dbContext.Appointments
-            .Where(a=>a.BranchId == branchId)
+            .Where(a=>a.BranchId == branchId && a.Id != excludeAppointmentId && a.Queue != 0)
             .OrderByDescending(q=>q.Queue)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<Appointment?> FindByQueue(int queue, string branchId, string excludeAppointmentId)
+    {
+        return await dbContext.Appointments
+            .Where(a=>a.BranchId == branchId && a.Id != excludeAppointmentId)
+            .FirstOrDefaultAsync(q => q.Queue == queue);
+    }
+    public async Task<List<Appointment>> AppointmentListForQueue(string userId)
+    {
+        var user = await dbContext.Users.FindAsync(userId) ?? throw new ArgumentException("User not found");
+
+        var isAdmin = user.UserRole == UserRole.ADMIN;
+        var isManager = user.UserRole == UserRole.BRANCH_MANAGER;
+
+
+        return await dbContext.Appointments.Where(c => (c.CustomerId == userId ||
+                                                       c.StaffId == userId || isAdmin ||
+                                                       (isManager && c.BranchId == user.BranchId)) && c.Status != Status.CANCELLED)
+            .Include(c => c.Customer)
+            .Include(c => c.Staff)
+            .OrderBy(c => c.BranchId).ThenBy(c => c.Queue)
+            .AsNoTracking()
+            .ToListAsync();
     }
 }

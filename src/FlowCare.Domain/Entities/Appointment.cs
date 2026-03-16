@@ -117,6 +117,7 @@ public class Appointment
 
         Status = Status.CANCELLED;
         CreatedAt = DateTimeOffset.UtcNow;
+        Queue = 0;
     }
 
     public void RescheduleAppointmentSlot(string currentSlotId, string newSlotId)
@@ -154,6 +155,16 @@ public class Appointment
         }
 
         CreatedAt = DateTimeOffset.UtcNow;
+    }
+
+    public void ReduceQueue()
+    {
+        Queue -= 1;
+    }
+
+    public void AddQueueBack(int lastQueue)
+    {
+        Queue = lastQueue;
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Generic;
+using System.Text.Json;
 using FlowCare.Application.Common;
 using FlowCare.Application.Features.Appointment.DTOs;
 using FlowCare.Application.Features.AuditLog.DTOs;
@@ -57,7 +58,7 @@ public class AppointmentService(
                 "appointment-attachments", fileName, stream, bookAppointmentDto.AttachmentPath.ContentType);
         }
 
-        var lastQueue = await appointmentRepository.GetLastQueueByBranch(slot.BranchId);
+        var lastQueue = await appointmentRepository.GetLastQueueByBranch(slot.BranchId, fullId);
         var nextQueue = (lastQueue?.Queue ?? 0) + 1;
 
         var appointment = new Appointment(fullId, customer, staff, slot.BranchId, slot.ServiceTypeId,
@@ -152,6 +153,15 @@ public class AppointmentService(
         if (customer is null)
             return Result<UpdateStatusOfAppointmentDto>.Fail("Customer not found");
 
+        var currentQueue = appointment.Queue; 
+
+        var lastQueue = await appointmentRepository.GetLastQueueByBranch(appointment.BranchId, appointment.Id); 
+        for (int i = currentQueue + 1; i <= lastQueue.Queue; i++)
+        {
+            var queue = await appointmentRepository.FindByQueue(i, appointment.BranchId, appointment.Id);
+            queue.ReduceQueue();
+        }
+
 
         appointment.CanceledAppointment();
         await appointmentRepository.SaveChangesAsync();
@@ -189,6 +199,30 @@ public class AppointmentService(
         var customer = await customerRepository.FindByIdAsync(customerId);
         if (customer is null)
             return Result<RescheduleAppointmenDto>.Fail("Customer not found");
+
+        var currentQueue = appointment.Queue; 
+
+        var lastQueue = (await appointmentRepository.GetLastQueueByBranch(appointment.BranchId, appointment.Id)).Queue; 
+        Console.WriteLine("last before "+lastQueue);
+
+        //this is for if the rescheduled already the last one in the queue
+        if (currentQueue >= lastQueue)
+        {
+            lastQueue = currentQueue;
+        }
+
+        for (int i = currentQueue + 1; i <= lastQueue; i++)
+        {
+            var queue = await appointmentRepository.FindByQueue(i, appointment.BranchId, appointment.Id);
+            Console.WriteLine("queue Id " + queue.Id);
+            Console.WriteLine("queue  " + queue.Queue);
+            queue.ReduceQueue();
+        }
+
+        //this will set the rescheduled queue to the last 
+        appointment.AddQueueBack(lastQueue);
+        Console.WriteLine("last after " + lastQueue);
+
 
         appointment.RescheduleAppointmentSlot(appointment.SlotId, slotId);
         await appointmentRepository.SaveChangesAsync();
@@ -279,13 +313,14 @@ public class AppointmentService(
 
     public async Task<Result<List<AppointmentQueueDto>>> GetAppointmentQueue(string userId)
     {
-        var appointments = await appointmentRepository.AppointmentList(userId);
+        var appointments = await appointmentRepository.AppointmentListForQueue(userId);
         var result = appointments.Select(a => new AppointmentQueueDto
         {
             Id = a.Id,
             BranchId = a.BranchId,
             CustomerId = a.CustomerId,
             CreatedAt = a.CreatedAt,
+            Status = a.Status,
             Queue = a.Queue
         }).ToList();
 

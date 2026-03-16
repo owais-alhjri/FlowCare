@@ -8,5 +8,6 @@ public class AppointmentQueueDto
     public string CustomerId { get; set; } = null!;
     public string BranchId { get; set; } = null!;
     public DateTimeOffset CreatedAt { get; set; }
+    public Status Status { get; set; }
     public int Queue { get; set; }
 }
