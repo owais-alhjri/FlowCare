@@ -14,10 +14,22 @@ public class AppointmentService(
     ISlotsRepository slotsRepository,
     IAppointmentRepository appointmentRepository,
     ICustomerRepository customerRepository,
-    IStorageService storageService)
+    IStorageService storageService,
+    IAppSettingRepository appSettingRepository)
 {
     public async Task<Result<AppointmentResponseDto>> BookAppointment(BookAppointmentDto bookAppointmentDto, string customerId)
     {
+
+        var appointmentsPerDay = await appointmentRepository.GetAppointmentsPerDay(customerId);
+
+        var appSetting = await appSettingRepository.GetBookingLimitPerDay();
+        var limit = int.Parse(appSetting.Value);
+        if (appointmentsPerDay >= limit)
+        {
+            return Result<AppointmentResponseDto>.Fail($"You can not have more then {limit} appointments per day");
+        }
+
+
         var appointmentIdPrefix = "appt_";
         var lastAppointment = await appointmentRepository.GetLastId();
 

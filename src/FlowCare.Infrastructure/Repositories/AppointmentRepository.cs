@@ -115,4 +115,12 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
             .AsNoTracking()
             .ToListAsync();
     }
+
+
+    public async Task<int> GetAppointmentsPerDay(string customerId)
+    {
+        var today = DateTimeOffset.UtcNow.Date;
+        return await dbContext.Appointments
+            .CountAsync(a => a.CustomerId == customerId && a.CreatedAt.Date >= today && a.CreatedAt < today.AddDays(1));
+    }
 }

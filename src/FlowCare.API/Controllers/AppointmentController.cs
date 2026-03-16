@@ -160,7 +160,9 @@ namespace FlowCare.API.Controllers
             var (stream, contentType) = await storageService.GetFileAsync(result.Value.AttachmentPath);
             return File(stream, contentType);
         }
-
+        /// <summary>
+        /// Retrieves the appointment queue for the currently authenticated user.
+        /// </summary>
         [HttpGet("queue")]
         [Authorize(Policy = "AnyAuthenticatedUser")]
         public async Task<IActionResult> GetAppointmentQueue()

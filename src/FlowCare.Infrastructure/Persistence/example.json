@@ -4,6 +4,11 @@
       "key": "SlotRetentionDays",
       "value": "30",
       "description": "Retention period for soft-deleted slots"
+    },
+    {
+      "key": "LimitOfBookingPerDay",
+      "value": "3",
+      "description": "customers have limit of bookings per day"
     }
   ],
   "users": {

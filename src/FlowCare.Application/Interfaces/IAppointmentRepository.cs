@@ -15,4 +15,5 @@ public interface IAppointmentRepository
     Task<Appointment?> GetAppointmentAttachment(string appointmentId, string userId);
     Task<Appointment?> GetLastQueueByBranch(string branchId, string excludeAppointmentId);
     Task<Appointment?> FindByQueue(int queue, string branchId, string excludeAppointmentId);
+    Task<int> GetAppointmentsPerDay(string customerId);
 }

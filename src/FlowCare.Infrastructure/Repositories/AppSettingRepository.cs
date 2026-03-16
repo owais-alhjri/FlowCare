@@ -8,9 +8,14 @@ public class AppSettingRepository(FlowCareDbContext dbContext) : IAppSettingRepo
 {
     public async Task<AppSetting> GetRetentionPeriod()
     {
-        var period = await dbContext.AppSettings.FindAsync("SlotRetentionDays")
-                     ?? throw new KeyNotFoundException("Key not found");
+         return await dbContext.AppSettings.FindAsync("SlotRetentionDays")
+                     ?? throw new KeyNotFoundException("SlotRetentionDays not found");
 
-        return period;
+    }
+
+    public async Task<AppSetting> GetBookingLimitPerDay()
+    {
+        return await dbContext.AppSettings.FindAsync("LimitOfBookingPerDay")
+               ?? throw new KeyNotFoundException("LimitOfBookingPerDay not found");
     }
 }
