@@ -27,12 +27,12 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/admin/slots/cleanup",
+          "raw": "http://localhost:5000/api/admin/slots/cleanup",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "admin",
@@ -46,8 +46,37 @@
     {
       "name": "Export all audit logs as a .csv file(admin only)",
       "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "password",
+              "value": "Admin@123",
+              "type": "string"
+            },
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/admin/export/auditLog",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "admin",
+            "export",
+            "auditLog"
+          ]
+        }
       },
       "response": []
     },
@@ -58,13 +87,13 @@
           "type": "basic",
           "basic": [
             {
-              "key": "username",
-              "value": "owais",
+              "key": "password",
+              "value": "Hmood@123",
               "type": "string"
             },
             {
-              "key": "password",
-              "value": "Owais@123",
+              "key": "username",
+              "value": "hmood",
               "type": "string"
             }
           ]
@@ -77,21 +106,29 @@
           }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\n  \"slotId\": \"slot_suh_005\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "SlotId",
+              "value": "slot_mus_002",
+              "type": "text",
+              "uuid": "ee2c86e0-d612-4aa6-9797-dd0c855eef21"
+            },
+            {
+              "key": "AttachmentPath",
+              "type": "file",
+              "uuid": "ac607b9d-0b91-403a-a867-a9b3824e2c10",
+              "src": "postman-cloud:///1f11f118-f06d-4210-a20e-36b394294915"
             }
-          }
+          ]
         },
         "url": {
-          "raw": "http://localhost:5161/api/appointment",
+          "raw": "http://localhost:5000/api/appointment",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "appointment"
@@ -107,13 +144,13 @@
           "type": "basic",
           "basic": [
             {
-              "key": "username",
-              "value": "staff_suhar_1",
+              "key": "password",
+              "value": "Hmood@123",
               "type": "string"
             },
             {
-              "key": "password",
-              "value": "Staff@123",
+              "key": "username",
+              "value": "hmood",
               "type": "string"
             }
           ]
@@ -121,12 +158,12 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/appointment",
+          "raw": "http://localhost:5000/api/appointment",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "appointment"
@@ -142,13 +179,13 @@
           "type": "basic",
           "basic": [
             {
-              "key": "username",
-              "value": "owais",
+              "key": "password",
+              "value": "Ahmad@123",
               "type": "string"
             },
             {
-              "key": "password",
-              "value": "Owais@123",
+              "key": "username",
+              "value": "ahmad",
               "type": "string"
             }
           ]
@@ -156,16 +193,16 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/appointment/appt_002",
+          "raw": "http://localhost:5000/api/appointment/appt_004",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "appointment",
-            "appt_002"
+            "appt_004"
           ]
         }
       },
@@ -178,13 +215,13 @@
           "type": "basic",
           "basic": [
             {
-              "key": "username",
-              "value": "owais",
+              "key": "password",
+              "value": "Hmood@123",
               "type": "string"
             },
             {
-              "key": "password",
-              "value": "Owais@123",
+              "key": "username",
+              "value": "hmood",
               "type": "string"
             }
           ]
@@ -192,16 +229,17 @@
         "method": "PATCH",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/appointment/appt_010",
+          "raw": "http://localhost:5000/api/appointment/appt_004/cancel",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "appointment",
-            "appt_010"
+            "appt_004",
+            "cancel"
           ]
         }
       },
@@ -214,13 +252,13 @@
           "type": "basic",
           "basic": [
             {
-              "key": "username",
-              "value": "owais",
+              "key": "password",
+              "value": "Customer@123",
               "type": "string"
             },
             {
-              "key": "password",
-              "value": "Owais@123",
+              "key": "username",
+              "value": "cust_fatima",
               "type": "string"
             }
           ]
@@ -234,7 +272,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "\"slot_suh_001\"",
+          "raw": "\"slot_suh_006\"",
           "options": {
             "raw": {
               "language": "json"
@@ -242,16 +280,16 @@
           }
         },
         "url": {
-          "raw": "http://localhost:5161/api/appointment/appt_009/reschedule",
+          "raw": "http://localhost:5000/api/appointment/appt_002/reschedule",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "appointment",
-            "appt_009",
+            "appt_002",
             "reschedule"
           ]
         }
@@ -293,16 +331,16 @@
           }
         },
         "url": {
-          "raw": "http://localhost:5161/api/appointment/appt_009/update/status",
+          "raw": "http://localhost:5000/api/appointment/appt_003/update/status",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "appointment",
-            "appt_009",
+            "appt_003",
             "update",
             "status"
           ]
@@ -311,10 +349,75 @@
       "response": []
     },
     {
+      "name": "Get live queue position per branch",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "password",
+              "value": "Admin@123",
+              "type": "string"
+            },
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/appointment/queue",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "appointment",
+            "queue"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "Retrieve appointment attachment",
       "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "staff_suhar_1",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Staff@123",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/appointment/attachment/appt_003",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "appointment",
+            "attachment",
+            "appt_003"
+          ]
+        }
       },
       "response": []
     },
@@ -339,12 +442,12 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/auditLog",
+          "raw": "http://localhost:5000/api/auditLog",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "auditLog"
@@ -356,8 +459,35 @@
     {
       "name": "Get branch",
       "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "staff_suhar_1",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Staff@123",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/branch",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "branch"
+          ]
+        }
       },
       "response": []
     },
@@ -382,12 +512,12 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/customer",
+          "raw": "http://localhost:5000/api/customer",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "customer"
@@ -402,23 +532,57 @@
         "method": "POST",
         "header": [],
         "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"name\":\"owais\",\r\n    \"email\":\"ow@gmail.com\",\r\n    \"password\":\"123456\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "UserName",
+              "value": "hmood",
+              "type": "text",
+              "uuid": "3e133d11-8dbd-4c42-9aaf-32658b61780d"
+            },
+            {
+              "key": "Password",
+              "value": "Hmood@123",
+              "type": "text",
+              "uuid": "53d104a5-67f6-45dd-8ff8-b0e3cba584cf"
+            },
+            {
+              "key": "FullName",
+              "value": "hmood ahmad",
+              "type": "text",
+              "uuid": "c8c4c65a-42ec-42a7-834a-45298cf587dd"
+            },
+            {
+              "key": "Email",
+              "value": "hmood@gmail.com",
+              "type": "text",
+              "uuid": "bf8f2a14-1aea-4d45-94bf-916086489c15"
+            },
+            {
+              "key": "Phone",
+              "value": "97880914",
+              "type": "text",
+              "uuid": "7c2f887e-fbbe-4094-a180-b1beff769bb6"
+            },
+            {
+              "key": "IdImage",
+              "type": "file",
+              "uuid": "800c2618-fe96-4531-9584-24c8c429e7c5",
+              "src": "postman-cloud:///1f11e53e-5631-41f0-be55-966b31d4f11a"
             }
-          }
+          ]
         },
         "url": {
-          "raw": "http://localhost:3001/registerUser",
+          "raw": "http://localhost:5000/api/customer/register",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "3001",
+          "port": "5000",
           "path": [
-            "registerUser"
+            "api",
+            "customer",
+            "register"
           ]
         }
       },
@@ -445,12 +609,12 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/customer/user_cust_005",
+          "raw": "http://localhost:5000/api/customer/user_cust_005",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "customer",
@@ -463,8 +627,37 @@
     {
       "name": "Get customer (including the ID image)",
       "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "password",
+              "value": "Admin@123",
+              "type": "string"
+            },
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/customer/usr_cust_006/id-image",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "customer",
+            "usr_cust_006",
+            "id-image"
+          ]
+        }
       },
       "response": []
     },
@@ -486,12 +679,12 @@
           }
         },
         "url": {
-          "raw": "http://localhost:5161/api/login",
+          "raw": "http://localhost:5000/api/login",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "login"
@@ -506,12 +699,12 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/service/branches/br_muscat_001",
+          "raw": "http://localhost:5000/api/service/branches/br_muscat_001",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "service",
@@ -557,12 +750,12 @@
           }
         },
         "url": {
-          "raw": "http://localhost:5161/api/services/assign/staff",
+          "raw": "http://localhost:5000/api/services/assign/staff",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "services",
@@ -574,7 +767,7 @@
       "response": []
     },
     {
-      "name": "Get Slot By Branch And Service Type",
+      "name": "List available slots by branch and service type (supports optional date filter)",
       "request": {
         "auth": {
           "type": "noauth"
@@ -582,12 +775,12 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/slots/br_suhar_001/services/svc_suh_002",
+          "raw": "http://localhost:5000/api/slots/br_suhar_001/services/svc_suh_002",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "slots",
@@ -626,7 +819,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "[\n  {\n  \"serviceTypeId\": \"svc_suh_003\",\n  \"staffId\": \"usr_staff_001\",\n  \"capacity\": 1,\n  \"isActive\": true,\n  \"startedAt\": \"2026-03-09T06:00:00+04:00\"\n},\n{\n  \"serviceTypeId\": \"svc_suh_002\",\n  \"staffId\": \"usr_staff_002\",\n  \"capacity\": 1,\n  \"isActive\": true,\n  \"startedAt\": \"2026-03-09T06:00:00+04:00\"\n}\n  \n]",
+          "raw": "[\n  {\n  \"serviceTypeId\": \"svc_suh_006\",\n  \"staffId\": \"usr_staff_001\",\n  \"capacity\": 1,\n  \"isActive\": true,\n  \"startedAt\": \"2026-05-09T06:00:00+04:00\"\n},\n{\n  \"serviceTypeId\": \"svc_suh_007\",\n  \"staffId\": \"usr_staff_002\",\n  \"capacity\": 1,\n  \"isActive\": true,\n  \"startedAt\": \"2026-06-09T06:00:00+04:00\"\n}\n  \n]",
           "options": {
             "raw": {
               "language": "json"
@@ -634,15 +827,15 @@
           }
         },
         "url": {
-          "raw": "http://localhost:5161/api/slots",
+          "raw": "http://localhost:5000/api/slot",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
-            "slots"
+            "slot"
           ]
         }
       },
@@ -675,7 +868,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"branchId\": \"br_suhar_001\",\n  \"serviceTypeId\": \"svc_suh_002\",\n  \"staffId\": \"usr_staff_002\",\n  \"startedAt\": \"2026-03-09T09:00:00+04:00\",\n  \"capacity\": 1,\n  \"isActive\": true\n}",
+          "raw": "{\n  \"branchId\": \"br_suhar_001\",\n  \"serviceTypeId\": \"svc_suh_001\",\n  \"staffId\": \"usr_staff_001\",\n  \"startedAt\": \"2026-03-09T09:00:00+04:00\",\n  \"capacity\": 1,\n  \"isActive\": true\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -683,15 +876,15 @@
           }
         },
         "url": {
-          "raw": "http://localhost:5161/api/slots/slot_suh_010",
+          "raw": "http://localhost:5000/api/slot/slot_suh_010",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
-            "slots",
+            "slot",
             "slot_suh_010"
           ]
         }
@@ -719,12 +912,12 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/slots/slot_suh_002",
+          "raw": "http://localhost:5000/api/slots/slot_suh_002",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "slots",
@@ -755,12 +948,12 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5161/api/staff",
+          "raw": "http://localhost:5000/api/staff",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "5161",
+          "port": "5000",
           "path": [
             "api",
             "staff"

@@ -78,9 +78,7 @@ builder.Services.AddMinio(config => config
     .WithCredentials(builder.Configuration["MinIO:AccessKey"], builder.Configuration["MinIO:SecretKey"])
     .WithSSL(false)
     .Build());
-var endpoint = builder.Configuration["MinIO:Endpoint"];
-var accessKey = builder.Configuration["MinIO:AccessKey"];
-var secretKey = builder.Configuration["MinIO:SecretKey"];
+
 
 var app = builder.Build();
 
