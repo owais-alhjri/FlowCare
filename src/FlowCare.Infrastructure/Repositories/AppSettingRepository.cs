@@ -1,6 +1,6 @@
 ﻿using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
-using FlowCare.Infrastructure.Persistence;
+using FlowCare.Infrastructure.Data;
 
 namespace FlowCare.Infrastructure.Repositories;
 
@@ -8,8 +8,8 @@ public class AppSettingRepository(FlowCareDbContext dbContext) : IAppSettingRepo
 {
     public async Task<AppSetting> GetRetentionPeriod()
     {
-         return await dbContext.AppSettings.FindAsync("SlotRetentionDays")
-                     ?? throw new KeyNotFoundException("SlotRetentionDays not found");
+        return await dbContext.AppSettings.FindAsync("SlotRetentionDays")
+                    ?? throw new KeyNotFoundException("SlotRetentionDays not found");
 
     }
 

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FlowCare.Application.Features.StaffServiceType.DTOs;
+﻿namespace FlowCare.Application.Features.StaffServiceType.DTOs;
 
 public class ResponseAssignedStaffDto
 {

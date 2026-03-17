@@ -16,5 +16,5 @@ public interface IAppointmentRepository
     Task<Appointment?> GetLastQueueByBranch(string branchId, string excludeAppointmentId);
     Task<Appointment?> FindByQueue(int queue, string branchId, string excludeAppointmentId);
     Task<int> GetAppointmentsPerDay(string customerId);
-    Task<bool> RescheduledTodayAsync(string appointmentId,int numberOfDays);
+    Task<bool> RescheduledTodayAsync(string appointmentId, int numberOfDays);
 }

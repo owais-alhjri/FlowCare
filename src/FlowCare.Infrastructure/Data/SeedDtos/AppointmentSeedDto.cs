@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using FlowCare.Domain.Enums;
 
-namespace FlowCare.Infrastructure.Persistence.SeedDtos;
+namespace FlowCare.Infrastructure.Data.SeedDtos;
 
 public class AppointmentSeedDto
 {
@@ -13,6 +13,6 @@ public class AppointmentSeedDto
     [JsonPropertyName("staff_id")] public string StaffId { get; set; } = null!;
     [JsonPropertyName("status")] public Status Status { get; set; }
     [JsonPropertyName("created_at")] public DateTimeOffset CreatedAt { get; set; }
-    [JsonPropertyName("queue")] public int Queue { get; set; } 
+    [JsonPropertyName("queue")] public int Queue { get; set; }
 
 }

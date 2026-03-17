@@ -1,7 +1,7 @@
 ﻿using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 using FlowCare.Domain.Enums;
-using FlowCare.Infrastructure.Persistence;
+using FlowCare.Infrastructure.Data;
 
 namespace FlowCare.Infrastructure.Repositories;
 

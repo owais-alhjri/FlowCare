@@ -196,7 +196,7 @@ public class SlotService(
             EndAt = slot.EndAt,
             Capacity = slot.Capacity,
             IsActive = slot.IsActive,
-            Deleted_at = slot.DeletedAt
+            DeletedAt = slot.DeletedAt
         });
     }
 

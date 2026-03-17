@@ -18,7 +18,7 @@ public class AppSetting
         Description = description;
     }
 
-    private static void ValidateCommon(string key, string value )
+    private static void ValidateCommon(string key, string value)
     {
         if (string.IsNullOrWhiteSpace(key) || key.Length < 3 || key.Length > 100)
         {

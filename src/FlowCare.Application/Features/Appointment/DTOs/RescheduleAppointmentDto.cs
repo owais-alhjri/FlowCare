@@ -2,7 +2,7 @@
 
 namespace FlowCare.Application.Features.Appointment.DTOs;
 
-public class RescheduleAppointmenDto
+public class RescheduleAppointmentDto
 {
     public string Id { get; set; } = null!;
     public string SlotId { get; set; } = null!;

@@ -14,5 +14,5 @@ public class CustomerResponseDto
     public bool IsActive { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? IdImagePath { get; set; }
+    public string? IdImagePath { get; init; }
 }

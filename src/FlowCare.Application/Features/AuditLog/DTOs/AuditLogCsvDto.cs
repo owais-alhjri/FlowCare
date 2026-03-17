@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace FlowCare.Application.Features.AuditLog.DTOs;
+﻿namespace FlowCare.Application.Features.AuditLog.DTOs;
 
 public class AuditLogCsvDto
 {

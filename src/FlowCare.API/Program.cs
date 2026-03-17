@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using FlowCare.API.Authentication;
 using FlowCare.Infrastructure.Extensions;
-using FlowCare.Infrastructure.Persistence;
+using FlowCare.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -82,9 +82,6 @@ builder.Services.AddMinio(config => config
 
 var app = builder.Build();
 
-
-
-
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<FlowCareDbContext>();
@@ -103,7 +100,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

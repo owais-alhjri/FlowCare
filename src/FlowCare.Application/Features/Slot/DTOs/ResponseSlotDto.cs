@@ -10,5 +10,5 @@ public class ResponseSlotDto
     public DateTimeOffset EndAt { get; set; }
     public int Capacity { get; set; }
     public bool IsActive { get; set; }
-    public DateTimeOffset? Deleted_at { get; set; }
+    public DateTimeOffset? DeletedAt { get; set; }
 }

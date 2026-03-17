@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using FlowCare.Domain.Enums;
 
-namespace FlowCare.Application.Features.User.DTOs;
+namespace FlowCare.Infrastructure.Data.SeedDtos;
 
 public class UserSeederDto
 {

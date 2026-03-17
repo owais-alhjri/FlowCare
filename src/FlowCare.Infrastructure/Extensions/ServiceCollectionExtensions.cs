@@ -1,6 +1,6 @@
 ﻿using FlowCare.Application.Interfaces;
 using FlowCare.Application.Services;
-using FlowCare.Infrastructure.Persistence;
+using FlowCare.Infrastructure.Data;
 using FlowCare.Infrastructure.Repositories;
 using FlowCare.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;

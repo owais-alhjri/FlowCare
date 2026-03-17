@@ -80,6 +80,7 @@ public class CustomerService(
 
     public async Task<Result<User>> Login(string identifier, string password)
     {
+        // it supports username or email
         var user = await customerRepository.FindByUsernameAsync(identifier)
                    ?? await customerRepository.FindByEmailAsync(identifier);
 

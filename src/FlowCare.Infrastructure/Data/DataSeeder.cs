@@ -2,10 +2,10 @@
 using System.Text.Json.Serialization;
 using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
-using FlowCare.Infrastructure.Persistence.SeedDtos;
+using FlowCare.Infrastructure.Data.SeedDtos;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlowCare.Infrastructure.Persistence;
+namespace FlowCare.Infrastructure.Data;
 
 public class DataSeeder(FlowCareDbContext db, IPasswordHasher passwordHasher)
 {
@@ -56,7 +56,7 @@ public class DataSeeder(FlowCareDbContext db, IPasswordHasher passwordHasher)
 
         await SeedEntitiesAsync(db.Appointments, seedData.Appointments,
             a => new Appointment(a.Id, seededUsers[a.CustomerId], seededUsers[a.StaffId],
-                a.BranchId, a.ServiceTypeId, a.SlotId, a.Status, a.CreatedAt.ToUniversalTime(),a.Queue));
+                a.BranchId, a.ServiceTypeId, a.SlotId, a.Status, a.CreatedAt.ToUniversalTime(), a.Queue));
 
         var existingAuditIds = (await db.AuditLogs.Select(a => a.Id).ToListAsync()).ToHashSet();
         var newAuditLogs = seedData.AuditLogs?

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FlowCare.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace FlowCare.Application.Features.User.Customer.DTOs;

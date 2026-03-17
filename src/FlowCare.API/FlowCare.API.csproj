@@ -29,10 +29,10 @@
   <ItemGroup>
     <Folder Include="Authentication\" />
   </ItemGroup>
-
   <ItemGroup>
-    <Content Include="..\FlowCare.Infrastructure\Persistence\example.json">
+    <Content Include="..\FlowCare.Infrastructure\Data\example.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
       <Link>example.json</Link>
     </Content>
   </ItemGroup>

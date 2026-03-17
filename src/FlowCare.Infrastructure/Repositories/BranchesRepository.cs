@@ -1,6 +1,6 @@
 ﻿using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
-using FlowCare.Infrastructure.Persistence;
+using FlowCare.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlowCare.Infrastructure.Repositories;

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text.Json;
+﻿using System.Text.Json;
 using FlowCare.Application.Common;
 using FlowCare.Application.Features.Appointment.DTOs;
 using FlowCare.Application.Features.AuditLog.DTOs;
@@ -165,9 +164,9 @@ public class AppointmentService(
         if (customer is null)
             return Result<UpdateStatusOfAppointmentDto>.Fail("Customer not found");
 
-        var currentQueue = appointment.Queue; 
+        var currentQueue = appointment.Queue;
 
-        var lastQueue = await appointmentRepository.GetLastQueueByBranch(appointment.BranchId, appointment.Id); 
+        var lastQueue = await appointmentRepository.GetLastQueueByBranch(appointment.BranchId, appointment.Id);
         for (int i = currentQueue + 1; i <= lastQueue.Queue; i++)
         {
             var queue = await appointmentRepository.FindByQueue(i, appointment.BranchId, appointment.Id);
@@ -201,7 +200,7 @@ public class AppointmentService(
         });
     }
 
-    public async Task<Result<RescheduleAppointmenDto>> Reschedule(string appointmentId, string slotId,
+    public async Task<Result<RescheduleAppointmentDto>> Reschedule(string appointmentId, string slotId,
         string customerId)
     {
         var frequencyLimitPerDay = await appSettingRepository.GetReschedulingLimitPerDay();
@@ -209,20 +208,20 @@ public class AppointmentService(
         var frequencyRescheduling = await appointmentRepository.RescheduledTodayAsync(appointmentId, numberOfDays);
 
         if (!frequencyRescheduling)
-            return Result<RescheduleAppointmenDto>.Fail($"No Rescheduling more then {numberOfDays} per day ");
+            return Result<RescheduleAppointmentDto>.Fail($"No Rescheduling more then {numberOfDays} per day ");
 
         var appointment = await appointmentRepository.GetByAppointmentId(appointmentId);
         if (appointment is null)
-            return Result<RescheduleAppointmenDto>.Fail("Appointment is not available");
+            return Result<RescheduleAppointmentDto>.Fail("Appointment is not available");
 
         var customer = await customerRepository.FindByIdAsync(customerId);
         if (customer is null)
-            return Result<RescheduleAppointmenDto>.Fail("Customer not found");
+            return Result<RescheduleAppointmentDto>.Fail("Customer not found");
 
-        var currentQueue = appointment.Queue; 
+        var currentQueue = appointment.Queue;
 
-        var lastQueue = (await appointmentRepository.GetLastQueueByBranch(appointment.BranchId, appointment.Id)).Queue; 
-        Console.WriteLine("last before "+lastQueue);
+        var lastQueue = (await appointmentRepository.GetLastQueueByBranch(appointment.BranchId, appointment.Id)).Queue;
+        Console.WriteLine("last before " + lastQueue);
 
         //this is for if the rescheduled already the last one in the queue
         if (currentQueue >= lastQueue)
@@ -261,7 +260,7 @@ public class AppointmentService(
             }))
         });
 
-        return Result<RescheduleAppointmenDto>.Success(new RescheduleAppointmenDto
+        return Result<RescheduleAppointmentDto>.Success(new RescheduleAppointmentDto
         {
             Id = appointment.Id,
             SlotId = slotId,

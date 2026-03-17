@@ -1,5 +1,4 @@
-﻿using FlowCare.Application.Features.Slot.DTOs;
-using FlowCare.Domain.Entities;
+﻿using FlowCare.Domain.Entities;
 
 namespace FlowCare.Application.Interfaces;
 

@@ -1,8 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using FlowCare.Application.Features.User.DTOs;
-using FlowCare.Infrastructure.Persistence.SeedDtos;
+using FlowCare.Infrastructure.Data.SeedDtos;
 
-namespace FlowCare.Infrastructure.Persistence;
+namespace FlowCare.Infrastructure.Data;
 
 public class UserGroups
 {

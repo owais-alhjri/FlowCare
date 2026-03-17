@@ -1,7 +1,7 @@
 ﻿using FlowCare.Application.Interfaces;
 using FlowCare.Domain.Entities;
 using FlowCare.Domain.Enums;
-using FlowCare.Infrastructure.Persistence;
+using FlowCare.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlowCare.Infrastructure.Repositories;
@@ -86,16 +86,16 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
 
     public async Task<Appointment?> GetLastQueueByBranch(string branchId, string excludeAppointmentId)
     {
-        return  await dbContext.Appointments
-            .Where(a=>a.BranchId == branchId && a.Id != excludeAppointmentId && a.Queue != 0)
-            .OrderByDescending(q=>q.Queue)
+        return await dbContext.Appointments
+            .Where(a => a.BranchId == branchId && a.Id != excludeAppointmentId && a.Queue != 0)
+            .OrderByDescending(q => q.Queue)
             .FirstOrDefaultAsync();
     }
 
     public async Task<Appointment?> FindByQueue(int queue, string branchId, string excludeAppointmentId)
     {
         return await dbContext.Appointments
-            .Where(a=>a.BranchId == branchId && a.Id != excludeAppointmentId)
+            .Where(a => a.BranchId == branchId && a.Id != excludeAppointmentId)
             .FirstOrDefaultAsync(q => q.Queue == queue);
     }
     public async Task<List<Appointment>> AppointmentListForQueue(string userId)
@@ -128,9 +128,9 @@ public class AppointmentRepository(FlowCareDbContext dbContext) : IAppointmentRe
     {
         var today = DateTimeOffset.UtcNow.Date;
 
-        return await dbContext.Appointments.AnyAsync(a => (a.LastRescheduledAt 
+        return await dbContext.Appointments.AnyAsync(a => (a.LastRescheduledAt
             >= today && a.LastRescheduledAt < today.AddDays(numberOfDays)) && a.Id == appointmentId);
 
-        
+
     }
 }

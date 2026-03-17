@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace FlowCare.Infrastructure.Persistence.SeedDtos;
+namespace FlowCare.Infrastructure.Data.SeedDtos;
 
 public class AuditLogSeedDto
 {

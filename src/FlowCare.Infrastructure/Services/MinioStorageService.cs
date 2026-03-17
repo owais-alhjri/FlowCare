@@ -1,7 +1,6 @@
 ﻿using FlowCare.Application.Interfaces;
 using Minio;
 using Minio.DataModel.Args;
-using Minio.Exceptions;
 
 
 namespace FlowCare.Infrastructure.Services;

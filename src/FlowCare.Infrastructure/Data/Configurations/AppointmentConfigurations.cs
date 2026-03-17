@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FlowCare.Infrastructure.Persistence.Configurations;
+namespace FlowCare.Infrastructure.Data.Configurations;
 
 public class AppointmentConfigurations : IEntityTypeConfiguration<Appointment>
 {

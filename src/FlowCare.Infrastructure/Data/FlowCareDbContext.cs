@@ -1,7 +1,7 @@
 ﻿using FlowCare.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlowCare.Infrastructure.Persistence;
+namespace FlowCare.Infrastructure.Data;
 
 public class FlowCareDbContext(DbContextOptions<FlowCareDbContext> options) : DbContext(options)
 {
